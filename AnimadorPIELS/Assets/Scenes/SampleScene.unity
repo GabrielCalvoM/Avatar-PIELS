@@ -266,7 +266,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -327,7 +327,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.0000004768371, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.27, z: -0.9}
+  m_LocalPosition: {x: 0, y: 1.5, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -391,11 +391,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldCamera
   avatar: {fileID: 1954002060}
-  orbit_speed: 5
-  zoom_speed: 2
-  start_dist: 10
-  min_zoom: 2
-  max_zoom: 50
+  v_offset: 1.5
+  orbit_speed: 30
+  zoom_speed: 8
+  start_dist: 5
+  min_zoom: 1
+  max_zoom: 5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,7 +1086,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2060840909}
   - component: {fileID: 2060840908}
-  - component: {fileID: 2060840907}
   - component: {fileID: 2060840906}
   m_Layer: 0
   m_Name: UI Camera
@@ -1138,14 +1138,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!81 &2060840907
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2060840905}
-  m_Enabled: 1
 --- !u!20 &2060840908
 Camera:
   m_ObjectHideFlags: 0

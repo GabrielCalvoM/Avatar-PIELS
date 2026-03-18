@@ -1,57 +1,67 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class WorldCamera : MonoBehaviour
 {
     //////////////////////////////////////////////////////////// ATTRIBUTES
-    
+
     [Header("Avatar Target")]
     [SerializeField] private Transform avatar;
-    [SerializeField] private float orbit_speed = 5.0f;
+
+    [SerializeField] private float v_offset = 1.5f;
+    [SerializeField] private float orbit_speed = 30.0f;
 
     [Header("Zoom Settings")]
-    [SerializeField] private float zoom_speed = 2.0f;
-    [SerializeField] private float start_dist = 10.0f;
-    [SerializeField] private float min_zoom = 2.0f;
-    [SerializeField] private float max_zoom = 50.0f;
-    
+    [SerializeField] private float zoom_speed = 10.0f;
+    [SerializeField] private float start_dist = 5.0f;
+    [SerializeField] private float min_zoom = 0.5f;
+    [SerializeField] private float max_zoom = 5.0f;
+
     private float curr_zoom;
     private float h_angle;
     private float v_angle;
 
     //////////////////////////////////////////////////////////// METHODS
-    
-    private void HandleZoom() {
-        float dir = Input.GetAxis("Mouse ScrollWheel");
-        if (Mathf.Approximately(dir, 0f)) return; 
+
+    private void HandleZoom()
+    {
+        float dir = Mouse.current.scroll.ReadValue().y;
+        if (Mathf.Approximately(dir, 0f)) return;
+
+        // Normalize the scroll value — new Input System returns larger raw values
+        dir *= 0.01f;
 
         curr_zoom -= dir * zoom_speed * curr_zoom;
         curr_zoom = Mathf.Clamp(curr_zoom, min_zoom, max_zoom);
     }
 
-    private void HandleOrbit() {
-        if (!Input.GetMouseButton(2)) return;
+    private void HandleOrbit()
+    {
+        if (!Mouse.current.middleButton.isPressed) return;
 
-        float mouse_x = Input.GetAxis("Mouse X");
-        float mouse_y = Input.GetAxis("Mouse Y"); 
+        Vector2 delta = Mouse.current.delta.ReadValue();
 
-        h_angle += mouse_x * orbit_speed;
-        v_angle -= mouse_y * orbit_speed;
+        h_angle += delta.x * orbit_speed * Time.deltaTime;
+        v_angle -= delta.y * orbit_speed * Time.deltaTime;
 
         v_angle = Mathf.Clamp(v_angle, -80f, 80f);
     }
 
-    private void ApplyTransform() {
+    private void ApplyTransform()
+    {
+        Vector3 pivot = avatar.position + Vector3.up * v_offset;
+
         Quaternion r = Quaternion.Euler(v_angle, h_angle, 0.0f);
         Vector3 z_dist = new Vector3(0.0f, 0.0f, -curr_zoom);
 
-        transform.position = avatar.position + r * z_dist;
-        transform.LookAt(avatar.position);
+        transform.position = pivot + r * z_dist;
+        transform.LookAt(pivot);
     }
 
-
     //////////////////////////////////////////////////////////// GAME LOOP
-    
-    void Start() {
+
+    void Start()
+    {
         curr_zoom = start_dist;
         h_angle = transform.eulerAngles.y;
         v_angle = transform.eulerAngles.x;
@@ -60,9 +70,9 @@ public class WorldCamera : MonoBehaviour
             Debug.LogError("NO AVATAR");
     }
 
-    void Update() {
-        if (avatar == null)
-            Debug.LogError("NO AVATAR");
+    void Update()
+    {
+        if (avatar == null) return;
 
         HandleZoom();
         HandleOrbit();
