@@ -20,6 +20,7 @@ public class WorldCamera : MonoBehaviour
     private float curr_zoom;
     private float h_angle;
     private float v_angle;
+    private bool controls_enabled = true;
 
     private const float top_bottom_pitch = 89.0f;
 
@@ -95,6 +96,16 @@ public class WorldCamera : MonoBehaviour
         SnapToView(90.0f, 0.0f);
     }
 
+    public void StopCameraControls()
+    {
+        controls_enabled = false;
+    }
+
+    public void ResumeCameraControls()
+    {
+        controls_enabled = true;
+    }
+
     //////////////////////////////////////////////////////////// GAME LOOP
 
     void Start()
@@ -111,8 +122,12 @@ public class WorldCamera : MonoBehaviour
     {
         if (avatar == null) return;
 
-        HandleZoom();
-        HandleOrbit();
+        if (controls_enabled)
+        {
+            HandleZoom();
+            HandleOrbit();
+        }
+
         ApplyTransform();
     }
 }
