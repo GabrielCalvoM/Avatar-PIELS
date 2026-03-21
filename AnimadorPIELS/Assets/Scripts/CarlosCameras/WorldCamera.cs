@@ -21,6 +21,8 @@ public class WorldCamera : MonoBehaviour
     private float h_angle;
     private float v_angle;
 
+    private const float top_bottom_pitch = 89.0f;
+
     //////////////////////////////////////////////////////////// METHODS
 
     private void HandleZoom()
@@ -56,6 +58,41 @@ public class WorldCamera : MonoBehaviour
 
         transform.position = pivot + r * z_dist;
         transform.LookAt(pivot);
+    }
+
+    private void SnapToView(float yaw_offset, float pitch)
+    {
+        if (avatar == null) return;
+
+        h_angle = avatar.eulerAngles.y + yaw_offset;
+        v_angle = pitch;
+
+        ApplyTransform();
+    }
+
+    public void CenterFrontView()
+    {
+        SnapToView(180.0f, 0.0f);
+    }
+
+    public void CenterTopView()
+    {
+        SnapToView(180.0f, top_bottom_pitch);
+    }
+
+    public void CenterBottomView()
+    {
+        SnapToView(0.0f, -top_bottom_pitch);
+    }
+
+    public void CenterLeftView()
+    {
+        SnapToView(-90.0f, 0.0f);
+    }
+
+    public void CenterRightView()
+    {
+        SnapToView(90.0f, 0.0f);
     }
 
     //////////////////////////////////////////////////////////// GAME LOOP
