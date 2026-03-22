@@ -58,6 +58,8 @@ public class SaveLoadUI : MonoBehaviour
             TextMeshProUGUI text = item.GetComponentInChildren<TextMeshProUGUI>();
 
             string fileName = Path.GetFileName(file);
+            // Remove any invisible Unicode characters from display
+            fileName = fileName.Replace("\u200B", "").Replace("\u200C", "").Replace("\u200D", "").Replace("\uFEFF", "");
 
             text.text = fileName;
         }
@@ -75,7 +77,7 @@ public class SaveLoadUI : MonoBehaviour
     {
         worldCamera.StopCameraControls();
         loadUI.SetActive(true);
-        string path = Application.persistentDataPath + "/Poses";
+        string path = Application.persistentDataPath + "/UserPoses";
         PopulateFiles(path);
     }
 

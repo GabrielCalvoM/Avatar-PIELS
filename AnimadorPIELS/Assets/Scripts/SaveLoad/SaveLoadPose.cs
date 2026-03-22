@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using TMPro;
+using System.Text;
 
 [System.Serializable]
 public class BoneData
@@ -90,16 +91,32 @@ public class SaveLoadPose : MonoBehaviour
         return JsonUtility.FromJson<PoseData>(json);
     }
 
+    private string SanitizeFilename(string filename)
+    {
+        // Remove zero-width characters and other invisible Unicode characters
+        StringBuilder sb = new StringBuilder();
+        foreach (char c in filename)
+        {
+            // Skip zero-width space (​), zero-width joiner, zero-width non-joiner, etc.
+            if (c != '\u200B' && c != '\u200C' && c != '\u200D' && c != '\uFEFF' &&
+                !char.IsControl(c))
+            {
+                sb.Append(c);
+            }
+        }
+        return sb.ToString().Trim();
+    }
+
     public void SavePoseButton()
     {
         PoseData pose = CapturePose(avatarSpine);
-        string poseName = loadUI.saveFileInput.text;
+        string poseName = SanitizeFilename(loadUI.saveFileInput.text);
         if (poseName == "")
         {
             Debug.LogWarning("Please enter a name for the pose.");
             return;
         }
-        string path = Application.persistentDataPath + "/Poses/" + poseName + ".json";
+        string path = Application.persistentDataPath + "/UserPoses/" + poseName + ".json";
         SavePoseToFile(pose, path);
         loadUI.CancelSaveButton();
     }
@@ -114,5 +131,18 @@ public class SaveLoadPose : MonoBehaviour
         PoseData pose = LoadPoseFromFile(loadUI.selected_pose);
         ApplyPose(avatarSpine, pose);
         loadUI.CancelLoadButton();
+    }
+
+    public void ApplyTPose()
+    {
+        // Ensure TPose.json exists in this path:
+        string path = Application.persistentDataPath + "/SystemPoses/" + "tpose" + ".json";
+        PoseData pose = LoadPoseFromFile(path);
+        if (pose == null)
+        {
+            Debug.LogWarning("TPose file not found at: " + path);
+            return;
+        }
+        ApplyPose(avatarSpine, pose);
     }
 }
