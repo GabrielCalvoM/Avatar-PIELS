@@ -1,4 +1,6 @@
 using System.IO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -16,38 +18,50 @@ public class SaveLoadUI : MonoBehaviour
 
     [HideInInspector] public string selected_pose = "";
 
+    private SaveLoadPose saveLoadPose;
+
     void Start()
     {
+        saveLoadPose = GetComponent<SaveLoadPose>();
+
         if (apply_pose_button != null)
         {
             apply_pose_button.interactable = false;
         }
     }
 
-    void PopulateFiles(string folderPath)
+    async Task PopulateFiles(string folderPath)
     {
         ClearFileList();
 
-        if (!Directory.Exists(folderPath))
+        if (saveLoadPose == null)
         {
-            Debug.LogError("Folder not found: " + folderPath);
+            Debug.LogError("SaveLoadPose component not found!");
             return;
         }
 
-        string[] files = Directory.GetFiles(folderPath);
+        // Get poses from MongoDB only
+        List<string> poseNames = await saveLoadPose.GetAllPoseNamesFromMongoDB(false);
 
-        foreach (string file in files)
+        if (poseNames.Count == 0)
+        {
+            Debug.LogWarning("No poses found in MongoDB.");
+            return;
+        }
+
+        // Populate the UI list with pose names
+        foreach (string poseName in poseNames)
         {
             GameObject item = Instantiate(listButtonPrefab, listContent);
-
-            string fullPath = file;
 
             Button button = item.GetComponent<Button>();
             if (button != null)
             {
+                // Store just the pose name for MongoDB
+                string capturedPoseName = poseName;
                 button.onClick.AddListener(() =>
                 {
-                    selected_pose = fullPath;
+                    selected_pose = capturedPoseName;
                     if (apply_pose_button != null)
                     {
                         apply_pose_button.interactable = true;
@@ -57,11 +71,10 @@ public class SaveLoadUI : MonoBehaviour
 
             TextMeshProUGUI text = item.GetComponentInChildren<TextMeshProUGUI>();
 
-            string fileName = Path.GetFileName(file);
             // Remove any invisible Unicode characters from display
-            fileName = fileName.Replace("\u200B", "").Replace("\u200C", "").Replace("\u200D", "").Replace("\uFEFF", "");
+            string displayName = poseName.Replace("\u200B", "").Replace("\u200C", "").Replace("\u200D", "").Replace("\uFEFF", "");
 
-            text.text = fileName;
+            text.text = displayName;
         }
     }
 
@@ -73,12 +86,12 @@ public class SaveLoadUI : MonoBehaviour
         }
     }
 
-    public void LoadPoseButton()
+    public async void LoadPoseButton()
     {
         worldCamera.StopCameraControls();
         loadUI.SetActive(true);
         string path = Application.persistentDataPath + "/UserPoses";
-        PopulateFiles(path);
+        await PopulateFiles(path);
     }
 
     public void CancelLoadButton()

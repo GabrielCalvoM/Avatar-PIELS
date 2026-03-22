@@ -1255,6 +1255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveLoadPose
   avatarSpine: {fileID: 1203152735}
+  mongoConfig: {fileID: 11400000, guid: 9bebfd709b76a8040acf4341897da2b2, type: 2}
 --- !u!4 &443752545
 Transform:
   m_ObjectHideFlags: 0
