@@ -11,22 +11,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject envUI;
     [SerializeField] private GameObject faceUI;
 
-    void Update()
-    {
-        RefreshUI();
-    }
 
-    private void RefreshUI()
+    public void RefreshUI()
     {
-        if (mainCamera.activeSelf)
-        {
-            envUI.SetActive(true);
-            if (faceUI != null) faceUI.SetActive(false);
-        }
-        else if (faceCamera.activeSelf)
-        {
-            envUI.SetActive(false);
-            if (faceUI != null) faceUI.SetActive(true);
-        }
+        envUI.SetActive(mainCamera.activeSelf);
+        faceUI.SetActive(faceCamera.activeSelf);
+        genUI.SetActive(mainCamera.activeSelf || faceCamera.activeSelf);
     }
 }
