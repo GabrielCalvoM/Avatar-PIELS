@@ -335,7 +335,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1684284680}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
         m_MethodName: CenterTopView
         m_Mode: 1
@@ -853,8 +853,8 @@ GameObject:
   m_Component:
   - component: {fileID: 330585546}
   - component: {fileID: 330585545}
-  - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -862,14 +862,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &330585544
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -933,7 +925,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2060840909}
   m_Father: {fileID: 1684284679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330585547
@@ -981,6 +974,25 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a452a4e46d777f545957331355356a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorldCamera
+  avatar: {fileID: 1954002060}
+  v_offset: 1.4
+  orbit_speed: 30
+  zoom_speed: 8
+  start_dist: 5
+  min_zoom: 1
+  max_zoom: 5
 --- !u!1 &344074651
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,7 +1305,7 @@ MonoBehaviour:
   listContent: {fileID: 1351401665}
   listButtonPrefab: {fileID: 5492261316338452059, guid: cc3e9bc49d92e7b4ea40ff75dd695461, type: 3}
   apply_pose_button: {fileID: 187720018}
-  worldCamera: {fileID: 1684284680}
+  worldCamera: {fileID: 0}
   saveFileInput: {fileID: 1547896995}
   selected_pose: 
 --- !u!1 &460493595 stripped
@@ -1742,7 +1754,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1684284680}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
         m_MethodName: CenterRightView
         m_Mode: 1
@@ -2410,7 +2422,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1684284680}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
         m_MethodName: CenterLeftView
         m_Mode: 1
@@ -4535,7 +4547,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1684284679}
-  - component: {fileID: 1684284680}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -4557,28 +4568,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 330585546}
-  - {fileID: 2060840909}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1684284680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1684284678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a452a4e46d777f545957331355356a10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WorldCamera
-  avatar: {fileID: 1954002060}
-  v_offset: 1.4
-  orbit_speed: 30
-  zoom_speed: 8
-  start_dist: 5
-  min_zoom: 1
-  max_zoom: 5
 --- !u!1 &1769750638
 GameObject:
   m_ObjectHideFlags: 0
@@ -5000,7 +4991,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1684284680}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
         m_MethodName: CenterFrontView
         m_Mode: 1
@@ -6290,12 +6281,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2060840905}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.0000004768371, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1684284679}
+  m_Father: {fileID: 330585546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2106154286
 GameObject:
@@ -6580,6 +6571,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2060840908}
+    - target: {fileID: 3817409010698756902, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: cameraRef
+      value: 
+      objectReference: {fileID: 330585545}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
