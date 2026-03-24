@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    //////////////////////////////////////////////////////////// ATTRIBUTES
+    
     [Header("Cameras")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject faceCamera;
@@ -11,7 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject envUI;
     [SerializeField] private GameObject faceUI;
 
-
+    //////////////////////////////////////////////////////////// METHODS
+    
     public void RefreshUI()
     {
         envUI.SetActive(mainCamera.activeSelf);
