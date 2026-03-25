@@ -7,6 +7,7 @@ public class LoweArmMov : MonoBehaviour
     [SerializeField] bool mirror;
 
     Camera cameraRef;
+    RotationConstraints.AxisConstraints adjustedConstrains;
 
     bool presionado = false;
     float rotation;

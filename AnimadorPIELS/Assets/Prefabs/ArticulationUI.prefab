@@ -377,7 +377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58df741e81cb87149a1637b471c76d38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurvePainter
-  line: {fileID: 0}
   radius: 1
   width: 1
   resolution: 10

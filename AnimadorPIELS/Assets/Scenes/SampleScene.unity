@@ -5295,7 +5295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d407b59459c4ae94982de4bb6d9a27e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoweArmMov
-  constraints: {fileID: 0}
+  constraints: {fileID: 11400000, guid: 45a7e1187f667ac43985fa0fe8c47658, type: 2}
+  mirror: 1
 --- !u!114 &1069018696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5309,6 +5310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoweArmMov
   constraints: {fileID: 11400000, guid: 45a7e1187f667ac43985fa0fe8c47658, type: 2}
+  mirror: 0
 --- !u!1 &1080024932
 GameObject:
   m_ObjectHideFlags: 0
@@ -8660,19 +8662,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.6888063
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.12738463
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.096252866
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7071453
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -8684,15 +8686,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 2.256
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 18.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 91.867
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4866215996754665596, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
@@ -8794,6 +8796,10 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1973496886}
+    - target: {fileID: 7877195914091720246, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: center
+      value: 
+      objectReference: {fileID: 1069018693}
     - target: {fileID: 8063292118821195002, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
@@ -10904,19 +10910,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.69586456
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.080334224
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.1154767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7042614
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520322221710693471, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -11046,6 +11052,10 @@ PrefabInstance:
       propertyPath: m_Colors.m_ColorMultiplier
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7877195914091720246, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: center
+      value: 
+      objectReference: {fileID: 1069018694}
     - target: {fileID: 8063292118821195002, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
