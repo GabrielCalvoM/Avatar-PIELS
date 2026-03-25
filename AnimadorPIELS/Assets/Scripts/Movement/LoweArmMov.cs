@@ -13,10 +13,12 @@ public class LoweArmMov : MonoBehaviour
     float rotation;
     Vector2 prevPos;
     Vector2 center;
+    SaveLoadPose saveLoadPose;
 
     void Start()
     {
         cameraRef = Camera.main;
+        saveLoadPose = FindFirstObjectByType<SaveLoadPose>();
     }
 
     private void Update()
@@ -62,6 +64,7 @@ public class LoweArmMov : MonoBehaviour
     public void OnPointerDown()
     {
         presionado = true;
+        saveLoadPose?.BeginPoseEdit();
         center = cameraRef.WorldToScreenPoint(transform.position);
         prevPos = Mouse.current.position.value - center;
         rotation = transform.eulerAngles.z;
@@ -73,6 +76,7 @@ public class LoweArmMov : MonoBehaviour
         prevPos = new(0, 0);
         center = new(0, 0);
         rotation = 0;
+        saveLoadPose?.EndPoseEdit();
     }
 
     
