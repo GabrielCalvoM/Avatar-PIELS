@@ -684,7 +684,7 @@ GameObject:
   - component: {fileID: 200721612}
   - component: {fileID: 200721613}
   m_Layer: 5
-  m_Name: WidthSlider
+  m_Name: VSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2613,7 +2613,7 @@ GameObject:
   - component: {fileID: 528314572}
   - component: {fileID: 528314573}
   m_Layer: 5
-  m_Name: REyebrowSlider
+  m_Name: AngleEyebrowSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2845,7 +2845,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1250, y: -100}
+  m_AnchoredPosition: {x: -1750, y: -100}
   m_SizeDelta: {x: 2560, y: 1440}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &601434838
@@ -3678,6 +3678,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 649703970}
   m_CullTransparentMesh: 1
+--- !u!1 &660607273 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7940118715813108295, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}
+  m_PrefabInstance: {fileID: 1435034138}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &671903876
 GameObject:
   m_ObjectHideFlags: 0
@@ -4516,7 +4521,7 @@ GameObject:
   - component: {fileID: 939166585}
   - component: {fileID: 939166586}
   m_Layer: 5
-  m_Name: LEyebrowSlider
+  m_Name: RaiseEyebrowSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5023,6 +5028,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[8]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[9]'
       value: 0
       objectReference: {fileID: 0}
@@ -5035,6 +5044,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[12]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[13]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[14]'
       value: 0
       objectReference: {fileID: 0}
@@ -5044,6 +5061,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[16]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[17]'
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
@@ -5452,8 +5473,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 369727979}
-  - {fileID: 1220833200}
   - {fileID: 601434837}
+  - {fileID: 1220833200}
   m_Father: {fileID: 2006689243}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
@@ -5754,7 +5775,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1750, y: -100}
+  m_AnchoredPosition: {x: -1250, y: -100}
   m_SizeDelta: {x: 2560, y: 1440}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1220833201
@@ -6288,11 +6309,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FaceFocus
   uiManager: {fileID: 320891617}
+  focusButton: {fileID: 660607273}
   mainCamera: {fileID: 330585543}
   faceCamera: {fileID: 509792455}
   avatarFace: {fileID: 144925910}
-  leftEyelidSlider: {fileID: 619092707}
-  rightEyelidSlider: {fileID: 496642349}
+  leftEyelidSlider: {fileID: 496642349}
+  rightEyelidSlider: {fileID: 619092707}
+  raiseEyebrowSlider: {fileID: 939166586}
+  angleEyebrowSlider: {fileID: 528314573}
+  mouthHSlider: {fileID: 1934311914}
+  mouthVSlider: {fileID: 200721613}
 --- !u!1 &1440762698
 GameObject:
   m_ObjectHideFlags: 0
@@ -9068,7 +9094,7 @@ GameObject:
   - component: {fileID: 1934311913}
   - component: {fileID: 1934311914}
   m_Layer: 5
-  m_Name: HeightSlider
+  m_Name: HSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
