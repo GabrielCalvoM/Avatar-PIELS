@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8063292118821195002}
   - component: {fileID: 4084216389148521739}
   - component: {fileID: 7252798742937835919}
+  - component: {fileID: 6132325911123893566}
   m_Layer: 5
   m_Name: ArticulationUI
   m_TagString: Untagged
@@ -86,7 +87,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4084216389148521739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,6 +118,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   cameraRef: {fileID: 0}
+--- !u!114 &6132325911123893566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5202631800287916530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db1c47cbefefd74181329fa01c7df42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArticulationUI
+  button: {fileID: 7940118715813108295}
+  rotator: {fileID: 6959279457384642169}
 --- !u!1 &6959279457384642169
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,36 +382,6 @@ MonoBehaviour:
   width: 1
   resolution: 10
   angle: 360
-  onMouseDown:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LoweArmMov, Assembly-CSharp
-        m_MethodName: OnPointerDown
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onMouseUp:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LoweArmMov, Assembly-CSharp
-        m_MethodName: OnPointerUp
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &7940118715813108295
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +393,7 @@ GameObject:
   - component: {fileID: 213649950584163015}
   - component: {fileID: 7727924847683768118}
   - component: {fileID: 6853720088346536013}
-  - component: {fileID: 298340077304293301}
+  - component: {fileID: 6994234037109941790}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -473,7 +458,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &298340077304293301
+--- !u!114 &6994234037109941790
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -482,9 +467,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7940118715813108295}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -494,10 +479,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0, g: 0.9161275, b: 0.9622642, a: 0.5019608}
-    m_HighlightedColor: {r: 0.9056604, g: 0.8747778, b: 0.58526164, a: 1}
+    m_NormalColor: {r: 0, g: 0.91764706, b: 0.9607843, a: 0.5019608}
+    m_HighlightedColor: {r: 0.90588236, g: 0.8745098, b: 0.58431375, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -514,12 +499,15 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 6853720088346536013}
-  m_OnClick:
+  toggleTransition: 0
+  graphic: {fileID: 0}
+  m_Group: {fileID: 0}
+  onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LoweArmMov, Assembly-CSharp
-        m_MethodName: OnButtonPressed
+      - m_Target: {fileID: 6132325911123893566}
+        m_TargetAssemblyTypeName: ArticulationUI, Assembly-CSharp
+        m_MethodName: OnButtonToggled
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -529,3 +517,4 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_IsOn: 0

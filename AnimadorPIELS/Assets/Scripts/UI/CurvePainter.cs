@@ -5,18 +5,30 @@ using UnityEngine.InputSystem;
 
 public class CurvePainter : MonoBehaviour
 {
-    [SerializeField] LineRenderer line;
     [SerializeField] float radius = 1;
     [SerializeField] float width = 1;
     [SerializeField] float resolution = 10;
     [SerializeField] float angle = 360;
 
-    void Start()
-    {
-        if (line == null) line = GetComponent<LineRenderer>();
+    LineRenderer line;
+    Vector3 iniRotation;
 
-        CalculatePointsCant();
-        CalculatePointsPos();
+    void Awake()
+    {
+        line = GetComponent<LineRenderer>();
+        iniRotation = transform.eulerAngles;
+    }
+
+    public void OnPointerDown()
+    {
+        line.startColor = Color.yellow;
+        line.endColor = Color.yellow;
+    }
+
+    public void OnPointerUp()
+    {
+        line.startColor = Color.red;
+        line.endColor = Color.red;
     }
 
     void CalculatePointsCant()
@@ -43,15 +55,9 @@ public class CurvePainter : MonoBehaviour
         line.SetPositions(pointsPos);
     }
 
-    public void OnPointerDown()
+    void OnEnable()
     {
-        line.startColor = Color.yellow;
-        line.endColor = Color.yellow;
-    }
-
-    public void OnPointerUp()
-    {
-        line.startColor = Color.red;
-        line.endColor = Color.red;
+        CalculatePointsCant();
+        CalculatePointsPos();
     }
 }
