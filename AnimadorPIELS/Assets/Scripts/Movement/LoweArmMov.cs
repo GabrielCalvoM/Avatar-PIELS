@@ -76,19 +76,18 @@ public class LoweArmMov : MonoBehaviour
 
         Vector3 actualAxis = RotationManager.Instance.Axis;
 
-        float dot = Vector3.Dot(transform.up, cameraRef.transform.forward);
+        float dot = Vector3.Dot(forward, cameraRef.transform.forward);
         float signo = dot < 0f ? 1f : -1f;
 
         if (cruz > 0) rotation += angle * signo;
         else if (cruz < 0) rotation -= angle * signo;
         else return;
 
-        //Vector3 vec = actualAxis == RotationManager.x ?
-        //    new(rotation, transform.localEulerAngles.y, transform.localEulerAngles.z) :
-        //    actualAxis == RotationManager.y ?
-        //    new(transform.localEulerAngles.x, rotation, transform.localEulerAngles.z) :
-        //    new(transform.localEulerAngles.x, transform.localEulerAngles.y, rotation);
-        Vector3 vec = new(transform.localEulerAngles.x, rotation, transform.localEulerAngles.z);
+        Vector3 vec = actualAxis == RotationManager.x ?
+            new(rotation, transform.localEulerAngles.y, transform.localEulerAngles.z) :
+            actualAxis == RotationManager.y ?
+            new(transform.localEulerAngles.x, rotation, transform.localEulerAngles.z) :
+            new(transform.localEulerAngles.x, transform.localEulerAngles.y, rotation);
 
         Debug.Log($"Ángulo: {angle},     Cruz: {cruz}" +
             $"Prev: {correctedPrev},   Actual: {pos}");
