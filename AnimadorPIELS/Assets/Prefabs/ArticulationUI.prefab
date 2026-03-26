@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 3487075149769274711}
   - component: {fileID: 1725875116301753576}
   - component: {fileID: 7877195914091720246}
+  - component: {fileID: 5049731220108291041}
   m_Layer: 5
   m_Name: Rotator
   m_TagString: Untagged
@@ -377,10 +378,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58df741e81cb87149a1637b471c76d38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurvePainter
+  center: {fileID: 0}
   radius: 1
   width: 1
   resolution: 10
   angle: 360
+--- !u!114 &5049731220108291041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959279457384642169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67cbaf6fb01062141898887100ebacd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Rotator
 --- !u!1 &7940118715813108295
 GameObject:
   m_ObjectHideFlags: 0

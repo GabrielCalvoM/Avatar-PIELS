@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class CurvePainter : MonoBehaviour
@@ -20,39 +21,55 @@ public class CurvePainter : MonoBehaviour
         iniRotation = transform.eulerAngles;
     }
 
-    public void OnPointerDown()
+    public void OnPointerDown(BaseEventData data)
     {
+        PointerEventData pointerData = (PointerEventData)data;
+
+        if (pointerData.button != PointerEventData.InputButton.Left) return;
+
         line.startColor = Color.yellow;
         line.endColor = Color.yellow;
     }
 
-    public void OnPointerUp()
+    public void OnPointerUp(BaseEventData data)
     {
+        PointerEventData pointerData = (PointerEventData)data;
+
+        if (pointerData.button != PointerEventData.InputButton.Left) return;
+
         line.startColor = Color.red;
         line.endColor = Color.red;
+    }
+
+    public void CalculateCurve()
+    {
+        CalculatePointsCant();
+        CalculatePointsPos();
     }
 
     void CalculatePointsCant()
     {
         line.positionCount = Mathf.CeilToInt(angle * resolution / 90);
+        line.widthMultiplier *= width;
     }
 
     void CalculatePointsPos()
     {
         Vector3 objPos = center.position;
         Vector3[] pointsPos = new Vector3[line.positionCount];
-        float angleBase = angle * (Mathf.PI / 180) / line.positionCount;
+        float angleBase = angle * Mathf.Deg2Rad / line.positionCount;
 
         for (int i = 0; i < line.positionCount; i++)
         {
             float x2D = Mathf.Cos(angleBase * i) * radius * 0.15f;
             float y2D = Mathf.Sin(angleBase * i) * radius * 0.15f;
 
-            float x = x2D;
-            float y = y2D;
-            float z = 0;
+            Vector3 actualAxis = RotationManager.Instance.Axis;
+            Vector3 vec = actualAxis == RotationManager.x ?
+                new(0, x2D, y2D) : actualAxis == RotationManager.y ?
+                new(x2D, 0, y2D) : new(x2D, y2D, 0);
 
-            pointsPos[i] = objPos + (center.rotation * new Vector3(x, y, z));
+            pointsPos[i] = objPos + (center.rotation * vec);
         }
 
         line.startColor = Color.red;
@@ -63,7 +80,7 @@ public class CurvePainter : MonoBehaviour
 
     void OnEnable()
     {
-        CalculatePointsCant();
-        CalculatePointsPos();
+        RotationManager.Instance.SyncRotatorAxis(CalculateCurve);
+        //CalculateCurve();
     }
 }
