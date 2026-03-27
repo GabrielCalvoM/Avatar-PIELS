@@ -2397,6 +2397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 443752545}
   - component: {fileID: 443752544}
+  - component: {fileID: 443752548}
   - component: {fileID: 443752546}
   - component: {fileID: 443752547}
   m_Layer: 0
@@ -2421,9 +2422,6 @@ MonoBehaviour:
   avatarSpine: {fileID: 1203152735}
   mongoConfig: {fileID: 11400000, guid: 9bebfd709b76a8040acf4341897da2b2, type: 2}
   faceFocus: {fileID: 1435034144}
-  undoButton: {fileID: 0}
-  redoButton: {fileID: 0}
-  maxHistoryStates: 50
 --- !u!4 &443752545
 Transform:
   m_ObjectHideFlags: 0
@@ -2475,6 +2473,22 @@ MonoBehaviour:
   buttonY: {fileID: 0}
   buttonX: {fileID: 0}
   buttonZ: {fileID: 0}
+--- !u!114 &443752548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 443752543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5377284847c96454487d07fadfa06b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoseHistory
+  avatarSpine: {fileID: 1203152735}
+  maxHistoryStates: 50
+  undoButton: {fileID: 0}
+  redoButton: {fileID: 0}
 --- !u!1 &456765967
 GameObject:
   m_ObjectHideFlags: 0
