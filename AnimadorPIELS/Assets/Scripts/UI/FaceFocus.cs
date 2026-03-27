@@ -59,6 +59,38 @@ public class FaceFocus : MonoBehaviour
         }
     }
 
+    //////////////////////////////////////////////////////////// PUBLIC API - GET/SET FACIAL EXPRESSIONS
+
+    public FacialExpressionData GetFacialExpression()
+    {
+        return new FacialExpressionData
+        {
+            leftEyelid = leftEyelidSlider.value,
+            rightEyelid = rightEyelidSlider.value,
+            raiseEyebrow = raiseEyebrowSlider.value,
+            angleEyebrow = angleEyebrowSlider.value,
+            mouthH = mouthHSlider.value,
+            mouthV = mouthVSlider.value
+        };
+    }
+
+    public void SetFacialExpression(FacialExpressionData data)
+    {
+        if (data == null)
+        {
+            Debug.LogWarning("FacialExpressionData is null. Using default values.");
+            return;
+        }
+
+        // Set slider values
+        leftEyelidSlider.value = data.leftEyelid;
+        rightEyelidSlider.value = data.rightEyelid;
+        raiseEyebrowSlider.value = data.raiseEyebrow;
+        angleEyebrowSlider.value = data.angleEyebrow;
+        mouthHSlider.value = data.mouthH;
+        mouthVSlider.value = data.mouthV;
+    }
+
     //////////////////////////////////////////////////////////// SIGNALS - SLIDERS
     
     private void OnLeftEyelidChanged(float value)

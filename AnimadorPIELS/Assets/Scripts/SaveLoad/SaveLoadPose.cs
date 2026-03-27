@@ -16,9 +16,21 @@ public class BoneData
 }
 
 [System.Serializable]
+public class FacialExpressionData
+{
+    public float leftEyelid;
+    public float rightEyelid;
+    public float raiseEyebrow;
+    public float angleEyebrow;
+    public float mouthH;
+    public float mouthV;
+}
+
+[System.Serializable]
 public class PoseData
 {
     public List<BoneData> bones = new List<BoneData>();
+    public FacialExpressionData facialExpression = new FacialExpressionData();
 }
 
 public class SaveLoadPose : MonoBehaviour
@@ -27,6 +39,8 @@ public class SaveLoadPose : MonoBehaviour
 
     [SerializeField] Transform avatarSpine;
     [SerializeField] MongoDBConfig mongoConfig;
+    [SerializeField] FaceFocus faceFocus;
+
     [Header("Undo/Redo")]
     [SerializeField] private Button undoButton;
     [SerializeField] private Button redoButton;
@@ -84,6 +98,15 @@ public class SaveLoadPose : MonoBehaviour
             pose.bones.Add(bone);
         }
 
+        if (faceFocus != null)
+        {
+            pose.facialExpression = faceFocus.GetFacialExpression();
+        }
+        else
+        {
+            pose.facialExpression = new FacialExpressionData(); // Default
+        }
+
         return pose;
     }
 
@@ -104,6 +127,11 @@ public class SaveLoadPose : MonoBehaviour
                 t.localRotation = bone.localRotation;
                 t.localScale = bone.localScale;
             }
+        }
+
+        if (faceFocus != null && pose.facialExpression != null)
+        {
+            faceFocus.SetFacialExpression(pose.facialExpression);
         }
     }
 
@@ -127,6 +155,9 @@ public class SaveLoadPose : MonoBehaviour
                 localScale = bone.localScale
             });
         }
+
+        // Facial expressions are not part of undo/redo
+        clone.facialExpression = new FacialExpressionData();
 
         return clone;
     }
