@@ -61,10 +61,45 @@ public class PoseHistory : MonoBehaviour
             });
         }
 
-        // Facial expressions are not part of undo/redo
-        clone.facialExpression = new FacialExpressionData();
+        if (source.facialExpression != null)
+        {
+            clone.facialExpression = new FacialExpressionData
+            {
+                leftEyelid = source.facialExpression.leftEyelid,
+                rightEyelid = source.facialExpression.rightEyelid,
+                raiseEyebrow = source.facialExpression.raiseEyebrow,
+                angleEyebrow = source.facialExpression.angleEyebrow,
+                mouthH = source.facialExpression.mouthH,
+                mouthV = source.facialExpression.mouthV
+            };
+        }
+        else
+        {
+            clone.facialExpression = new FacialExpressionData();
+        }
 
         return clone;
+    }
+
+    private bool AreFacialExpressionsEquivalent(FacialExpressionData a, FacialExpressionData b)
+    {
+        if (a == null && b == null)
+        {
+            return true;
+        }
+
+        if (a == null || b == null)
+        {
+            return false;
+        }
+
+        const float facialEpsilon = 0.0001f;
+        return Mathf.Abs(a.leftEyelid - b.leftEyelid) <= facialEpsilon
+               && Mathf.Abs(a.rightEyelid - b.rightEyelid) <= facialEpsilon
+               && Mathf.Abs(a.raiseEyebrow - b.raiseEyebrow) <= facialEpsilon
+               && Mathf.Abs(a.angleEyebrow - b.angleEyebrow) <= facialEpsilon
+               && Mathf.Abs(a.mouthH - b.mouthH) <= facialEpsilon
+               && Mathf.Abs(a.mouthV - b.mouthV) <= facialEpsilon;
     }
 
     private bool ArePosesEquivalent(PoseData a, PoseData b)
@@ -108,7 +143,7 @@ public class PoseHistory : MonoBehaviour
             }
         }
 
-        return true;
+        return AreFacialExpressionsEquivalent(a.facialExpression, b.facialExpression);
     }
 
 
@@ -266,6 +301,11 @@ public class PoseHistory : MonoBehaviour
             return;
         }
 
+        if (isPoseEditInProgress)
+        {
+            EndPoseEdit();
+        }
+
         PoseData currentPose;
         if (!TryCaptureCurrentPose(out currentPose))
         {
@@ -280,7 +320,7 @@ public class PoseHistory : MonoBehaviour
         }
 
         PushHistoryState(redoHistory, currentPose);
-        saveLoadPose.ApplyPose(avatarSpine, previousPose, false); // don't apply facial expressions
+        saveLoadPose.ApplyPose(avatarSpine, previousPose);
         UpdateHistoryButtonsState();
     }
 
@@ -289,6 +329,11 @@ public class PoseHistory : MonoBehaviour
         if (saveLoadPose == null || avatarSpine == null)
         {
             return;
+        }
+
+        if (isPoseEditInProgress)
+        {
+            EndPoseEdit();
         }
 
         PoseData currentPose;
