@@ -42,27 +42,38 @@ public class FaceFocus : MonoBehaviour
 
     //////////////////////////////////////////////////////////// SIGNALS - CAMERA
 
+    private void SetFaceFocusState(bool focused)
+    {
+        isFocused = focused;
+
+        if (mainCamera != null)
+        {
+            mainCamera.SetActive(!isFocused);
+        }
+
+        if (faceCamera != null)
+        {
+            faceCamera.SetActive(isFocused);
+        }
+
+        if (focusButton != null)
+        {
+            focusButton.SetActive(!isFocused);
+        }
+
+        uiManager?.RefreshUI();
+    }
+
     public void OnButtonPressed()
     {
-        isFocused = !isFocused;
-
-        mainCamera.SetActive(!isFocused);
-        faceCamera.SetActive(isFocused);
-
-        focusButton.SetActive(!isFocused);
-        uiManager.RefreshUI();
+        SetFaceFocusState(!isFocused);
     }
 
     public void OnReturnPressed()
     {
         if (isFocused)
         {
-            isFocused = false;
-
-            mainCamera.SetActive(true);
-            faceCamera.SetActive(false);
-
-            uiManager.RefreshUI();
+            SetFaceFocusState(false);
         }
     }
 
