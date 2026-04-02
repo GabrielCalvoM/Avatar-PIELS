@@ -49,13 +49,10 @@ public class LoweArmMov : MonoBehaviour
         float cruz = correctedPrev.x * pos.y - correctedPrev.y * pos.x;
 
         Vector3 actualAxis = RotationManager.Instance.Axis;
-
-        float dot = Vector3.Dot(Forward, cameraRef.transform.forward);
-        float signo = dot < 0f ? 1f : -1f;
         float angle;
 
-        if (cruz > 0) angle = rawAngle * signo;
-        else if (cruz < 0) angle = -rawAngle * signo;
+        if (cruz > 0) angle = -rawAngle;
+        else if (cruz < 0) angle = rawAngle;
         else return;
 
         float prevRot = 0, actualRot = 0;
@@ -73,13 +70,9 @@ public class LoweArmMov : MonoBehaviour
             actualRot = rotY;
         }
 
-        if (prevRot < adjustedConstrains.MinValue || prevRot > adjustedConstrains.MaxValue)
-        {
-            Debug.Log("A");
-        }
+        if (prevRot < adjustedConstrains.MinValue || prevRot > adjustedConstrains.MaxValue) { }
         else if (actualRot < adjustedConstrains.MinValue || actualRot > adjustedConstrains.MaxValue)
         {
-            Debug.Log("B");
             if (actualRot < adjustedConstrains.MinValue) transform.Rotate(actualAxis, adjustedConstrains.MinValue - prevRot);
             if (actualRot > adjustedConstrains.MaxValue) transform.Rotate(actualAxis, adjustedConstrains.MaxValue - prevRot);
         }

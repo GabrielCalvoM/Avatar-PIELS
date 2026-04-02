@@ -52,7 +52,7 @@ public class RotationManager : MonoBehaviour
 
     void Start()
     {
-        if (!_instance) _instance = this;
+        _instance = this;
     }
 
     public void SetConstraints(RotationConstraints constraints)

@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 257641947}
   - component: {fileID: 257641946}
   m_Layer: 5
-  m_Name: Eje X
+  m_Name: Eje x
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -964,7 +964,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.546, g: 0.546, b: 0.546, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -2481,10 +2481,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3448c79c9b82d054988a2484e04c3469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RotationManager
-  axisUI: {fileID: 0}
-  buttonY: {fileID: 0}
-  buttonX: {fileID: 0}
-  buttonZ: {fileID: 0}
+  axisUI: {fileID: 1859429058}
+  buttonX: {fileID: 257641944}
+  buttonY: {fileID: 1323771141}
+  buttonZ: {fileID: 1517744945}
 --- !u!114 &443752548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2537,12 +2537,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &460493595 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6959279457384642169, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+  m_PrefabInstance: {fileID: 6112910596314531330}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &460493597 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7877195914091720246, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   m_PrefabInstance: {fileID: 6112910596314531330}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 460493595}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58df741e81cb87149a1637b471c76d38, type: 3}
@@ -2560,15 +2565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c8515de5d76a24581757e73e1e24f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rotator
-  onPointerDown:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  onPointerUp:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  trigger: {fileID: 0}
+  constraints: {fileID: 0}
 --- !u!1 &461111571
 GameObject:
   m_ObjectHideFlags: 0
@@ -5637,7 +5634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d407b59459c4ae94982de4bb6d9a27e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoweArmMov
-  constraints: {fileID: 0}
+  constraints: {fileID: 11400000, guid: 45a7e1187f667ac43985fa0fe8c47658, type: 2}
   mirror: 1
 --- !u!114 &1069018696
 MonoBehaviour:
@@ -5652,7 +5649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoweArmMov
   constraints: {fileID: 11400000, guid: 45a7e1187f667ac43985fa0fe8c47658, type: 2}
-  mirror: 0
+  mirror: 1
 --- !u!1 &1080024932
 GameObject:
   m_ObjectHideFlags: 0
@@ -6387,7 +6384,7 @@ GameObject:
   - component: {fileID: 1323771144}
   - component: {fileID: 1323771143}
   m_Layer: 5
-  m_Name: Eje Y
+  m_Name: Eje y
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6438,7 +6435,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -6796,6 +6793,7 @@ MonoBehaviour:
   angleEyebrowSlider: {fileID: 528314573}
   mouthHSlider: {fileID: 1934311914}
   mouthVSlider: {fileID: 200721613}
+  saveLoadPose: {fileID: 0}
 --- !u!1 &1440762698
 GameObject:
   m_ObjectHideFlags: 0
@@ -7096,7 +7094,7 @@ GameObject:
   - component: {fileID: 1517744948}
   - component: {fileID: 1517744947}
   m_Layer: 5
-  m_Name: Eje Z
+  m_Name: Eje z
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7147,7 +7145,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -9848,6 +9846,10 @@ PrefabInstance:
       propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5049731220108291041, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: constraints
+      value: 
+      objectReference: {fileID: 11400000, guid: 45a7e1187f667ac43985fa0fe8c47658, type: 2}
     - target: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_Name
       value: ElbowRUI
@@ -12132,10 +12134,6 @@ PrefabInstance:
       propertyPath: center
       value: 
       objectReference: {fileID: 1069018694}
-    - target: {fileID: 7877195914091720246, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
-      propertyPath: constraints
-      value: 
-      objectReference: {fileID: 11400000, guid: 45a7e1187f667ac43985fa0fe8c47658, type: 2}
     - target: {fileID: 8063292118821195002, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
@@ -12143,7 +12141,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6959279457384642169, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 460493599}
   m_SourcePrefab: {fileID: 100100000, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
