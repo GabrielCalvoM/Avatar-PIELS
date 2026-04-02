@@ -25,7 +25,7 @@ public class RotationConstraints : ScriptableObject
     [BoxGroup()]
     public AxisConstraints z;
 
-    public AxisConstraints AdjustConstraints(AxisConstraints constraints, float rotation, bool mirror)
+    public AxisConstraints AdjustConstraints(AxisConstraints constraints, bool mirror)
     {
         var newConstraints = constraints;
 
@@ -35,9 +35,6 @@ public class RotationConstraints : ScriptableObject
             newConstraints.constraints[0] = vec[1];
             newConstraints.constraints[1] = vec[0];
         }
-
-        newConstraints.constraints[0] += rotation;
-        newConstraints.constraints[1] += rotation;
 
         return newConstraints;
     }

@@ -2,6 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class LoweArmMov : MonoBehaviour
 {
@@ -11,42 +12,24 @@ public class LoweArmMov : MonoBehaviour
     Camera cameraRef;
     RotationConstraints.AxisConstraints adjustedConstrains;
 
-    Vector3 right
-    {
-        get
-        {
-            if (RotationManager.Instance.Axis == RotationManager.x) return transform.forward * -1;
-            return transform.right;
-        }
-    }
-    Vector3 up
-    {
-        get
-        {
-            if (RotationManager.Instance.Axis == RotationManager.y) return transform.forward * -1;
-            return transform.up;
-        }
-    }
-    Vector3 forward
-    {
-        get
-        {
-            if (RotationManager.Instance.Axis == RotationManager.x) return transform.right;
-            if (RotationManager.Instance.Axis == RotationManager.y) return transform.up;
-            return transform.forward;
-        }
-    }
+    Vector3 Right { get { return RotationManager.Instance.Right(transform); } }
+    Vector3 Up { get { return RotationManager.Instance.Up(transform); } }
+    Vector3 Forward { get { return RotationManager.Instance.Forward(transform); } }
 
     bool presionado = false;
-    float rotation;
+    float rotX, rotY;
     Vector2 prevPos;
     Vector2 center;
     SaveLoadPose saveLoadPose;
+
 
     void Start()
     {
         cameraRef = Camera.main;
         saveLoadPose = FindFirstObjectByType<SaveLoadPose>();
+
+        rotX = 0;
+        rotY = 0;
     }
 
     private void Update()
@@ -56,47 +39,54 @@ public class LoweArmMov : MonoBehaviour
 
     public void OnMove()
     {
-        //float pitchRad = cameraRef.transform.eulerAngles.x * Mathf.Deg2Rad;
-        //float ellipseFactor = Mathf.Abs(Mathf.Cos(pitchRad));
-        //ellipseFactor = Mathf.Max(ellipseFactor, 0.1f);
-
         Vector2 rawPos = Mouse.current.position.value - center;
-        //Vector2 pos = new Vector2(rawPos.x, rawPos.y / ellipseFactor);
-        //Vector2 pos = MousePos(rawPos);
-        Vector2 pos = Mouse.current.position.value - center;
-        //Vector2 rawPrev = prevPos;
-        //Vector2 correctedPrev = new Vector2(rawPrev.x, rawPrev.y / ellipseFactor);
-        //Vector2 correctedPrev = MousePos(prevPos);
-        Vector2 correctedPrev = prevPos;
+        Vector2 pos = MousePos(rawPos);
+        Vector2 correctedPrev = MousePos(prevPos);
 
         float angleCos = Vector2.Dot(correctedPrev, pos) / (correctedPrev.magnitude * pos.magnitude);
         angleCos = Mathf.Clamp(angleCos, -1f, 1f);
-        float angle = Mathf.Acos(angleCos) * Mathf.Rad2Deg;
+        float rawAngle = Mathf.Acos(angleCos) * Mathf.Rad2Deg;
         float cruz = correctedPrev.x * pos.y - correctedPrev.y * pos.x;
 
         Vector3 actualAxis = RotationManager.Instance.Axis;
 
-        float dot = Vector3.Dot(forward, cameraRef.transform.forward);
+        float dot = Vector3.Dot(Forward, cameraRef.transform.forward);
         float signo = dot < 0f ? 1f : -1f;
+        float angle;
 
-        if (cruz > 0) rotation += angle * signo;
-        else if (cruz < 0) rotation -= angle * signo;
+        if (cruz > 0) angle = rawAngle * signo;
+        else if (cruz < 0) angle = -rawAngle * signo;
         else return;
 
-        Vector3 vec = actualAxis == RotationManager.x ?
-            new(rotation, transform.localEulerAngles.y, transform.localEulerAngles.z) :
-            actualAxis == RotationManager.y ?
-            new(transform.localEulerAngles.x, rotation, transform.localEulerAngles.z) :
-            new(transform.localEulerAngles.x, transform.localEulerAngles.y, rotation);
+        float prevRot = 0, actualRot = 0;
 
-        Debug.Log($"Ángulo: {angle},     Cruz: {cruz}" +
-            $"Prev: {correctedPrev},   Actual: {pos}");
+        if (RotationManager.Instance.InX)
+        {
+            prevRot = rotX;
+            rotX += angle;
+            actualRot = rotX;
+        }
+        else if (RotationManager.Instance.InY)
+        {
+            prevRot = rotY;
+            rotY += angle;
+            actualRot = rotY;
+        }
 
-        if (vec == Vector3.zero) return;
-        if (float.IsNaN(vec.x) || float.IsNaN(vec.y) || float.IsNaN(vec.z)) return;
-        if (vec.sqrMagnitude <= 0.001f) return;
-
-        transform.localEulerAngles = vec;
+        if (prevRot < adjustedConstrains.MinValue || prevRot > adjustedConstrains.MaxValue)
+        {
+            Debug.Log("A");
+        }
+        else if (actualRot < adjustedConstrains.MinValue || actualRot > adjustedConstrains.MaxValue)
+        {
+            Debug.Log("B");
+            if (actualRot < adjustedConstrains.MinValue) transform.Rotate(actualAxis, adjustedConstrains.MinValue - prevRot);
+            if (actualRot > adjustedConstrains.MaxValue) transform.Rotate(actualAxis, adjustedConstrains.MaxValue - prevRot);
+        }
+        else
+        {
+            transform.Rotate(actualAxis, angle);
+        }
 
         prevPos = rawPos;
     }
@@ -112,9 +102,8 @@ public class LoweArmMov : MonoBehaviour
         saveLoadPose?.BeginPoseEdit();
         center = cameraRef.WorldToScreenPoint(transform.position);
         prevPos = Mouse.current.position.value - center;
-        rotation = actualAxis == RotationManager.x ?
-            transform.localEulerAngles.x : actualAxis == RotationManager.y ?
-            transform.localEulerAngles.y : transform.localEulerAngles.z;
+
+        AdjustConstraints();
     }
 
     public void OnPointerUp(BaseEventData data)
@@ -126,19 +115,18 @@ public class LoweArmMov : MonoBehaviour
         presionado = false;
         prevPos = new(0, 0);
         center = new(0, 0);
-        rotation = 0;
         saveLoadPose?.EndPoseEdit();
     }
 
     Vector2 MousePos(Vector2 rawPos)
     {
         Vector2 uS = new(
-            Vector3.Dot(right, cameraRef.transform.right),
-           -Vector3.Dot(right, cameraRef.transform.up)
+            Vector3.Dot(Right, cameraRef.transform.right),
+           -Vector3.Dot(Right, cameraRef.transform.up)
         );
-        Vector2 vS = new Vector2(
-            Vector3.Dot(up, cameraRef.transform.right),
-           -Vector3.Dot(up, cameraRef.transform.up)
+        Vector2 vS = new(
+            Vector3.Dot(Up, cameraRef.transform.right),
+           -Vector3.Dot(Up, cameraRef.transform.up)
         );
 
         float det = uS.x * vS.y - vS.x * uS.y;
@@ -148,5 +136,21 @@ public class LoweArmMov : MonoBehaviour
             (vS.y * rawPos.x - vS.x * rawPos.y) / det,
             (-uS.y * rawPos.x + uS.x * rawPos.y) / det
         );
+    }
+
+    void AdjustConstraints()
+    {
+        adjustedConstrains = constraints.AdjustConstraints(RotationManager.Instance.InX ? constraints.x : constraints.y, mirror);
+
+        if (RotationManager.Instance.InX)
+        {
+            if (rotX < adjustedConstrains.MinValue) rotX = adjustedConstrains.MinValue;
+            if (rotX > adjustedConstrains.MaxValue) rotX = adjustedConstrains.MaxValue;
+        }
+        else if (RotationManager.Instance.InY)
+        {
+            if (rotY < adjustedConstrains.MinValue) rotY = adjustedConstrains.MinValue;
+            if (rotY > adjustedConstrains.MaxValue) rotY = adjustedConstrains.MaxValue;
+        }
     }
 }

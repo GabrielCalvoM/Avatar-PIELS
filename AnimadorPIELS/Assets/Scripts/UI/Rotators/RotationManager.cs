@@ -41,6 +41,10 @@ public class RotationManager : MonoBehaviour
         }
     }
 
+    public bool InX { get { return Axis == x; } }
+    public bool InY { get { return Axis == y; } }
+    public bool InZ { get { return Axis == z; } }
+
     private void Awake()
     {
         onAxisChanged = new UnityEvent();
@@ -76,5 +80,22 @@ public class RotationManager : MonoBehaviour
     {
         _rotationVec = vec;
         onAxisChanged.Invoke();
+    }
+
+    public Vector3 Right(Transform tr)
+    {
+            if (InX) return tr.forward * -1;
+            return tr.right;
+    }
+    public Vector3 Up(Transform tr)
+    {
+            if (InY) return tr.forward * -1;
+            return tr.up;
+    }
+    public Vector3 Forward(Transform tr)
+    {
+            if (InX) return tr.right;
+            if (InY) return tr.up;
+            return tr.forward;
     }
 }
