@@ -16,9 +16,21 @@ public class BoneData
 }
 
 [System.Serializable]
+public class FacialExpressionData
+{
+    public float leftEyelid;
+    public float rightEyelid;
+    public float raiseEyebrow;
+    public float angleEyebrow;
+    public float mouthH;
+    public float mouthV;
+}
+
+[System.Serializable]
 public class PoseData
 {
     public List<BoneData> bones = new List<BoneData>();
+    public FacialExpressionData facialExpression = new FacialExpressionData();
 }
 
 public class SaveLoadPose : MonoBehaviour
@@ -27,25 +39,15 @@ public class SaveLoadPose : MonoBehaviour
 
     [SerializeField] Transform avatarSpine;
     [SerializeField] MongoDBConfig mongoConfig;
-    [Header("Undo/Redo")]
-    [SerializeField] private Button undoButton;
-    [SerializeField] private Button redoButton;
-    [SerializeField] private int maxHistoryStates = 50;
+    [SerializeField] FaceFocus faceFocus;
 
     private MongoDBService mongoService;
-    private readonly List<PoseData> undoHistory = new List<PoseData>();
-    private readonly List<PoseData> redoHistory = new List<PoseData>();
-    private PoseData pendingEditStartPose;
-    private bool isPoseEditInProgress;
-
-    public bool CanUndo => undoHistory.Count > 0;
-    public bool CanRedo => redoHistory.Count > 0;
+    private PoseHistory poseHistory;
 
     async void Start()
     {
         loadUI = GetComponent<SaveLoadUI>();
-        ConfigureHistoryButtons();
-        UpdateHistoryButtonsState();
+        poseHistory = GetComponent<PoseHistory>();
 
         // Initialize MongoDB
         if (mongoConfig == null)
@@ -67,7 +69,9 @@ public class SaveLoadPose : MonoBehaviour
         }
     }
 
-    private PoseData CapturePose(Transform root)
+    //////////////////////////////////////////////////////////// PUBLIC API - POSE CAPTURE/APPLY
+
+    public PoseData CapturePose(Transform root)
     {
         PoseData pose = new PoseData();
 
@@ -84,10 +88,19 @@ public class SaveLoadPose : MonoBehaviour
             pose.bones.Add(bone);
         }
 
+        if (faceFocus != null)
+        {
+            pose.facialExpression = faceFocus.GetFacialExpression();
+        }
+        else
+        {
+            pose.facialExpression = new FacialExpressionData(); // Default
+        }
+
         return pose;
     }
 
-    private void ApplyPose(Transform root, PoseData pose)
+    public void ApplyPose(Transform root, PoseData pose, bool applyFacialExpression = true)
     {
         Dictionary<string, Transform> boneMap = new Dictionary<string, Transform>();
 
@@ -105,273 +118,32 @@ public class SaveLoadPose : MonoBehaviour
                 t.localScale = bone.localScale;
             }
         }
-    }
 
-    private PoseData ClonePose(PoseData source)
-    {
-        if (source == null)
+        if (applyFacialExpression && faceFocus != null && pose.facialExpression != null)
         {
-            return null;
-        }
-
-        PoseData clone = new PoseData();
-        clone.bones.Capacity = source.bones.Count;
-
-        foreach (BoneData bone in source.bones)
-        {
-            clone.bones.Add(new BoneData
-            {
-                name = bone.name,
-                localPosition = bone.localPosition,
-                localRotation = bone.localRotation,
-                localScale = bone.localScale
-            });
-        }
-
-        return clone;
-    }
-
-    private bool ArePosesEquivalent(PoseData a, PoseData b)
-    {
-        if (a == null || b == null)
-        {
-            return false;
-        }
-
-        if (a.bones.Count != b.bones.Count)
-        {
-            return false;
-        }
-
-        const float positionEpsilon = 0.0001f;
-        const float rotationEpsilon = 0.01f;
-
-        for (int i = 0; i < a.bones.Count; i++)
-        {
-            BoneData boneA = a.bones[i];
-            BoneData boneB = b.bones[i];
-
-            if (boneA.name != boneB.name)
-            {
-                return false;
-            }
-
-            if ((boneA.localPosition - boneB.localPosition).sqrMagnitude > positionEpsilon * positionEpsilon)
-            {
-                return false;
-            }
-
-            if ((boneA.localScale - boneB.localScale).sqrMagnitude > positionEpsilon * positionEpsilon)
-            {
-                return false;
-            }
-
-            if (Quaternion.Angle(boneA.localRotation, boneB.localRotation) > rotationEpsilon)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void PushHistoryState(List<PoseData> history, PoseData pose)
-    {
-        if (pose == null)
-        {
-            return;
-        }
-
-        history.Add(ClonePose(pose));
-        while (history.Count > maxHistoryStates)
-        {
-            history.RemoveAt(0);
+            faceFocus.SetFacialExpression(pose.facialExpression);
         }
     }
 
-    private PoseData PopHistoryState(List<PoseData> history)
-    {
-        if (history.Count == 0)
-        {
-            return null;
-        }
-
-        int lastIndex = history.Count - 1;
-        PoseData state = history[lastIndex];
-        history.RemoveAt(lastIndex);
-        return state;
-    }
-
-    private bool TryCaptureCurrentPose(out PoseData pose)
-    {
-        pose = null;
-
-        if (avatarSpine == null)
-        {
-            Debug.LogWarning("Avatar spine is not assigned. Undo/Redo is disabled.");
-            return false;
-        }
-
-        pose = CapturePose(avatarSpine);
-        return true;
-    }
-
-    private void ConfigureHistoryButtons()
-    {
-        if (undoButton == null)
-        {
-            GameObject undoObject = GameObject.Find("Deshacer");
-            if (undoObject != null)
-            {
-                undoButton = undoObject.GetComponent<Button>();
-            }
-        }
-
-        if (redoButton == null)
-        {
-            GameObject redoObject = GameObject.Find("Rehacer");
-            if (redoObject != null)
-            {
-                redoButton = redoObject.GetComponent<Button>();
-            }
-        }
-
-        if (undoButton != null)
-        {
-            undoButton.onClick.RemoveListener(UndoPose);
-            undoButton.onClick.AddListener(UndoPose);
-        }
-
-        if (redoButton != null)
-        {
-            redoButton.onClick.RemoveListener(RedoPose);
-            redoButton.onClick.AddListener(RedoPose);
-        }
-    }
-
-    private void UpdateHistoryButtonsState()
-    {
-        if (undoButton != null)
-        {
-            undoButton.interactable = CanUndo;
-        }
-
-        if (redoButton != null)
-        {
-            redoButton.interactable = CanRedo;
-        }
-    }
+    //////////////////////////////////////////////////////////// PUBLIC API - UNDO/REDO DELEGATION
 
     public void BeginPoseEdit()
     {
-        PoseData currentPose;
-        if (!TryCaptureCurrentPose(out currentPose))
+        if (poseHistory != null)
         {
-            return;
+            poseHistory.BeginPoseEdit();
         }
-
-        pendingEditStartPose = currentPose;
-        isPoseEditInProgress = true;
     }
 
     public void EndPoseEdit()
     {
-        if (!isPoseEditInProgress || pendingEditStartPose == null)
+        if (poseHistory != null)
         {
-            return;
+            poseHistory.EndPoseEdit();
         }
-
-        isPoseEditInProgress = false;
-
-        PoseData currentPose;
-        if (!TryCaptureCurrentPose(out currentPose))
-        {
-            pendingEditStartPose = null;
-            return;
-        }
-
-        if (!ArePosesEquivalent(pendingEditStartPose, currentPose))
-        {
-            PushHistoryState(undoHistory, pendingEditStartPose);
-            redoHistory.Clear();
-        }
-
-        pendingEditStartPose = null;
-        UpdateHistoryButtonsState();
     }
 
-    private void RecordStateBeforePoseApply()
-    {
-        PoseData currentPose;
-        if (!TryCaptureCurrentPose(out currentPose))
-        {
-            return;
-        }
-
-        PushHistoryState(undoHistory, currentPose);
-        redoHistory.Clear();
-        UpdateHistoryButtonsState();
-    }
-
-    public void UndoPose()
-    {
-        PoseData currentPose;
-        if (!TryCaptureCurrentPose(out currentPose))
-        {
-            return;
-        }
-
-        PoseData previousPose = PopHistoryState(undoHistory);
-        if (previousPose == null)
-        {
-            UpdateHistoryButtonsState();
-            return;
-        }
-
-        PushHistoryState(redoHistory, currentPose);
-        ApplyPose(avatarSpine, previousPose);
-        UpdateHistoryButtonsState();
-    }
-
-    public void RedoPose()
-    {
-        PoseData currentPose;
-        if (!TryCaptureCurrentPose(out currentPose))
-        {
-            return;
-        }
-
-        PoseData nextPose = PopHistoryState(redoHistory);
-        if (nextPose == null)
-        {
-            UpdateHistoryButtonsState();
-            return;
-        }
-
-        PushHistoryState(undoHistory, currentPose);
-        ApplyPose(avatarSpine, nextPose);
-        UpdateHistoryButtonsState();
-    }
-
-    public void UndoPoseButton()
-    {
-        UndoPose();
-    }
-
-    public void RedoPoseButton()
-    {
-        RedoPose();
-    }
-
-    public void DeshacerButton()
-    {
-        UndoPose();
-    }
-
-    public void RehacerButton()
-    {
-        RedoPose();
-    }
+    //////////////////////////////////////////////////////////// FILE I/O HELPERS
 
     public void SavePoseToFile(PoseData pose, string path)
     {
@@ -454,9 +226,11 @@ public class SaveLoadPose : MonoBehaviour
 
         if (pose != null)
         {
-            RecordStateBeforePoseApply();
+            if (poseHistory != null)
+            {
+                poseHistory.RecordStateBeforePoseApply();
+            }
             ApplyPose(avatarSpine, pose);
-            UpdateHistoryButtonsState();
             Debug.Log($"Pose '{loadUI.selected_pose}' loaded from MongoDB");
         }
         else
@@ -480,9 +254,11 @@ public class SaveLoadPose : MonoBehaviour
 
         if (pose != null)
         {
-            RecordStateBeforePoseApply();
+            if (poseHistory != null)
+            {
+                poseHistory.RecordStateBeforePoseApply();
+            }
             ApplyPose(avatarSpine, pose);
-            UpdateHistoryButtonsState();
             Debug.Log("T-pose loaded from MongoDB");
         }
         else

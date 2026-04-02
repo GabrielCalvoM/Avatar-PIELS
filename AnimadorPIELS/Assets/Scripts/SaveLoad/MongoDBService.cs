@@ -21,6 +21,7 @@ public class PoseDocument
     public DateTime createdAt;
     public DateTime updatedAt;
     public List<BoneData> bones = new List<BoneData>();
+    public FacialExpressionData facialExpression = new FacialExpressionData();
 }
 
 /// <summary>
@@ -104,6 +105,7 @@ public class MongoDBService
             {
                 // Update existing pose
                 existingPose.bones = poseData.bones;
+                existingPose.facialExpression = poseData.facialExpression;
                 existingPose.updatedAt = DateTime.UtcNow;
 
                 await collection.ReplaceOneAsync(filter, existingPose);
@@ -118,7 +120,8 @@ public class MongoDBService
                     createdBy = isSystemPose ? "system" : "user",
                     createdAt = DateTime.UtcNow,
                     updatedAt = DateTime.UtcNow,
-                    bones = poseData.bones
+                    bones = poseData.bones,
+                    facialExpression = poseData.facialExpression
                 };
 
                 await collection.InsertOneAsync(document);
@@ -159,7 +162,8 @@ public class MongoDBService
 
             var poseData = new PoseData
             {
-                bones = document.bones
+                bones = document.bones,
+                facialExpression = document.facialExpression ?? new FacialExpressionData()
             };
 
             Debug.Log($"MongoDB: Loaded pose '{poseName}'");
