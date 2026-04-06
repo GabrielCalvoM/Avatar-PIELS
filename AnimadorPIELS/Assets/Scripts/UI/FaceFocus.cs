@@ -71,6 +71,7 @@ public class FaceFocus : MonoBehaviour
 
     public void OnReturnPressed()
     {
+        Debug.Log("ME CAGO EN FIGUERES");
         if (isFocused)
         {
             SetFaceFocusState(false);
@@ -261,6 +262,11 @@ public class FaceFocus : MonoBehaviour
         {
             saveLoadPose = FindFirstObjectByType<SaveLoadPose>();
         }
+
+        // Hide in Game
+        ColorBlock colors = focusButton.GetComponent<Button>().colors;
+        colors.normalColor = new Color(0,0,0,0);
+        focusButton.GetComponent<Button>().colors = colors;
 
         // Get Idx
         leftEyelidIndex  = avatarFace.sharedMesh.GetBlendShapeIndex("blink_left.001");
