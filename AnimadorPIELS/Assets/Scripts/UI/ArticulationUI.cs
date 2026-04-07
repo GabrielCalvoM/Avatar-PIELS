@@ -37,7 +37,6 @@ public class ArticulationUI : MonoBehaviour
 
         if (isOn)
         {
-            RotationManager.Instance.SetConstraints(articulation.Constraints);
             transform.localEulerAngles = originalRotation;
         }
 

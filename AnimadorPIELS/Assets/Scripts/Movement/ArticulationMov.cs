@@ -1,8 +1,6 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using static UnityEditor.PlayerSettings;
 
 public abstract class ArticulationMov : MonoBehaviour
 {
@@ -35,33 +33,6 @@ public abstract class ArticulationMov : MonoBehaviour
     }
 
     protected abstract void OnMove();
-
-    public void OnPointerDown(BaseEventData data)
-    {
-        PointerEventData pointerData = (PointerEventData)data;
-
-        if (pointerData.button != PointerEventData.InputButton.Left) return;
-
-        Vector3 actualAxis = RotationManager.Instance.Axis;
-        presionado = true;
-        saveLoadPose?.BeginPoseEdit();
-        center = cameraRef.WorldToScreenPoint(transform.position);
-        prevPos = Mouse.current.position.value - center;
-
-        AdjustConstraints();
-    }
-
-    public void OnPointerUp(BaseEventData data)
-    {
-        PointerEventData pointerData = (PointerEventData)data;
-
-        if (pointerData.button != PointerEventData.InputButton.Left) return;
-
-        presionado = false;
-        prevPos = new(0, 0);
-        center = new(0, 0);
-        saveLoadPose?.EndPoseEdit();
-    }
 
     public void OnPointerDown()
     {

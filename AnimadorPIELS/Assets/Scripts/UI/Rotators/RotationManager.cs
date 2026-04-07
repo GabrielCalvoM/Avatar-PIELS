@@ -5,12 +5,6 @@ using UnityEngine.UI;
 
 public class RotationManager : MonoBehaviour
 {
-    [SerializeField] GameObject axisUI;
-
-    [SerializeField] GameObject buttonX;
-    [SerializeField] GameObject buttonY;
-    [SerializeField] GameObject buttonZ;
-
     UnityEvent onAxisChanged;
 
     static RotationManager _instance;
@@ -51,16 +45,12 @@ public class RotationManager : MonoBehaviour
         _instance = this;
     }
 
-    public void SetConstraints(RotationConstraints constraints)
-    {
-        buttonX.GetComponent<Button>().enabled = constraints.x.active;
-        buttonY.GetComponent<Button>().enabled = constraints.y.active;
-        buttonZ.GetComponent<Button>().enabled = constraints.z.active;
-
-        if (constraints.x.active) ChangeRotationAxisToX();
-        else if (constraints.y.active) ChangeRotationAxisToY();
-        else ChangeRotationAxisToZ();
-    }
+    //public void SetConstraints(RotationConstraints constraints)
+    //{
+    //    if (constraints.x.active) ChangeRotationAxisToX();
+    //    else if (constraints.y.active) ChangeRotationAxisToY();
+    //    else ChangeRotationAxisToZ();
+    //}
 
     public void SyncRotatorAxis(Action function)
     {

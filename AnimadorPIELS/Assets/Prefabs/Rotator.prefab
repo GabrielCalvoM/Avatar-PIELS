@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7655219337886703416}
   - component: {fileID: 7903621166850979684}
   - component: {fileID: 8445034907578372800}
+  - component: {fileID: 4873491323451557308}
   m_Layer: 5
   m_Name: Torus
   m_TagString: Untagged
@@ -22445,7 +22446,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: -876546973899608171, guid: 4e5141cf28a6cd04dad9651732e7f83a, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -22477,6 +22478,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5571059268139579106}
   m_Mesh: {fileID: 0}
+--- !u!114 &4873491323451557308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5571059268139579106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd94d95ab4bb4364ab708058b52a7744, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotatorPainter
+  colors: {fileID: 0}
+  rotator: {fileID: 762074838884963334}
 --- !u!1 &8917170644315884992
 GameObject:
   m_ObjectHideFlags: 0

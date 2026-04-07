@@ -17,7 +17,9 @@ public class Rotator : MonoBehaviour
     [SerializeField] UnityEvent pointerUp;
 
     Action changeAxis;
-    bool pressed = false, highlighted = false;
+    bool _pressed = false, _highlighted = false;
+    public bool Pressed { get { return _pressed; } }
+    public bool Highlighted { get { return _highlighted; } }
 
     private void Start()
     {
@@ -31,11 +33,11 @@ public class Rotator : MonoBehaviour
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        highlighted = Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform;
+        _highlighted = Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform;
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (highlighted)
+            if (Highlighted)
             {
                 OnPointerDown();
             }
@@ -49,14 +51,14 @@ public class Rotator : MonoBehaviour
 
     private void OnPointerDown()
     {
-        pressed = true;
+        _pressed = true;
         changeAxis();
         pointerDown.Invoke();
     }
 
     private void OnPointerUp()
     {
-        pressed = false;
+        _pressed = false;
         pointerUp.Invoke();
     }
 
