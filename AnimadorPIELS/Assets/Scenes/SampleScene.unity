@@ -4233,7 +4233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6636966581755094575, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7104860163508003517, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_IsActive
@@ -4293,11 +4293,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7113484721849630787, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[22]'
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7113484721849630787, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[23]'
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7113484721849630787, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[24]'
@@ -6151,7 +6151,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1694388104871626409, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1694388104871626459, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
       propertyPath: m_IsActive
@@ -7819,6 +7819,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d7e5f2cfff3d87478d7842a0c81355a, type: 3}
+--- !u!137 &1367166028 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7113484721849630787, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+  m_PrefabInstance: {fileID: 707515177}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1435034138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9618,7 +9623,7 @@ MonoBehaviour:
   focusButton: {fileID: 1654796425}
   mainCamera: {fileID: 330585543}
   faceCamera: {fileID: 509792455}
-  avatarFace: {fileID: 144925910}
+  avatarFace: {fileID: 1367166028}
   leftEyelidSlider: {fileID: 496642349}
   rightEyelidSlider: {fileID: 619092707}
   raiseEyebrowSlider: {fileID: 939166586}
