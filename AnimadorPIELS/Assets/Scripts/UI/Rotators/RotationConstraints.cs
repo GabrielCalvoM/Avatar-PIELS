@@ -16,26 +16,12 @@ public class RotationConstraints : ScriptableObject
         public float MaxValue { get { return constraints[1]; } }
     }
 
-    [BoxGroup()]
+    [BoxGroup("")]
     public AxisConstraints x;
 
-    [BoxGroup()]
+    [BoxGroup("")]
     public AxisConstraints y;
 
-    [BoxGroup()]
+    [BoxGroup("")]
     public AxisConstraints z;
-
-    public AxisConstraints AdjustConstraints(AxisConstraints constraints, bool mirror)
-    {
-        var newConstraints = constraints;
-
-        if (mirror)
-        {
-            var vec = newConstraints.constraints * -1;
-            newConstraints.constraints[0] = vec[1];
-            newConstraints.constraints[1] = vec[0];
-        }
-
-        return newConstraints;
-    }
 }

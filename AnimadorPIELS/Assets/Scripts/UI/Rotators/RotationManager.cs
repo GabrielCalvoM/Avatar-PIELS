@@ -48,10 +48,6 @@ public class RotationManager : MonoBehaviour
     private void Awake()
     {
         onAxisChanged = new UnityEvent();
-    }
-
-    void Start()
-    {
         _instance = this;
     }
 

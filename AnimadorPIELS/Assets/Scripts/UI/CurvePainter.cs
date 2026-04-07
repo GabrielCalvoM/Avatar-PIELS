@@ -41,6 +41,18 @@ public class CurvePainter : MonoBehaviour
         line.endColor = Color.red;
     }
 
+    public void OnPointerDown()
+    {
+        line.startColor = Color.yellow;
+        line.endColor = Color.yellow;
+    }
+
+    public void OnPointerUp()
+    {
+        line.startColor = Color.red;
+        line.endColor = Color.red;
+    }
+
     public void CalculateCurve()
     {
         CalculatePointsCant();
