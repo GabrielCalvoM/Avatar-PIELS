@@ -200,58 +200,97 @@ public class FaceFocus : MonoBehaviour
         entry.callback.AddListener(action);
         trigger.triggers.Add(entry);
     }
+
+    private void SetBlendShapeWeightSafe(int blendShapeIndex, float value)
+    {
+        if (avatarFace == null || blendShapeIndex < 0)
+        {
+            return;
+        }
+
+        avatarFace.SetBlendShapeWeight(blendShapeIndex, value);
+    }
+
+    private int GetBlendShapeIndexOrFallback(string primaryName, string fallbackName)
+    {
+        if (avatarFace == null || avatarFace.sharedMesh == null)
+        {
+            return -1;
+        }
+
+        int index = avatarFace.sharedMesh.GetBlendShapeIndex(primaryName);
+        if (index >= 0)
+        {
+            return index;
+        }
+
+        return avatarFace.sharedMesh.GetBlendShapeIndex(fallbackName);
+    }
+
+    private void ApplyBlinkWeight()
+    {
+        if (leftEyelidIndex == rightEyelidIndex)
+        {
+            float mergedBlink = Mathf.Max(leftEyelidSlider.value, rightEyelidSlider.value);
+            SetBlendShapeWeightSafe(leftEyelidIndex, mergedBlink);
+            return;
+        }
+
+        SetBlendShapeWeightSafe(leftEyelidIndex, leftEyelidSlider.value);
+        SetBlendShapeWeightSafe(rightEyelidIndex, rightEyelidSlider.value);
+    }
     
     private void OnLeftEyelidChanged(float value)
     {
         NotifyFacialEditChanged();
-        avatarFace.SetBlendShapeWeight(leftEyelidIndex, value);
+        ApplyBlinkWeight();
     }
 
     private void OnRightEyelidChanged(float value)
     {
         NotifyFacialEditChanged();
-        avatarFace.SetBlendShapeWeight(rightEyelidIndex, value);
+        ApplyBlinkWeight();
     }
 
     private void OnRaiseEyebrowChanged(float value)
     {
         NotifyFacialEditChanged();
-        avatarFace.SetBlendShapeWeight(raiseEyebrowIndex, value);
+        SetBlendShapeWeightSafe(raiseEyebrowIndex, value);
     }
 
     private void OnAngleEyebrowChanged(float value)
     {
         NotifyFacialEditChanged();
         if (Mathf.Approximately(value, 50.0f)) {
-            avatarFace.SetBlendShapeWeight(low_angleEyebrowIndex , 0.0f);
-            avatarFace.SetBlendShapeWeight(high_angleEyebrowIndex, 0.0f);
+            SetBlendShapeWeightSafe(low_angleEyebrowIndex, 0.0f);
+            SetBlendShapeWeightSafe(high_angleEyebrowIndex, 0.0f);
         }
 
         else if (value < 50.0f) {
             float w = Mathf.InverseLerp(50.0f, 0.0f, value) * 100.0f;
 
-            avatarFace.SetBlendShapeWeight(low_angleEyebrowIndex , w);
-            avatarFace.SetBlendShapeWeight(high_angleEyebrowIndex, 0.0f);
+            SetBlendShapeWeightSafe(low_angleEyebrowIndex, w);
+            SetBlendShapeWeightSafe(high_angleEyebrowIndex, 0.0f);
         }
 
         else if (value > 50.0f) {
             float w = Mathf.InverseLerp(50.0f, 100.0f, value) * 100.0f;
 
-            avatarFace.SetBlendShapeWeight(low_angleEyebrowIndex , 0.0f);
-            avatarFace.SetBlendShapeWeight(high_angleEyebrowIndex, w);
+            SetBlendShapeWeightSafe(low_angleEyebrowIndex, 0.0f);
+            SetBlendShapeWeightSafe(high_angleEyebrowIndex, w);
         }
     }
 
     private void OnMouthHChanged(float value)
     {
         NotifyFacialEditChanged();
-        avatarFace.SetBlendShapeWeight(mouthHIndex, value);
+        SetBlendShapeWeightSafe(mouthHIndex, value);
     }
 
     private void OnMouthVChanged(float value)
     {
         NotifyFacialEditChanged();
-        avatarFace.SetBlendShapeWeight(mouthVIndex, value);
+        SetBlendShapeWeightSafe(mouthVIndex, value);
     }
 
     //////////////////////////////////////////////////////////// GAME LOOP
@@ -263,21 +302,35 @@ public class FaceFocus : MonoBehaviour
             saveLoadPose = FindFirstObjectByType<SaveLoadPose>();
         }
 
+        if (avatarFace == null || avatarFace.sharedMesh == null)
+        {
+            Debug.LogError("FaceFocus requires a valid avatarFace with a sharedMesh.");
+            return;
+        }
+
         // Hide in Game
         ColorBlock colors = focusButton.GetComponent<Button>().colors;
         colors.normalColor = new Color(0,0,0,0);
         focusButton.GetComponent<Button>().colors = colors;
 
         // Get Idx
-        leftEyelidIndex  = avatarFace.sharedMesh.GetBlendShapeIndex("blink_left.001");
-        rightEyelidIndex = avatarFace.sharedMesh.GetBlendShapeIndex("blink_right.001");
+        leftEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "blink_left.001");
+        rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "blink_right.001");
         
-        raiseEyebrowIndex = avatarFace.sharedMesh.GetBlendShapeIndex("raise_eyebrows3");
-        low_angleEyebrowIndex = avatarFace.sharedMesh.GetBlendShapeIndex("angry");
-        high_angleEyebrowIndex = avatarFace.sharedMesh.GetBlendShapeIndex("sad");
+        raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "raise_eyebrows3");
+        low_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_furrow", "angry");
+        high_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Sad", "sad");
 
-        mouthHIndex = avatarFace.sharedMesh.GetBlendShapeIndex("open_mouth");
-        mouthVIndex = avatarFace.sharedMesh.GetBlendShapeIndex("o_mouth");
+        mouthHIndex = GetBlendShapeIndexOrFallback("A", "open_mouth");
+        mouthVIndex = GetBlendShapeIndexOrFallback("O", "o_mouth");
+
+        if (leftEyelidIndex < 0) Debug.LogWarning("Could not find left eyelid blendshape");
+        if (rightEyelidIndex < 0) Debug.LogWarning("Could not find right eyelid blendshape");
+        if (raiseEyebrowIndex < 0) Debug.LogWarning("Could not find raise eyebrow blendshape");
+        if (low_angleEyebrowIndex < 0) Debug.LogWarning("Could not find low-angle eyebrow blendshape");
+        if (high_angleEyebrowIndex < 0) Debug.LogWarning("Could not find high-angle eyebrow blendshape");
+        if (mouthHIndex < 0) Debug.LogWarning("Could not find mouthH blendshape");
+        if (mouthVIndex < 0) Debug.LogWarning("Could not find mouthV blendshape");
 
         // Set Range
         leftEyelidSlider.minValue  = 0.0f;
