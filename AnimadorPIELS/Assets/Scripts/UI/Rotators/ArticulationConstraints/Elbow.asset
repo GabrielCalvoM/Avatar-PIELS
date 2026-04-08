@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RotationConstraints
   x:
     active: 1
-    constraints: {x: -135, y: 0}
+    constraints: {x: 0, y: 135}
   y:
     active: 1
     constraints: {x: -90, y: 90}
