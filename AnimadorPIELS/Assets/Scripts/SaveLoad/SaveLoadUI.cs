@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(SaveLoadHotkeys))]
 public class SaveLoadUI : MonoBehaviour
 {
     public GameObject loadUI;
