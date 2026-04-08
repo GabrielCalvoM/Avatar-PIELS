@@ -1,24 +1,23 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public abstract class ArticulationMov : MonoBehaviour
 {
     [SerializeField] RotationConstraints _constraints;
-    public RotationConstraints Constraints { get { return _constraints; } }
+    public RotationConstraints Constraints { get { return _constraints; } } // Restricciones de rotación del hueso
+    protected RotationConstraints.AxisConstraints adjustedConstrains;       // Restricciones según el eje
 
-    protected Camera cameraRef;
-    protected RotationConstraints.AxisConstraints adjustedConstrains;
+    protected Camera cameraRef; // Cámara actual del usuario
 
     protected Vector3 Right { get { return RotationManager.Instance.Right(transform); } }
     protected Vector3 Up { get { return RotationManager.Instance.Up(transform); } }
     protected Vector3 Forward { get { return RotationManager.Instance.Forward(transform); } }
 
     protected bool presionado = false;
-    protected float rotX = 0, rotY = 0, rotZ = 0;
-    protected float angleX = 0, angleY = 0, angleZ = 0;
-    protected Vector2 initPos, prevPos, center;
-    Vector2 uS, vS;
+    protected float rotX = 0, rotY = 0, rotZ = 0;   // Rotación actual del gizmo local respecto a la inicial
+
+    Vector2 uS, vS;                             // Orientación del hueso según la perspectiva de la cámara
+    protected Vector2 initPos, prevPos, center; // Posiciones clave para el movimiento del hueso con el mouse
     protected SaveLoadPose saveLoadPose;
 
     protected void Start()
@@ -36,7 +35,6 @@ public abstract class ArticulationMov : MonoBehaviour
 
     public void OnPointerDown()
     {
-        Vector3 actualAxis = RotationManager.Instance.Axis;
         presionado = true;
         saveLoadPose?.BeginPoseEdit();
         center = cameraRef.WorldToScreenPoint(transform.position);
@@ -46,11 +44,11 @@ public abstract class ArticulationMov : MonoBehaviour
         uS = new(
             Vector3.Dot(Right, cameraRef.transform.right),
            -Vector3.Dot(Right, cameraRef.transform.up)
-        );
+        );                                                  // Calcula el eje horizontal del hueso
         vS = new(
             Vector3.Dot(Up, cameraRef.transform.right),
            -Vector3.Dot(Up, cameraRef.transform.up)
-        );
+        );                                                  // Calcula el eje vertical del hueso
 
         AdjustConstraints();
     }
@@ -65,6 +63,8 @@ public abstract class ArticulationMov : MonoBehaviour
 
     protected Vector2 MousePos(Vector2 rawPos)
     {
+        /// Posición del mouse respecto al hueso según la perspectiva de la cámara
+
         float det = uS.x * vS.y - vS.x * uS.y;
         if (Mathf.Abs(det) < 0.01f) return new(0, 0);
 

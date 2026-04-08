@@ -76,9 +76,4 @@ public class Rotator : MonoBehaviour
     {
         x = y = false;
     }
-
-    //private void OnEnable()
-    //{
-    //    RotationManager.Instance.SetConstraints(constraints);
-    //}
 }

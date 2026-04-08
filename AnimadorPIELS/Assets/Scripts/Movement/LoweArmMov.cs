@@ -1,8 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class LoweArmMov : ArticulationMov
 {
@@ -36,8 +33,6 @@ public class LoweArmMov : ArticulationMov
 
         if (RotationManager.Instance.InX) rotX = clampedRot;
         else if (RotationManager.Instance.InY) rotY = clampedRot;
-
-        Debug.Log($"Angulo: {angle} ({rotX}, {rotY}");
 
         prevPos = rawPos;
     }
