@@ -3070,9 +3070,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf6b58d66f7eb104fbd4a1d561e78831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveLoadPose
-  avatarSpine: {fileID: 1203152735}
+  avatarSpine: {fileID: 1035975539}
   mongoConfig: {fileID: 11400000, guid: 9bebfd709b76a8040acf4341897da2b2, type: 2}
-  faceFocus: {fileID: 1435034144}
+  faceFocus: {fileID: 1654796427}
 --- !u!4 &443752545
 Transform:
   m_ObjectHideFlags: 0
@@ -3132,7 +3132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5377284847c96454487d07fadfa06b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoseHistory
-  avatarSpine: {fileID: 1203152735}
+  avatarSpine: {fileID: 1035975539}
   maxHistoryStates: 50
   undoButton: {fileID: 0}
   redoButton: {fileID: 0}
@@ -7302,6 +7302,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1028212071}
   m_CullTransparentMesh: 1
+--- !u!4 &1035975539 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4308607214974127177, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+  m_PrefabInstance: {fileID: 707515177}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1069018690
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8833,11 +8838,6 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!4 &1203152735 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1694388104871467735, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}
-  m_PrefabInstance: {fileID: 1069018690}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1220833199
 GameObject:
   m_ObjectHideFlags: 0

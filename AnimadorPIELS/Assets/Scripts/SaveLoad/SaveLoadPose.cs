@@ -178,6 +178,12 @@ public class SaveLoadPose : MonoBehaviour
 
     public async void SavePoseButton()
     {
+        if (loadUI == null)
+        {
+            Debug.LogError("SaveLoadPose: SaveLoadUI component not found.");
+            return;
+        }
+
         PoseData pose = CapturePose(avatarSpine);
         string poseName = SanitizeFilename(loadUI.saveFileInput.text);
         if (poseName == "")
@@ -209,6 +215,12 @@ public class SaveLoadPose : MonoBehaviour
 
     public async void ApplyPoseButton()
     {
+        if (loadUI == null)
+        {
+            Debug.LogError("SaveLoadPose: SaveLoadUI component not found.");
+            return;
+        }
+
         if (loadUI.selected_pose == "")
         {
             Debug.LogWarning("No pose selected to load.");
@@ -243,6 +255,12 @@ public class SaveLoadPose : MonoBehaviour
 
     public async void ApplyTPose()
     {
+        if (loadUI == null)
+        {
+            Debug.LogError("SaveLoadPose: SaveLoadUI component not found.");
+            return;
+        }
+
         if (mongoService == null || !mongoService.IsConnected)
         {
             Debug.LogError("MongoDB not connected. Can't load T-pose.");
@@ -260,6 +278,7 @@ public class SaveLoadPose : MonoBehaviour
             }
             ApplyPose(avatarSpine, pose);
             Debug.Log("T-pose loaded from MongoDB");
+            loadUI.CancelLoadButton();
         }
         else
         {
