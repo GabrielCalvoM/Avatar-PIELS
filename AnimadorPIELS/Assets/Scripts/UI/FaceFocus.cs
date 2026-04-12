@@ -5,10 +5,10 @@ using UnityEngine.EventSystems;
 public class FaceFocus : MonoBehaviour
 {
     //////////////////////////////////////////////////////////// ATTRIBUTES
-    
-    [Header ("UI Components")]
+
+    [Header("UI Components")]
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private GameObject focusButton; 
+    [SerializeField] private GameObject focusButton;
     private bool isFocused = false;
 
     [Header("Cameras")]
@@ -45,33 +45,20 @@ public class FaceFocus : MonoBehaviour
     private void SetFaceFocusState(bool focused)
     {
         isFocused = focused;
-
-        if (mainCamera != null)
-        {
-            mainCamera.SetActive(!isFocused);
-        }
-
-        if (faceCamera != null)
-        {
-            faceCamera.SetActive(isFocused);
-        }
-
-        if (focusButton != null)
-        {
-            focusButton.SetActive(!isFocused);
-        }
-
-        uiManager?.RefreshUI();
+        mainCamera.SetActive(!isFocused);
+        faceCamera.SetActive(isFocused);
+        focusButton.SetActive(!isFocused);
+        uiManager.RefreshUI();
     }
 
-    public void OnButtonPressed()
+    public void OnFaceButtonPressed()
     {
-        SetFaceFocusState(!isFocused);
+        //Focus face
+        SetFaceFocusState(true);
     }
 
     public void OnReturnPressed()
     {
-        Debug.Log("ME CAGO EN FIGUERES");
         if (isFocused)
         {
             SetFaceFocusState(false);
@@ -239,7 +226,7 @@ public class FaceFocus : MonoBehaviour
         SetBlendShapeWeightSafe(leftEyelidIndex, leftEyelidSlider.value);
         SetBlendShapeWeightSafe(rightEyelidIndex, rightEyelidSlider.value);
     }
-    
+
     private void OnLeftEyelidChanged(float value)
     {
         NotifyFacialEditChanged();
@@ -261,19 +248,22 @@ public class FaceFocus : MonoBehaviour
     private void OnAngleEyebrowChanged(float value)
     {
         NotifyFacialEditChanged();
-        if (Mathf.Approximately(value, 50.0f)) {
+        if (Mathf.Approximately(value, 50.0f))
+        {
             SetBlendShapeWeightSafe(low_angleEyebrowIndex, 0.0f);
             SetBlendShapeWeightSafe(high_angleEyebrowIndex, 0.0f);
         }
 
-        else if (value < 50.0f) {
+        else if (value < 50.0f)
+        {
             float w = Mathf.InverseLerp(50.0f, 0.0f, value) * 100.0f;
 
             SetBlendShapeWeightSafe(low_angleEyebrowIndex, w);
             SetBlendShapeWeightSafe(high_angleEyebrowIndex, 0.0f);
         }
 
-        else if (value > 50.0f) {
+        else if (value > 50.0f)
+        {
             float w = Mathf.InverseLerp(50.0f, 100.0f, value) * 100.0f;
 
             SetBlendShapeWeightSafe(low_angleEyebrowIndex, 0.0f);
@@ -294,7 +284,7 @@ public class FaceFocus : MonoBehaviour
     }
 
     //////////////////////////////////////////////////////////// GAME LOOP
-    
+
     void Start()
     {
         if (saveLoadPose == null)
@@ -310,13 +300,13 @@ public class FaceFocus : MonoBehaviour
 
         // Hide in Game
         ColorBlock colors = focusButton.GetComponent<Button>().colors;
-        colors.normalColor = new Color(0,0,0,0);
+        colors.normalColor = new Color(0, 0, 0, 0);
         focusButton.GetComponent<Button>().colors = colors;
 
         // Get Idx
         leftEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "blink_left.001");
         rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "blink_right.001");
-        
+
         raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "raise_eyebrows3");
         low_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_furrow", "angry");
         high_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Sad", "sad");
@@ -333,8 +323,8 @@ public class FaceFocus : MonoBehaviour
         if (mouthVIndex < 0) Debug.LogWarning("Could not find mouthV blendshape");
 
         // Set Range
-        leftEyelidSlider.minValue  = 0.0f;
-        leftEyelidSlider.maxValue  = 100.0f;
+        leftEyelidSlider.minValue = 0.0f;
+        leftEyelidSlider.maxValue = 100.0f;
         rightEyelidSlider.minValue = 0.0f;
         rightEyelidSlider.maxValue = 100.0f;
 
@@ -342,7 +332,7 @@ public class FaceFocus : MonoBehaviour
         raiseEyebrowSlider.maxValue = 100.0f;
         angleEyebrowSlider.minValue = 0.0f;
         angleEyebrowSlider.maxValue = 100.0f;
-        angleEyebrowSlider.value    = 50.0f;
+        angleEyebrowSlider.value = 50.0f;
 
         mouthHSlider.minValue = 0.0f;
         mouthHSlider.maxValue = 100.0f;

@@ -31,8 +31,10 @@ public class Rotator : MonoBehaviour
     void Update()
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null) return;
 
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Ray ray = mainCamera.ScreenPointToRay(mousePos);
         _highlighted = Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform;
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
