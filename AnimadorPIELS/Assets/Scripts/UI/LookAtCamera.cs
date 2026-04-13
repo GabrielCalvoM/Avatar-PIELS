@@ -9,7 +9,7 @@ public class LookAtCamera : MonoBehaviour
         if (cameraRef == null) cameraRef = Camera.main;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         transform.LookAt(cameraRef.transform);
         transform.Rotate(new(0, 180, 0));
