@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HandFocus : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class HandFocus : MonoBehaviour
         handCamera.SetActive(true);
         cameraControls.SetActive(false);
         handsUI.SetActive(true);
+        Button button = handsUI.GetComponentInChildren<Button>();
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(OnHandFocusReturnButtonPressed);
         uiManager.SetFocusedOnHands(true);
     }
 
