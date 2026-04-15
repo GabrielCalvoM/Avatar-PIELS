@@ -17,6 +17,15 @@ public abstract class ArticulationMov : MonoBehaviour
 
     protected bool presionado = false;
     protected float rotX = 0, rotY = 0, rotZ = 0;
+    protected float ActualRotation
+    {
+        get
+        {
+            if (RotationManager.Instance.InX) return rotX;
+            else if (RotationManager.Instance.InY) return rotY;
+            else return rotZ;
+        }
+    }
 
     Vector2 uS, vS;                             // Orientación del hueso según la perspectiva de la cámara
     protected Vector2 initPos, prevPos, center; // Posiciones clave para el movimiento del hueso con el mouse
