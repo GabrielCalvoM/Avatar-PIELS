@@ -8,16 +8,7 @@ public class HandFocus : MonoBehaviour
     [SerializeField] private GameObject handCamera;
     [SerializeField] private GameObject cameraControls;
     [SerializeField] private GameObject handsUI;
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
+    [SerializeField] UIManager uiManager;
 
     public void OnHandFocusButtonPressed()
     {
@@ -25,6 +16,7 @@ public class HandFocus : MonoBehaviour
         handCamera.SetActive(true);
         cameraControls.SetActive(false);
         handsUI.SetActive(true);
+        uiManager.SetFocusedOnHands(true);
     }
 
     public void OnHandFocusReturnButtonPressed()
@@ -33,5 +25,6 @@ public class HandFocus : MonoBehaviour
         handCamera.SetActive(false);
         cameraControls.SetActive(true);
         handsUI.SetActive(false);
+        uiManager.SetFocusedOnHands(false);
     }
 }

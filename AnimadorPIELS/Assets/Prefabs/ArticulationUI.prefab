@@ -85,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4084216389148521739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,7 +117,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArticulationUI
   articulation: {fileID: 0}
   button: {fileID: 7940118715813108295}
+  uiManager: {fileID: 0}
   cameraRef: {fileID: 0}
+  rotatorX: {fileID: 8917170644315884992, guid: 24afadb069c120243b397fb3b3a27736, type: 3}
+  rotatorY: {fileID: 8917170644315884992, guid: 4e7a3719ed15da34da22047a5b4b2a75, type: 3}
+  rotatorZ: {fileID: 8917170644315884992, guid: dd2cc9277b29b3e40bac06bb3b18258b, type: 3}
+  X: 0
+  Y: 0
+  Z: 0
+  scale: 1
 --- !u!1 &7940118715813108295
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.6509804}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

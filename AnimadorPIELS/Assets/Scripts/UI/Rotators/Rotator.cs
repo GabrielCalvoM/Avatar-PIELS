@@ -6,34 +6,32 @@ using UnityEngine.InputSystem;
 
 public class Rotator : MonoBehaviour
 {
-    [OnValueChanged("ToAxisX"), BoxGroup("Axis")]
+    [OnValueChanged("ToAxisX"), BoxGroup("Axis"), HideInInspector]
     public bool x = true;
-    [OnValueChanged("ToAxisY"), BoxGroup("Axis")]
+    [OnValueChanged("ToAxisY"), BoxGroup("Axis"), HideInInspector]
     public bool y = false;
-    [OnValueChanged("ToAxisZ"), BoxGroup("Axis")]
+    [OnValueChanged("ToAxisZ"), BoxGroup("Axis"), HideInInspector]
     public bool z = false;
 
-    [SerializeField] UnityEvent pointerDown;
-    [SerializeField] UnityEvent pointerUp;
+    public UnityEvent pointerDown;
+    public UnityEvent pointerUp;
 
     Action changeAxis;
     bool _pressed = false, _highlighted = false;
 
     /// <summary>
-    /// Devuelve <c>true</c> si se está presionando el objeto respectivo
+    /// Devuelve <c>true</c> si se estï¿½ presionando el objeto respectivo
     /// </summary>
     public bool Pressed { get { return _pressed; } }
 
     /// <summary>
-    /// Devuelve <c>true</c> si el mouse está sobre el objeto respectivo
+    /// Devuelve <c>true</c> si el mouse estï¿½ sobre el objeto respectivo
     /// </summary>
     public bool Highlighted { get { return _highlighted; } }
 
     private void Start()
     {
-        if (x) changeAxis = RotationManager.Instance.ChangeRotationAxisToX;
-        if (y) changeAxis = RotationManager.Instance.ChangeRotationAxisToY;
-        if (z) changeAxis = RotationManager.Instance.ChangeRotationAxisToZ;
+        RefreshAxis();
     }
 
     void Update()
@@ -81,15 +79,33 @@ public class Rotator : MonoBehaviour
     private void ToAxisX()
     {
         y = z = false;
+        RefreshAxis();
     }
 
     private void ToAxisY()
     {
         x = z = false;
+        RefreshAxis();
     }
 
     private void ToAxisZ()
     {
         x = y = false;
+        RefreshAxis();
+    }
+
+    public void ConfigureAxis(bool axisX, bool axisY, bool axisZ)
+    {
+        x = axisX;
+        y = axisY;
+        z = axisZ;
+        RefreshAxis();
+    }
+
+    void RefreshAxis()
+    {
+        if (x) changeAxis = RotationManager.Instance.ChangeRotationAxisToX;
+        if (y) changeAxis = RotationManager.Instance.ChangeRotationAxisToY;
+        if (z) changeAxis = RotationManager.Instance.ChangeRotationAxisToZ;
     }
 }
