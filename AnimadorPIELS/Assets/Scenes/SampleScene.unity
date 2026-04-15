@@ -2870,6 +2870,7 @@ MonoBehaviour:
   - {fileID: 501500432}
   - {fileID: 941129426}
   - {fileID: 100981106}
+  - {fileID: 1654796425}
   bodyToggleGroup: {fileID: 1973496886}
   handsButtons:
   - {fileID: 75386860}
@@ -7113,6 +7114,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4272926289524420819, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4371684599238993283, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -7123,7 +7128,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4493694195977006320, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4661280380147116845, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_IsActive
@@ -16865,7 +16870,7 @@ PrefabInstance:
     - target: {fileID: 3751038601856608942, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}
       propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 330585545}
+      objectReference: {fileID: 2060840908}
     - target: {fileID: 3817409010698756902, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}
       propertyPath: cameraRef
       value: 
