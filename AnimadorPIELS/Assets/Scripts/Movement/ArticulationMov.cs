@@ -9,12 +9,14 @@ public abstract class ArticulationMov : MonoBehaviour
 
     protected Camera cameraRef; // Cámara actual del usuario
 
+    // Ejes relativos para la rotación en X, Y y Z
     protected Vector3 Right { get { return RotationManager.Instance.Right(transform); } }
     protected Vector3 Up { get { return RotationManager.Instance.Up(transform); } }
     protected Vector3 Forward { get { return RotationManager.Instance.Forward(transform); } }
 
+
     protected bool presionado = false;
-    protected float rotX = 0, rotY = 0, rotZ = 0;   // Rotación actual del gizmo local respecto a la inicial
+    protected float rotX = 0, rotY = 0, rotZ = 0;
 
     Vector2 uS, vS;                             // Orientación del hueso según la perspectiva de la cámara
     protected Vector2 initPos, prevPos, center; // Posiciones clave para el movimiento del hueso con el mouse
@@ -31,8 +33,26 @@ public abstract class ArticulationMov : MonoBehaviour
         if (presionado) OnMove();
     }
 
-    protected abstract void OnMove();
+    /// <summary>
+    /// Calcula la rotación del hueso según el eje deseado
+    /// </summary>
+    protected virtual void OnMove()
+    {
+        Vector2 rawPos = Mouse.current.position.value - center;
+        Vector2 pos = MousePos(rawPos);
+        Vector2 correctedPrev = MousePos(prevPos);
+        Vector3 actualAxis = RotationManager.Instance.Axis;
+        float angle = GetAngle(correctedPrev, pos);
 
+        if (angle == 0) return;
+
+        transform.Rotate(actualAxis, angle);
+        prevPos = rawPos;
+    }
+
+    /// <summary>
+    /// Se activa cuando se agarra un objeto rotador del hueso
+    /// </summary>
     public void OnPointerDown()
     {
         presionado = true;
@@ -53,6 +73,9 @@ public abstract class ArticulationMov : MonoBehaviour
         AdjustConstraints();
     }
 
+    /// <summary>
+    /// Se activa cuando se suelta un objeto rotador del hueso
+    /// </summary>
     public void OnPointerUp()
     {
         presionado = false;
@@ -61,10 +84,12 @@ public abstract class ArticulationMov : MonoBehaviour
         saveLoadPose?.EndPoseEdit();
     }
 
+    /// <summary>
+    /// Calcula la posición del mouse respecto al hueso según la perspectiva de la cámara
+    /// </summary>
+    /// <param name="rawPos">Posición real del mouse en la pantalla</param>
     protected Vector2 MousePos(Vector2 rawPos)
     {
-        /// Posición del mouse respecto al hueso según la perspectiva de la cámara
-
         float det = uS.x * vS.y - vS.x * uS.y;
         if (Mathf.Abs(det) < 0.01f) return new(0, 0);
 
@@ -74,6 +99,11 @@ public abstract class ArticulationMov : MonoBehaviour
         );
     }
 
+    /// <summary>
+    /// Calcula el ángulo de rotación respecto al movimiento del mouse
+    /// </summary>
+    /// <param name="origin">Posición anterior registrada del mouse con centro en el hueso</param>
+    /// <param name="destiny">Posición actual del mouse con centro en el hueso</param>
     protected float GetAngle(Vector2 origin, Vector2 destiny)
     {
         if (origin.magnitude < 0.01f || destiny.magnitude < 0.01f) return 0f;
@@ -88,5 +118,22 @@ public abstract class ArticulationMov : MonoBehaviour
         else return 0;
     }
 
-    protected abstract void AdjustConstraints();
+    /// <summary>
+    /// Ajusta las restricciones respectivas del movimiento de los ejes
+    /// </summary>
+    protected virtual void AdjustConstraints()
+    {
+        if (RotationManager.Instance.InX)
+        {
+            adjustedConstrains = Constraints.x;
+        }
+        else if (RotationManager.Instance.InY)
+        {
+            adjustedConstrains = Constraints.y;
+        }
+        else
+        {
+            adjustedConstrains = Constraints.z;
+        }
+    }
 }

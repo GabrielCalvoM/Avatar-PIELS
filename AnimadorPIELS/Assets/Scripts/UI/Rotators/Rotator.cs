@@ -18,7 +18,15 @@ public class Rotator : MonoBehaviour
 
     Action changeAxis;
     bool _pressed = false, _highlighted = false;
+
+    /// <summary>
+    /// Devuelve <c>true</c> si se está presionando el objeto respectivo
+    /// </summary>
     public bool Pressed { get { return _pressed; } }
+
+    /// <summary>
+    /// Devuelve <c>true</c> si el mouse está sobre el objeto respectivo
+    /// </summary>
     public bool Highlighted { get { return _highlighted; } }
 
     private void Start()
@@ -51,6 +59,9 @@ public class Rotator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Se activa cuando se agarra el objeto respectivo
+    /// </summary>
     private void OnPointerDown()
     {
         _pressed = true;
@@ -58,6 +69,9 @@ public class Rotator : MonoBehaviour
         pointerDown.Invoke();
     }
 
+    /// <summary>
+    /// Se activa cuando se suelta el objeto respectivo
+    /// </summary>
     private void OnPointerUp()
     {
         _pressed = false;

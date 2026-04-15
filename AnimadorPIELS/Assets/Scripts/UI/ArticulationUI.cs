@@ -30,6 +30,9 @@ public class ArticulationUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Se activa cuando se selecciona/deselecciona un hueso
+    /// </summary>
     public void OnButtonToggled()
     {
         bool isOn = button.GetComponent<Toggle>().isOn;
