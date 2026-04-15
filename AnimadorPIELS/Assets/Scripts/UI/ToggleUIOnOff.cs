@@ -13,7 +13,16 @@ public class ToggleUIOnOff : MonoBehaviour
     public void ToggleUI()
     {
         isVisible = !isVisible;
-        uiManager.DisableButtons();
+
+        if (isVisible)
+        {
+            uiManager.EnableButtons();
+        }
+        else
+        {
+            uiManager.DisableButtons();
+        }
+
         buttonImage.sprite = isVisible ? eyeOpen : eyeClosed;
     }
 }

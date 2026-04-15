@@ -2173,7 +2173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: scale
-      value: 0.7
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: cameraRef
@@ -8244,7 +8244,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: scale
-      value: 0.7
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: cameraRef
@@ -11863,6 +11863,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: scale
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: cameraRef
       value: 
       objectReference: {fileID: 330585545}
@@ -13596,6 +13600,10 @@ PrefabInstance:
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: Y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: scale
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: cameraRef
