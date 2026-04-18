@@ -15,7 +15,7 @@ public class HandFocus : MonoBehaviour
     {
         mainCamera.SetActive(false);
         handCamera.SetActive(true);
-        cameraControls.SetActive(false);
+        //cameraControls.SetActive(false);
         handsUI.SetActive(true);
         Button button = handsUI.GetComponentInChildren<Button>();
         button.onClick.RemoveAllListeners();
@@ -27,7 +27,7 @@ public class HandFocus : MonoBehaviour
     {
         mainCamera.SetActive(true);
         handCamera.SetActive(false);
-        cameraControls.SetActive(true);
+        //cameraControls.SetActive(true);
         handsUI.SetActive(false);
         uiManager.SetFocusedOnHands(false);
     }

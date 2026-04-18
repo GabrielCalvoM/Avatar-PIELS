@@ -13,16 +13,47 @@ public class ToggleUIOnOff : MonoBehaviour
     public void ToggleUI()
     {
         isVisible = !isVisible;
+        bool focusedOnHands = uiManager.getFocusedOnHands();
 
         if (isVisible)
         {
-            uiManager.EnableButtons();
+            if (focusedOnHands)
+            {
+                uiManager.EnableHandsButtons();
+            }
+            else
+            {
+                uiManager.EnableBodyButtons();
+            }
         }
         else
         {
-            uiManager.DisableButtons();
+            if (focusedOnHands)
+            {
+                uiManager.DisableHandsButtons();
+            }
+            else
+            {
+                uiManager.DisableBodyButtons();
+            }
         }
 
         buttonImage.sprite = isVisible ? eyeOpen : eyeClosed;
+    }
+
+    public void SetUIOn()
+    {
+        isVisible = true;
+        buttonImage.sprite = eyeOpen;
+
+        bool focusedOnHands = uiManager.getFocusedOnHands();
+        if (focusedOnHands)
+        {
+            uiManager.EnableHandsButtons();
+        }
+        else
+        {
+            uiManager.EnableBodyButtons();
+        }
     }
 }

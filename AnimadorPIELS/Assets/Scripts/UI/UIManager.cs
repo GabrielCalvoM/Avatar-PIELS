@@ -28,31 +28,12 @@ public class UIManager : MonoBehaviour
 
     private bool focusedOnHands = false;
 
-    public void SetFocusedOnHands(bool value)
+    private ToggleUIOnOff toggleUIOnOff;
+
+    void Start()
     {
-        focusedOnHands = value;
-
-        if (focusedOnHands)
-        {
-            foreach (GameObject bodyPart in bodyParts)
-            {
-                DisableBodyButtons();
-                EnableHandsButtons();
-                bodyPart.SetActive(false);
-            }
-        }
-        else
-        {
-            foreach (GameObject bodyPart in bodyParts)
-            {
-                DisableHandsButtons();
-                EnableBodyButtons();
-                bodyPart.SetActive(true);
-            }
-        }
+        toggleUIOnOff = GetComponent<ToggleUIOnOff>();
     }
-
-    //////////////////////////////////////////////////////////// METHODS
 
     void Update()
     {
@@ -60,17 +41,36 @@ public class UIManager : MonoBehaviour
         {
             if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
-                if (focusedOnHands)
-                {
-                    EnableHandsButtons();
-                }
-                else
-                {
-                    EnableBodyButtons();
-                }
+                toggleUIOnOff.SetUIOn();
             }
         }
     }
+
+    public void SetFocusedOnHands(bool value)
+    {
+        focusedOnHands = value;
+
+        if (focusedOnHands)
+        {
+            DisableBodyButtons();
+            EnableHandsButtons();
+            foreach (GameObject bodyPart in bodyParts)
+            {
+                bodyPart.SetActive(false);
+            }
+        }
+        else
+        {
+            DisableHandsButtons();
+            EnableBodyButtons();
+            foreach (GameObject bodyPart in bodyParts)
+            {
+                bodyPart.SetActive(true);
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////////// METHODS
 
     public void RefreshUI()
     {
@@ -142,5 +142,10 @@ public class UIManager : MonoBehaviour
         {
             button.SetActive(false);
         }
+    }
+
+    public bool getFocusedOnHands()
+    {
+        return focusedOnHands;
     }
 }
