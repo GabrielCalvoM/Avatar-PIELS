@@ -17,7 +17,7 @@ MonoBehaviour:
     constraints: {x: -80, y: 0}
   y:
     active: 0
-    constraints: {x: -90, y: 90}
+    constraints: {x: -130, y: 60}
   z:
     active: 1
     constraints: {x: -70, y: 50}

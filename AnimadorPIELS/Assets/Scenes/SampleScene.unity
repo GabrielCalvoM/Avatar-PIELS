@@ -873,6 +873,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
+      propertyPath: Y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: Z
       value: 1
       objectReference: {fileID: 0}
@@ -1032,10 +1036,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 152190081}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcb01d7051cd17e4f9ac9d594515b91f, type: 3}
+  m_Script: {fileID: 11500000, guid: e2957e147d614b7448af907c80a224fa, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ThumbMov
-  _constraints: {fileID: 11400000, guid: 8dfba21f2c601f1409108a8785ef76dc, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::HandMov
+  _constraints: {fileID: 11400000, guid: ccbc8617ee6813c48bff2859c4d19809, type: 2}
 --- !u!1 &158611049 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7940118715813108295, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
@@ -2552,6 +2556,7 @@ GameObject:
   - component: {fileID: 320891615}
   - component: {fileID: 320891614}
   - component: {fileID: 320891613}
+  - component: {fileID: 320891618}
   m_Layer: 5
   m_Name: UI Manager
   m_TagString: Untagged
@@ -2710,6 +2715,22 @@ MonoBehaviour:
   - {fileID: 954800081}
   - {fileID: 1895353832}
   - {fileID: 663615472}
+--- !u!114 &320891618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320891612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d22b57b2ed1a85a4fa9812a5ad4f121c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToggleUIOnOff
+  buttonImage: {fileID: 1194553118}
+  eyeOpen: {fileID: 21300000, guid: bfb9af9b6afde5a4e98716a3744bd99e, type: 3}
+  eyeClosed: {fileID: 21300000, guid: ac4e8543d119fdb4ca5f80f98ffc218b, type: 3}
+  uiManager: {fileID: 320891617}
 --- !u!1 &321569406 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5202631800287916530, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}
@@ -5186,7 +5207,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -223.66272, y: -226.58148}
+  m_AnchoredPosition: {x: -225, y: -226.58148}
   m_SizeDelta: {x: 281.9973, y: 325.5409}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &544418314
@@ -6796,6 +6817,26 @@ PrefabInstance:
     - target: {fileID: 5881112757722663635, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894456098237798457, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9993875
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894456098237798457, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894456098237798457, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894456098237798457, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0349954
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894456098237798457, guid: acdbe520814e1af45bebd9399312e704, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 4.011
       objectReference: {fileID: 0}
     - target: {fileID: 6070937942577486783, guid: acdbe520814e1af45bebd9399312e704, type: 3}
       propertyPath: m_IsActive
@@ -10848,7 +10889,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -168, y: -134}
+  m_AnchoredPosition: {x: -225, y: -447}
   m_SizeDelta: {x: 210, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1164672533
@@ -11127,7 +11168,6 @@ GameObject:
   - component: {fileID: 1194553119}
   - component: {fileID: 1194553118}
   - component: {fileID: 1194553117}
-  - component: {fileID: 1194553116}
   m_Layer: 5
   m_Name: UI_toggle
   m_TagString: Untagged
@@ -11154,22 +11194,6 @@ RectTransform:
   m_AnchoredPosition: {x: -51.56421, y: -57}
   m_SizeDelta: {x: 63.1285, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1194553116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194553114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d22b57b2ed1a85a4fa9812a5ad4f121c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ToggleUIOnOff
-  buttonImage: {fileID: 1194553118}
-  eyeOpen: {fileID: 21300000, guid: bfb9af9b6afde5a4e98716a3744bd99e, type: 3}
-  eyeClosed: {fileID: 21300000, guid: ac4e8543d119fdb4ca5f80f98ffc218b, type: 3}
-  uiManager: {fileID: 320891617}
 --- !u!114 &1194553117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11214,7 +11238,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1194553116}
+      - m_Target: {fileID: 320891618}
         m_TargetAssemblyTypeName: ToggleUIOnOff, Assembly-CSharp
         m_MethodName: ToggleUI
         m_Mode: 1
