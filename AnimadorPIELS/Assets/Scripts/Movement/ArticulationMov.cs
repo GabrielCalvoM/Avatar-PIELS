@@ -4,12 +4,12 @@ using UnityEngine.InputSystem;
 public abstract class ArticulationMov : MonoBehaviour
 {
     [SerializeField] RotationConstraints _constraints;
-    public RotationConstraints Constraints { get { return _constraints; } } // Restricciones de rotación del hueso
-    protected RotationConstraints.AxisConstraints adjustedConstrains;       // Restricciones según el eje
+    public RotationConstraints Constraints { get { return _constraints; } } // Restricciones de rotaciï¿½n del hueso
+    protected RotationConstraints.AxisConstraints adjustedConstrains;       // Restricciones segï¿½n el eje
 
-    protected Camera cameraRef; // Cámara actual del usuario
+    protected Camera cameraRef; // Cï¿½mara actual del usuario
 
-    // Ejes relativos para la rotación en X, Y y Z
+    // Ejes relativos para la rotaciï¿½n en X, Y y Z
     protected Vector3 Right { get { return RotationManager.Instance.Right(transform); } }
     protected Vector3 Up { get { return RotationManager.Instance.Up(transform); } }
     protected Vector3 Forward { get { return RotationManager.Instance.Forward(transform); } }
@@ -27,13 +27,33 @@ public abstract class ArticulationMov : MonoBehaviour
         }
     }
 
-    Vector2 uS, vS;                             // Orientación del hueso según la perspectiva de la cámara
+    Vector2 uS, vS;                             // Orientaciï¿½n del hueso segï¿½n la perspectiva de la cï¿½mara
     protected Vector2 initPos, prevPos, center; // Posiciones clave para el movimiento del hueso con el mouse
     protected SaveLoadPose saveLoadPose;
 
+    protected Camera ResolveActiveCamera()
+    {
+        if (cameraRef != null && cameraRef.isActiveAndEnabled) return cameraRef;
+
+        Camera cam = Camera.main;
+        if (cam != null && cam.isActiveAndEnabled) return cam;
+
+        int count = Camera.allCamerasCount;
+        if (count <= 0) return cameraRef;
+
+        Camera[] cams = new Camera[count];
+        int written = Camera.GetAllCameras(cams);
+        for (int i = 0; i < written; i++)
+        {
+            if (cams[i] != null && cams[i].isActiveAndEnabled) return cams[i];
+        }
+
+        return cameraRef;
+    }
+
     protected void Start()
     {
-        cameraRef = Camera.main;
+        cameraRef = ResolveActiveCamera();
         saveLoadPose = FindFirstObjectByType<SaveLoadPose>();
     }
 
@@ -43,7 +63,7 @@ public abstract class ArticulationMov : MonoBehaviour
     }
 
     /// <summary>
-    /// Calcula la rotación del hueso según el eje deseado
+    /// Calcula la rotaciï¿½n del hueso segï¿½n el eje deseado
     /// </summary>
     protected virtual void OnMove()
     {
@@ -66,6 +86,15 @@ public abstract class ArticulationMov : MonoBehaviour
     {
         presionado = true;
         saveLoadPose?.BeginPoseEdit();
+
+        cameraRef = ResolveActiveCamera();
+        if (cameraRef == null)
+        {
+            presionado = false;
+            saveLoadPose?.EndPoseEdit();
+            return;
+        }
+
         center = cameraRef.WorldToScreenPoint(transform.position);
         prevPos = Mouse.current.position.value - center;
         initPos = prevPos;
@@ -94,9 +123,9 @@ public abstract class ArticulationMov : MonoBehaviour
     }
 
     /// <summary>
-    /// Calcula la posición del mouse respecto al hueso según la perspectiva de la cámara
+    /// Calcula la posiciï¿½n del mouse respecto al hueso segï¿½n la perspectiva de la cï¿½mara
     /// </summary>
-    /// <param name="rawPos">Posición real del mouse en la pantalla</param>
+    /// <param name="rawPos">Posiciï¿½n real del mouse en la pantalla</param>
     protected Vector2 MousePos(Vector2 rawPos)
     {
         float det = uS.x * vS.y - vS.x * uS.y;
@@ -109,10 +138,10 @@ public abstract class ArticulationMov : MonoBehaviour
     }
 
     /// <summary>
-    /// Calcula el ángulo de rotación respecto al movimiento del mouse
+    /// Calcula el ï¿½ngulo de rotaciï¿½n respecto al movimiento del mouse
     /// </summary>
-    /// <param name="origin">Posición anterior registrada del mouse con centro en el hueso</param>
-    /// <param name="destiny">Posición actual del mouse con centro en el hueso</param>
+    /// <param name="origin">Posiciï¿½n anterior registrada del mouse con centro en el hueso</param>
+    /// <param name="destiny">Posiciï¿½n actual del mouse con centro en el hueso</param>
     protected float GetAngle(Vector2 origin, Vector2 destiny)
     {
         if (origin.magnitude < 0.01f || destiny.magnitude < 0.01f) return 0f;

@@ -3,6 +3,13 @@ using UnityEngine.InputSystem;
 
 public class Finger01Mov : ArticulationMov
 {
+    Quaternion initialRotation;
+
+    void Awake()
+    {
+        initialRotation = transform.localRotation;
+    }
+
     override protected void OnMove()
     {
         if (!RotationManager.Instance.InX) return;
@@ -12,16 +19,15 @@ public class Finger01Mov : ArticulationMov
         Vector2 correctedPrev = MousePos(prevPos);
         float angle = GetAngle(correctedPrev, pos);
 
-        if (angle == 0) return;
+        if (Mathf.Approximately(angle, 0f))
+        {
+            prevPos = rawPos;
+            return;
+        }
 
-        float prevRot = GetSignedLocalX();
-        float nextRot = prevRot + angle;
-
-        float clampedRot = Mathf.Clamp(nextRot, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
-
-        SetLocalX(clampedRot);
-
-        rotX = clampedRot;
+        float nextRot = rotX + angle;
+        rotX = Mathf.Clamp(nextRot, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
+        transform.localRotation = initialRotation * Quaternion.AngleAxis(rotX, RotationManager.X);
 
         prevPos = rawPos;
     }
@@ -30,21 +36,8 @@ public class Finger01Mov : ArticulationMov
     {
         adjustedConstrains = Constraints.x;
 
-        float currentRot = GetSignedLocalX();
-        float clampedRot = Mathf.Clamp(currentRot, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
+        rotX = Mathf.Clamp(rotX, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
 
-        if (!Mathf.Approximately(currentRot, clampedRot))
-            SetLocalX(clampedRot);
-
-        rotX = clampedRot;
-    }
-
-    float GetSignedLocalX() => Mathf.DeltaAngle(0f, transform.localEulerAngles.x);
-
-    void SetLocalX(float value)
-    {
-        Vector3 euler = transform.localEulerAngles;
-        euler.x = value < 0f ? value + 360f : value;
-        transform.localEulerAngles = euler;
+        transform.localRotation = initialRotation * Quaternion.AngleAxis(rotX, RotationManager.X);
     }
 }

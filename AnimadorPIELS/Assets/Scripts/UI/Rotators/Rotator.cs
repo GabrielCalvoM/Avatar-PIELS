@@ -15,6 +15,7 @@ public class Rotator : MonoBehaviour
 
     public UnityEvent pointerDown;
     public UnityEvent pointerUp;
+    public Camera mainCamera;
 
     Action changeAxis;
     bool _pressed = false, _highlighted = false;
@@ -34,14 +35,34 @@ public class Rotator : MonoBehaviour
         RefreshAxis();
     }
 
+    Camera ResolveActiveCamera()
+    {
+        if (mainCamera != null && mainCamera.isActiveAndEnabled) return mainCamera;
+
+        Camera cam = Camera.main;
+        if (cam != null && cam.isActiveAndEnabled) return cam;
+
+        int count = Camera.allCamerasCount;
+        if (count <= 0) return mainCamera;
+
+        Camera[] cams = new Camera[count];
+        int written = Camera.GetAllCameras(cams);
+        for (int i = 0; i < written; i++)
+        {
+            if (cams[i] != null && cams[i].isActiveAndEnabled) return cams[i];
+        }
+
+        return mainCamera;
+    }
+
     void Update()
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
-        Camera mainCamera = Camera.main;
+        mainCamera = ResolveActiveCamera();
         if (mainCamera == null) return;
 
         Ray ray = mainCamera.ScreenPointToRay(mousePos);
-        _highlighted = Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform;
+        _highlighted = Physics.Raycast(ray, out RaycastHit hit) && hit.transform != null && hit.transform.IsChildOf(transform);
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {

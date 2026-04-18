@@ -21,6 +21,26 @@ public class ArticulationUI : MonoBehaviour
     bool moving;
     readonly List<GameObject> spawnedRotators = new();
 
+    Camera ResolveActiveCamera()
+    {
+        if (cameraRef != null && cameraRef.isActiveAndEnabled) return cameraRef;
+
+        Camera cam = Camera.main;
+        if (cam != null && cam.isActiveAndEnabled) return cam;
+
+        int count = Camera.allCamerasCount;
+        if (count <= 0) return cameraRef;
+
+        Camera[] cams = new Camera[count];
+        int written = Camera.GetAllCameras(cams);
+        for (int i = 0; i < written; i++)
+        {
+            if (cams[i] != null && cams[i].isActiveAndEnabled) return cams[i];
+        }
+
+        return cameraRef;
+    }
+
     private void Awake()
     {
         originalRotation = transform.localEulerAngles;
@@ -28,13 +48,17 @@ public class ArticulationUI : MonoBehaviour
 
     void Start()
     {
-        if (cameraRef == null) cameraRef = Camera.main;
+        cameraRef = ResolveActiveCamera();
     }
 
     void Update()
     {
+        cameraRef = ResolveActiveCamera();
+
         if (!moving)
         {
+            if (cameraRef == null) return;
+
             transform.LookAt(cameraRef.transform);
             transform.Rotate(new(0, 180, 0));
         }
@@ -108,7 +132,7 @@ public class ArticulationUI : MonoBehaviour
         rotator.ConfigureAxis(x, y, z);
         rotator.pointerDown.AddListener(articulation.OnPointerDown);
         rotator.pointerUp.AddListener(articulation.OnPointerUp);
-
+        rotator.mainCamera = ResolveActiveCamera();
         spawnedRotators.Add(rotatorInstance);
     }
 
