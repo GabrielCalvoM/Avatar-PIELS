@@ -2,45 +2,55 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using MongoDB.Driver;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using UnityEngine.Networking;
 
 /// <summary>
-/// MongoDB document structure for poses
+/// Payload document used by backend API.
 /// </summary>
 [System.Serializable]
 public class PoseDocument
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
     public string id;
 
     public string poseName;
-    public string createdBy = "user"; // "user" or "system" (default to "user")
-    public DateTime createdAt;
-    public DateTime updatedAt;
+    public string createdBy = "user";
     public List<BoneData> bones = new List<BoneData>();
     public FacialExpressionData facialExpression = new FacialExpressionData();
 }
 
+[System.Serializable]
+public class PoseNamesResponse
+{
+    public List<string> poseNames = new List<string>();
+}
+
+[System.Serializable]
+public class PoseResponse
+{
+    public string poseName;
+    public PoseData pose;
+}
+
+[System.Serializable]
+public class SavePoseRequest
+{
+    public string poseName;
+    public PoseData pose;
+    public bool isSystemPose;
+}
+
 /// <summary>
-/// Service for connecting to MongoDB Atlas and managing pose data
+/// Service for calling backend API that manages pose data in MongoDB
 /// </summary>
 public class MongoDBService
 {
-    private MongoClient client;
-    private IMongoDatabase database;
-    private IMongoCollection<PoseDocument> userPosesCollection;
-    private IMongoCollection<PoseDocument> systemPosesCollection;
-
     private bool isConnected = false;
     private MongoDBConfig config;
 
     public bool IsConnected => isConnected;
 
     /// <summary>
-    /// Initialize the MongoDB connection
+    /// Initialize and verify backend API connection
     /// </summary>
     public async Task<bool> Initialize(MongoDBConfig mongoConfig)
     {
@@ -48,202 +58,227 @@ public class MongoDBService
         {
             config = mongoConfig;
 
-            if (string.IsNullOrEmpty(config.connectionString) ||
-                config.connectionString.Contains("<username>") ||
-                config.connectionString.Contains("<password>"))
+            if (config == null || string.IsNullOrWhiteSpace(config.apiBaseUrl))
             {
-                Debug.LogError("MongoDB: Invalid connection string");
+                Debug.LogError("Pose API: Invalid API base URL");
                 return false;
             }
 
-            // Create MongoDB client
-            var settings = MongoClientSettings.FromConnectionString(config.connectionString);
-            settings.ServerSelectionTimeout = TimeSpan.FromMilliseconds(config.connectionTimeoutMs);
-            settings.ConnectTimeout = TimeSpan.FromMilliseconds(config.connectionTimeoutMs);
+            var healthUrl = BuildUrl("health");
+            using UnityWebRequest request = UnityWebRequest.Get(healthUrl);
+            ApplyCommonRequestOptions(request);
+            await SendRequest(request);
 
-            client = new MongoClient(settings);
-
-            // Test connection
-            await client.ListDatabaseNamesAsync();
-
-            database = client.GetDatabase(config.databaseName);
-            userPosesCollection = database.GetCollection<PoseDocument>(config.userPosesCollection);
-            systemPosesCollection = database.GetCollection<PoseDocument>(config.systemPosesCollection);
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"Pose API health check failed: {request.error}");
+                isConnected = false;
+                return false;
+            }
 
             isConnected = true;
-            Debug.Log("MongoDB: Successfully connected to Atlas");
+            Debug.Log("Pose API: Successfully connected");
             return true;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"MongoDB connection failed: {ex.Message}");
+            Debug.LogError($"Pose API connection failed: {ex.Message}");
             isConnected = false;
             return false;
         }
     }
 
     /// <summary>
-    /// Save a pose to MongoDB
+    /// Save a pose through backend API
     /// </summary>
     public async Task<bool> SavePose(string poseName, PoseData poseData, bool isSystemPose = false)
     {
         if (!isConnected)
         {
-            Debug.LogError("MongoDB: Not connected. Can't save pose.");
+            Debug.LogError("Pose API: Not connected. Can't save pose.");
             return false;
         }
 
         try
         {
-            var collection = isSystemPose ? systemPosesCollection : userPosesCollection;
-
-            // Check if pose already exists
-            var filter = Builders<PoseDocument>.Filter.Eq("poseName", poseName);
-            var existingPose = await collection.Find(filter).FirstOrDefaultAsync();
-
-            if (existingPose != null)
+            SavePoseRequest payload = new SavePoseRequest
             {
-                // Update existing pose
-                existingPose.bones = poseData.bones;
-                existingPose.facialExpression = poseData.facialExpression;
-                existingPose.updatedAt = DateTime.UtcNow;
+                poseName = poseName,
+                pose = poseData,
+                isSystemPose = isSystemPose
+            };
 
-                await collection.ReplaceOneAsync(filter, existingPose);
-                Debug.Log($"MongoDB: Updated pose '{poseName}'");
-            }
-            else
+            string json = JsonUtility.ToJson(payload);
+            var url = BuildUrl($"poses/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
+            using UnityWebRequest request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPUT);
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            ApplyCommonRequestOptions(request);
+            await SendRequest(request);
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                // Create new pose document
-                var document = new PoseDocument
-                {
-                    poseName = poseName,
-                    createdBy = isSystemPose ? "system" : "user",
-                    createdAt = DateTime.UtcNow,
-                    updatedAt = DateTime.UtcNow,
-                    bones = poseData.bones,
-                    facialExpression = poseData.facialExpression
-                };
-
-                await collection.InsertOneAsync(document);
-                Debug.Log($"MongoDB: Saved new pose '{poseName}'");
+                Debug.LogError($"Pose API: Failed to save pose: {request.error}");
+                return false;
             }
 
             return true;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"MongoDB: Failed to save pose: {ex.Message}");
+            Debug.LogError($"Pose API: Failed to save pose: {ex.Message}");
             return false;
         }
     }
 
     /// <summary>
-    /// Load a pose from by name
+    /// Load a pose by name through backend API
     /// </summary>
     public async Task<PoseData> LoadPose(string poseName, bool isSystemPose = false)
     {
         if (!isConnected)
         {
-            Debug.LogError("MongoDB: Not connected. Can't load pose.");
+            Debug.LogError("Pose API: Not connected. Can't load pose.");
             return null;
         }
 
         try
         {
-            var collection = isSystemPose ? systemPosesCollection : userPosesCollection;
-            var filter = Builders<PoseDocument>.Filter.Eq("poseName", poseName);
-            var document = await collection.Find(filter).FirstOrDefaultAsync();
+            var url = BuildUrl($"poses/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
+            using UnityWebRequest request = UnityWebRequest.Get(url);
+            ApplyCommonRequestOptions(request);
+            await SendRequest(request);
 
-            if (document == null)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogWarning($"MongoDB: Pose '{poseName}' not found");
+                if (request.responseCode == 404)
+                {
+                    Debug.LogWarning($"Pose API: Pose '{poseName}' not found");
+                }
+                else
+                {
+                    Debug.LogError($"Pose API: Failed to load pose: {request.error}");
+                }
                 return null;
             }
 
-            var poseData = new PoseData
+            PoseResponse response = JsonUtility.FromJson<PoseResponse>(request.downloadHandler.text);
+            if (response == null || response.pose == null)
             {
-                bones = document.bones,
-                facialExpression = document.facialExpression ?? new FacialExpressionData()
-            };
+                Debug.LogError($"Pose API: Invalid response while loading pose '{poseName}'");
+                return null;
+            }
 
-            Debug.Log($"MongoDB: Loaded pose '{poseName}'");
-            return poseData;
+            return response.pose;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"MongoDB: Failed to load pose: {ex.Message}");
+            Debug.LogError($"Pose API: Failed to load pose: {ex.Message}");
             return null;
         }
     }
 
     /// <summary>
-    /// Get all pose names
+    /// Get all pose names through backend API
     /// </summary>
     public async Task<List<string>> GetAllPoseNames(bool isSystemPose = false)
     {
         if (!isConnected)
         {
-            Debug.LogError("MongoDB: Not connected. Can't retrieve pose names.");
+            Debug.LogError("Pose API: Not connected. Can't retrieve pose names.");
             return new List<string>();
         }
 
         try
         {
-            var collection = isSystemPose ? systemPosesCollection : userPosesCollection;
-            var projection = Builders<PoseDocument>.Projection.Include("poseName");
-            var documents = await collection.Find(new BsonDocument()).Project<BsonDocument>(projection).ToListAsync();
+            var url = BuildUrl($"poses?system={isSystemPose.ToString().ToLowerInvariant()}");
+            using UnityWebRequest request = UnityWebRequest.Get(url);
+            ApplyCommonRequestOptions(request);
+            await SendRequest(request);
 
-            var poseNames = new List<string>();
-            foreach (var doc in documents)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                if (doc.Contains("poseName"))
-                {
-                    poseNames.Add(doc["poseName"].AsString);
-                }
+                Debug.LogError($"Pose API: Failed to retrieve pose names: {request.error}");
+                return new List<string>();
             }
 
-            Debug.Log($"MongoDB: Retrieved {poseNames.Count} pose names");
-            return poseNames;
+            PoseNamesResponse response = JsonUtility.FromJson<PoseNamesResponse>(request.downloadHandler.text);
+            if (response == null || response.poseNames == null)
+            {
+                return new List<string>();
+            }
+
+            return response.poseNames;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"MongoDB: Failed to retrieve pose names: {ex.Message}");
+            Debug.LogError($"Pose API: Failed to retrieve pose names: {ex.Message}");
             return new List<string>();
         }
     }
 
     /// <summary>
-    /// Delete a pose
+    /// Delete a pose through backend API
     /// </summary>
     public async Task<bool> DeletePose(string poseName, bool isSystemPose = false)
     {
         if (!isConnected)
         {
-            Debug.LogError("MongoDB: Not connected. Can't delete pose.");
+            Debug.LogError("Pose API: Not connected. Can't delete pose.");
             return false;
         }
 
         try
         {
-            var collection = isSystemPose ? systemPosesCollection : userPosesCollection;
-            var filter = Builders<PoseDocument>.Filter.Eq("poseName", poseName);
-            var result = await collection.DeleteOneAsync(filter);
+            var url = BuildUrl($"poses/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
+            using UnityWebRequest request = UnityWebRequest.Delete(url);
+            ApplyCommonRequestOptions(request);
+            await SendRequest(request);
 
-            if (result.DeletedCount > 0)
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"MongoDB: Deleted pose '{poseName}'");
                 return true;
             }
-            else
+
+            if (request.responseCode == 404)
             {
-                Debug.LogWarning($"MongoDB: Pose '{poseName}' not found for deletion");
+                Debug.LogWarning($"Pose API: Pose '{poseName}' not found for deletion");
                 return false;
             }
+
+            Debug.LogError($"Pose API: Failed to delete pose: {request.error}");
+            return false;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"MongoDB: Failed to delete pose: {ex.Message}");
+            Debug.LogError($"Pose API: Failed to delete pose: {ex.Message}");
             return false;
         }
+    }
+
+    private async Task SendRequest(UnityWebRequest request)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        var operation = request.SendWebRequest();
+        operation.completed += _ => tcs.TrySetResult(true);
+        await tcs.Task;
+    }
+
+    private void ApplyCommonRequestOptions(UnityWebRequest request)
+    {
+        int timeoutMs = Mathf.Max(1000, config != null ? config.requestTimeoutMs : 10000);
+        request.timeout = Mathf.CeilToInt(timeoutMs / 1000f);
+
+        if (config != null && !string.IsNullOrWhiteSpace(config.apiKey))
+        {
+            request.SetRequestHeader("x-api-key", config.apiKey);
+        }
+    }
+
+    private string BuildUrl(string path)
+    {
+        string baseUrl = config.apiBaseUrl.TrimEnd('/');
+        return $"{baseUrl}/{path.TrimStart('/')}";
     }
 }

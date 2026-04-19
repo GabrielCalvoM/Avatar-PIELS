@@ -1,28 +1,23 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
-/// Configuration for MongoDB Atlas connection
+/// Configuration for pose backend API connection
 /// Create this asset: Right-click > Create > MongoDB Config
 /// </summary>
-[CreateAssetMenu(fileName = "MongoDBConfig", menuName = "MongoDB Config", order = 1)]
+[CreateAssetMenu(fileName = "MongoDBConfig", menuName = "Pose API Config", order = 1)]
 public class MongoDBConfig : ScriptableObject
 {
-    [Header("MongoDB Atlas Connection")]
-    [Tooltip("Your MongoDB Atlas connection string")]
+    [Header("Backend API")]
+    [Tooltip("Base URL of backend API, default: http://localhost:3000/api")]
     [TextArea(3, 5)]
-    public string connectionString = "mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority";
+    public string apiBaseUrl = "http://localhost:3000/api";
 
-    [Header("Database Settings")]
-    [Tooltip("Name of the database")]
-    public string databaseName = "PIELSPosesDB";
+    [Tooltip("Optional API key sent as x-api-key header")]
+    public string apiKey = "";
 
-    [Tooltip("Collection name for user poses")]
-    public string userPosesCollection = "user_poses";
-
-    [Tooltip("Collection name for system poses (T-pose, etc.)")]
-    public string systemPosesCollection = "system_poses";
-
-    [Header("Connection Settings")]
-    [Tooltip("Connection timeout in milliseconds")]
-    public int connectionTimeoutMs = 10000;
+    [Header("Request Settings")]
+    [Tooltip("Request timeout in milliseconds")]
+    [FormerlySerializedAs("connectionTimeoutMs")]
+    public int requestTimeoutMs = 10000;
 }

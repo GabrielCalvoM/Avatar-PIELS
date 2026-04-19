@@ -49,10 +49,10 @@ public class SaveLoadPose : MonoBehaviour
         loadUI = GetComponent<SaveLoadUI>();
         poseHistory = GetComponent<PoseHistory>();
 
-        // Initialize MongoDB
+        // Initialize backend API service
         if (mongoConfig == null)
         {
-            Debug.LogError("MongoDBConfig not assigned! Please assign it in the Inspector.");
+            Debug.LogError("MongoDBConfig not assigned. Please assign the API config in the Inspector.");
             return;
         }
 
@@ -61,11 +61,11 @@ public class SaveLoadPose : MonoBehaviour
 
         if (!connected)
         {
-            Debug.LogError("MongoDB connection failed. Please check your configuration and internet connection.");
+            Debug.LogError("Pose backend connection failed. Please check API URL, backend status, and internet connection.");
         }
         else
         {
-            Debug.Log("MongoDB connected successfully! Poses will be saved to the cloud.");
+            Debug.Log("Pose backend connected successfully! Poses will be saved to the cloud.");
         }
     }
 
@@ -194,20 +194,20 @@ public class SaveLoadPose : MonoBehaviour
 
         if (mongoService == null || !mongoService.IsConnected)
         {
-            Debug.LogError("MongoDB not connected. Can't save pose.");
+            Debug.LogError("Pose backend not connected. Can't save pose.");
             return;
         }
 
-        // Save to MongoDB only
+        // Save via backend API
         bool success = await mongoService.SavePose(poseName, pose, false);
 
         if (success)
         {
-            Debug.Log($"Pose '{poseName}' saved to MongoDB");
+            Debug.Log($"Pose '{poseName}' saved to backend");
         }
         else
         {
-            Debug.LogError($"Failed to save pose '{poseName}' to MongoDB.");
+            Debug.LogError($"Failed to save pose '{poseName}' to backend.");
         }
 
         loadUI.CancelSaveButton();
@@ -229,11 +229,11 @@ public class SaveLoadPose : MonoBehaviour
 
         if (mongoService == null || !mongoService.IsConnected)
         {
-            Debug.LogError("MongoDB not connected. Can't load pose.");
+            Debug.LogError("Pose backend not connected. Can't load pose.");
             return;
         }
 
-        // Load from MongoDB only
+        // Load via backend API
         PoseData pose = await mongoService.LoadPose(loadUI.selected_pose, false);
 
         if (pose != null)
@@ -243,7 +243,7 @@ public class SaveLoadPose : MonoBehaviour
                 poseHistory.RecordStateBeforePoseApply();
             }
             ApplyPose(avatarSpine, pose);
-            Debug.Log($"Pose '{loadUI.selected_pose}' loaded from MongoDB");
+            Debug.Log($"Pose '{loadUI.selected_pose}' loaded from backend");
         }
         else
         {
@@ -263,11 +263,11 @@ public class SaveLoadPose : MonoBehaviour
 
         if (mongoService == null || !mongoService.IsConnected)
         {
-            Debug.LogError("MongoDB not connected. Can't load T-pose.");
+            Debug.LogError("Pose backend not connected. Can't load T-pose.");
             return;
         }
 
-        // Load T-pose from MongoDB only
+        // Load T-pose via backend API
         PoseData pose = await mongoService.LoadPose("tpose", true); // true = system pose
 
         if (pose != null)
@@ -277,18 +277,18 @@ public class SaveLoadPose : MonoBehaviour
                 poseHistory.RecordStateBeforePoseApply();
             }
             ApplyPose(avatarSpine, pose);
-            Debug.Log("T-pose loaded from MongoDB");
+            Debug.Log("T-pose loaded from backend");
             loadUI.CancelLoadButton();
         }
         else
         {
-            Debug.LogError("T-pose not found in MongoDB. Please save it first using 'Save Current Pose as T-Pose to MongoDB' from the GameManager object -> SaveLoadPose component menu.");
+            Debug.LogError("T-pose not found in backend. Please save it first using 'Save Current Pose as T-Pose to MongoDB' from the GameManager object -> SaveLoadPose component menu.");
         }
     }
 
     /// <summary>
     /// Get all pose names
-    /// Returns empty list if MongoDB not connected
+    /// Returns empty list if backend is not connected
     /// </summary>
     public async Task<List<string>> GetAllPoseNamesFromMongoDB(bool isSystemPose = false)
     {
@@ -308,7 +308,7 @@ public class SaveLoadPose : MonoBehaviour
     {
         if (mongoService == null || !mongoService.IsConnected)
         {
-            Debug.LogError("MongoDB not connected. Can't save T-pose.");
+            Debug.LogError("Pose backend not connected. Can't save T-pose.");
             return;
         }
 
@@ -317,11 +317,11 @@ public class SaveLoadPose : MonoBehaviour
 
         if (success)
         {
-            Debug.Log("T-pose saved to MongoDB successfully");
+            Debug.Log("T-pose saved to backend successfully");
         }
         else
         {
-            Debug.LogError("Failed to save T-pose to MongoDB.");
+            Debug.LogError("Failed to save T-pose to backend.");
         }
     }
 }
