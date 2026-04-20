@@ -14066,11 +14066,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: X
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: Z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: scale
@@ -19470,11 +19470,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: X
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: Z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6132325911123893566, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
       propertyPath: scale
