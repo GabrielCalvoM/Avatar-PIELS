@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,9 +11,17 @@ public class HandFocus : MonoBehaviour
     [SerializeField] private GameObject cameraControls;
     [SerializeField] private GameObject handsUI;
     [SerializeField] UIManager uiManager;
+    [SerializeField] ToggleGroup _fingerGroup;
+
+    public ArticulationUI activeFinger;
+    public ToggleGroup FingerGroup { get { return _fingerGroup; } }
+
+    private static HandFocus _instance;
+    public static HandFocus Instance { get { return _instance; } }
 
     public void OnHandFocusButtonPressed()
     {
+        _instance = this;
         mainCamera.SetActive(false);
         handCamera.SetActive(true);
         //cameraControls.SetActive(false);
@@ -25,6 +34,13 @@ public class HandFocus : MonoBehaviour
 
     public void OnHandFocusReturnButtonPressed()
     {
+        if (activeFinger)
+        {
+            activeFinger.ToggleOff();
+            activeFinger = null;
+        }
+
+        _instance = null;
         mainCamera.SetActive(true);
         handCamera.SetActive(false);
         //cameraControls.SetActive(true);

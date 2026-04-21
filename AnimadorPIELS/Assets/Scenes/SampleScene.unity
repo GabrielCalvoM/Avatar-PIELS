@@ -2758,6 +2758,8 @@ MonoBehaviour:
   cameraControls: {fileID: 1909474833}
   handsUI: {fileID: 558201749}
   uiManager: {fileID: 320891617}
+  _fingerGroup: {fileID: 1988212811}
+  activeFinger: {fileID: 0}
 --- !u!1 &325245106
 GameObject:
   m_ObjectHideFlags: 0
@@ -8063,6 +8065,8 @@ MonoBehaviour:
   cameraControls: {fileID: 1909474833}
   handsUI: {fileID: 558201749}
   uiManager: {fileID: 320891617}
+  _fingerGroup: {fileID: 1988212811}
+  activeFinger: {fileID: 0}
 --- !u!1 &784854920
 GameObject:
   m_ObjectHideFlags: 0

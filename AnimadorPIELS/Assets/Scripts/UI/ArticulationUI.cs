@@ -64,6 +64,11 @@ public class ArticulationUI : MonoBehaviour
         }
     }
 
+    public void ToggleOff()
+    {
+        button.GetComponent<Toggle>().isOn = false;
+    }
+
     /// <summary>
     /// Se activa cuando se selecciona/deselecciona un hueso
     /// </summary>
@@ -86,12 +91,21 @@ public class ArticulationUI : MonoBehaviour
         Color newColor = button.GetComponent<Image>().color;
         newColor.a = isOn ? 0 : 1;
         button.GetComponent<Image>().color = newColor;
+
         if (isOn)
         {
             transform.localEulerAngles = originalRotation;
             SpawnRotators();
             uiManager.DisableButtons();
+            Toggle toggle = button.GetComponent<Toggle>();
+
+            if (HandFocus.Instance && toggle.group == HandFocus.Instance.FingerGroup)
+            {
+                HandFocus.Instance.activeFinger = this;
+            }
         }
+
+        //Debug.Log(isOn);
     }
 
     void SpawnRotators()
