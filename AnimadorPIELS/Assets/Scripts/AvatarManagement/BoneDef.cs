@@ -24,5 +24,6 @@ public class BoneDef : ScriptableObject
 
     [Header("Focusable UI")] // Optional
     public MonoScript focusScript;
+    public GameObject focusableUI;
     public GameObject focusCamera;
 }

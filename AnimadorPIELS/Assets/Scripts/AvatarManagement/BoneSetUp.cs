@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 
@@ -29,6 +30,10 @@ public class BoneSetUp : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject uiManager;
+
+    // Collected buttons to assign to UIManager at the end of initialization
+    private List<GameObject> collectedBodyButtons = new();
+    private List<GameObject> collectedHandsButtons = new();
 
     //////////////////////////////////////////////////////////// METHODS
     
@@ -85,6 +90,13 @@ public class BoneSetUp : MonoBehaviour
                 SetField(t, aUI, "Z", def.enableZ, flags);
                 SetField(t, aUI, "scale", def.uiSize, flags);
             }
+
+            // Collect any buttons/toggles from the instantiated articulation UI
+            var found = CollectButtonsFromInstance(instance);
+            foreach (var go in found) {
+                if (IsHandBone(bone.name)) collectedHandsButtons.Add(go);
+                else collectedBodyButtons.Add(go);
+            }
         }
 
         // Attach Focusable
@@ -98,6 +110,19 @@ public class BoneSetUp : MonoBehaviour
 
                 SetField(t, fInstance, "focusCamera", def.focusCamera.GetComponent<Camera>(), flags);
                 SetField(t, fInstance, "uiManager", uiManager, flags);
+            }
+        }
+
+        // Instantiate focusable UI prefab (if provided) and collect buttons
+        if (def.focusableUI != null) {
+            GameObject fInst = Instantiate(def.focusableUI, bone);
+            fInst.transform.localPosition = Vector3.zero;
+            fInst.transform.localScale = Vector3.one;
+
+            var foundF = CollectButtonsFromInstance(fInst);
+            foreach (var go in foundF) {
+                if (IsHandBone(bone.name)) collectedHandsButtons.Add(go);
+                else collectedBodyButtons.Add(go);
             }
         }
 
@@ -115,10 +140,46 @@ public class BoneSetUp : MonoBehaviour
         recursive_collect(bone_root.transform, bones);
 
         foreach (BoneDef def in bone_definitions) {
+            if (!def) continue; // Skip null entries
+
             Regex regex = new Regex(def.boneName);
-            foreach (Transform b in bones) 
+            foreach (Transform b in bones)
                 if (regex.IsMatch(b.name)) { init_bone(b, def); }
         }
+
+        // After initializing bones, assign collected buttons to UIManager
+        if (uiManager != null) {
+            var uiComp = uiManager.GetComponent<UIManager>();
+            if (uiComp != null) {
+                var t = typeof(UIManager);
+                var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+
+                SetField(t, uiComp, "bodyButtons", collectedBodyButtons.ToArray(), flags);
+                SetField(t, uiComp, "handsButtons", collectedHandsButtons.ToArray(), flags);
+
+                // Refresh UI state and enable buttons
+                uiComp.RefreshUI();
+                uiComp.EnableButtons();
+            } else {
+                Debug.LogWarning("uiManager GameObject does not have a UIManager component.");
+            }
+        } else {
+            Debug.LogWarning("uiManager reference not set in BoneSetUp.");
+        }
+    }
+
+    List<GameObject> CollectButtonsFromInstance(GameObject root) {
+        List<GameObject> res = new List<GameObject>();
+        var buttons = root.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+        foreach (var b in buttons) if (!res.Contains(b.gameObject)) res.Add(b.gameObject);
+        var toggles = root.GetComponentsInChildren<UnityEngine.UI.Toggle>(true);
+        foreach (var t in toggles) if (!res.Contains(t.gameObject)) res.Add(t.gameObject);
+        return res;
+    }
+
+    bool IsHandBone(string boneName) {
+        string n = boneName.ToLower();
+        return n.Contains("hand") || n.Contains("finger") || n.Contains("thumb") || n.Contains("index") || n.Contains("middle") || n.Contains("ring") || n.Contains("pinky");
     }
     
 
