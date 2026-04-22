@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 256f77a0c22a54e4ba8a6a9e7682468b, type: 3}
-  m_Name: Def_Hand
+  m_Name: Def_Neck
   m_EditorClassIdentifier: Assembly-CSharp::BoneDef
-  boneName: ^Bone_Hand_(L|R)$
+  boneName: ^Bone_Neck$
   boneSide: 1
-  movScript: {fileID: 11500000, guid: e2957e147d614b7448af907c80a224fa, type: 3}
+  movScript: {fileID: 11500000, guid: 968f9edbe51b0f14daa3d784394b483f, type: 3}
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
   enableY: 1
   enableZ: 1
   uiSize: 1
   constraints: {fileID: 11400000, guid: ccbc8617ee6813c48bff2859c4d19809, type: 2}
-  focusScript: {fileID: 11500000, guid: 167ea09695716634db994f95d8043241, type: 3}
+  focusScript: {fileID: 11500000, guid: 43ba463aed50d5a449f7ddfbc156bb80, type: 3}
   focusableUI: {fileID: 5202631800287916530, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}
   focusCamera: {fileID: 0}
