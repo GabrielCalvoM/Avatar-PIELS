@@ -13,7 +13,7 @@ public class FaceFocus : MonoBehaviour
 
     [Header("Cameras")]
     [SerializeField] private GameObject mainCamera;
-    [SerializeField] private GameObject faceCamera;
+    [SerializeField] private GameObject focusCamera;
 
     [Header("Avatar Face")]
     [SerializeField] private SkinnedMeshRenderer avatarFace;
@@ -46,7 +46,7 @@ public class FaceFocus : MonoBehaviour
     {
         isFocused = focused;
         mainCamera.SetActive(!isFocused);
-        faceCamera.SetActive(isFocused);
+        focusCamera.SetActive(isFocused);
         focusButton.SetActive(!isFocused);
         uiManager.RefreshUI();
     }

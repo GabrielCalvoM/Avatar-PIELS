@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class LoweArmMov : ArticulationMov
+public class LowerArmMov : ArticulationMov
 {
     override protected void OnMove()
     {

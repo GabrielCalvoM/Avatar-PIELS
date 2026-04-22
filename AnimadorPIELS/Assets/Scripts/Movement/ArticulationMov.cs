@@ -51,6 +51,13 @@ public abstract class ArticulationMov : MonoBehaviour
         return cameraRef;
     }
 
+    // Setter toxico que puse - atte: Carlos
+
+    public void SetConstraints(RotationConstraints cons) {
+        _constraints = cons;
+    }
+
+
     protected void Start()
     {
         cameraRef = ResolveActiveCamera();

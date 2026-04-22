@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HandFocus : MonoBehaviour
 {
     [SerializeField] private GameObject mainCamera;
-    [SerializeField] private GameObject handCamera;
+    [SerializeField] private GameObject focusCamera;
     [SerializeField] private GameObject cameraControls;
     [SerializeField] private GameObject handsUI;
     [SerializeField] UIManager uiManager;
@@ -23,7 +23,7 @@ public class HandFocus : MonoBehaviour
     {
         _instance = this;
         mainCamera.SetActive(false);
-        handCamera.SetActive(true);
+        focusCamera.SetActive(true);
         //cameraControls.SetActive(false);
         handsUI.SetActive(true);
         Button button = handsUI.GetComponentInChildren<Button>();
@@ -42,7 +42,7 @@ public class HandFocus : MonoBehaviour
 
         _instance = null;
         mainCamera.SetActive(true);
-        handCamera.SetActive(false);
+        focusCamera.SetActive(false);
         //cameraControls.SetActive(true);
         handsUI.SetActive(false);
         uiManager.SetFocusedOnHands(false);
