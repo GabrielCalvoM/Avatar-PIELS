@@ -9,11 +9,11 @@ public class BoneSetUp : MonoBehaviour
         Bone_UpperArm_<L/R> + UpperArmMov Script
         Bone_ForeArm_<L/R> + LowerArmMov Script + ElbowConstraint
         Bone_Hand_<L/R> + HandMove Script + HandConstraint + HandFocus[Camera]
-        Bone_F_Index_<L/R>_01 + Bone_F_Index_<L/R>_02 + FingerMov Script + FingerConstraint01 + FingerConstraint02
-        Bone_F_Middle_<L/R>_01 + Bone_F_Middle_<L/R>_02 + FingerMov Script + FingerConstraint01 + FingerConstraint02
-        Bone_F_Ring_<L/R>_01 + Bone_F_Ring_<L/R>_02 + FingerMov Script + FingerConstraint01 + FingerConstraint02
-        Bone_F_Pinky_<L/R>_01 + Bone_F_Pinky_<L/R>_02 + FingerMov Script + FingerConstraint01 + FingerConstraint02
-        Bone_F_Thumb_<L/R>_01 + Bone_F_Thumb_<L/R>_02 + FingerMov Script + FingerConstraint01 + FingerConstraint02        
+        Bone_F_Index_01_<L/R> + Bone_F_Index_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
+        Bone_F_Middle_01_<L/R> + Bone_F_Middle_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
+        Bone_F_Ring_01_<L/R> + Bone_F_Ring_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
+        Bone_F_Pinky_01_<L/R> + Bone_F_Pinky_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
+        Bone_F_Thumb_01_<L/R> + Bone_F_Thumb_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02        
     */
 
 

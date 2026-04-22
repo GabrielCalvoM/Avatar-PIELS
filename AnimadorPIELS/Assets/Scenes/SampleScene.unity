@@ -6357,25 +6357,105 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7650217218306576358, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Middle_02_L
+      objectReference: {fileID: 0}
+    - target: {fileID: -7553047512359763170, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Thumb_01_L
+      objectReference: {fileID: 0}
+    - target: {fileID: -6907450768124369054, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Ring_01_L
+      objectReference: {fileID: 0}
     - target: {fileID: -6807511465447805429, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5535154188257809109, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Middle_01_L
+      objectReference: {fileID: 0}
+    - target: {fileID: -4625605633801335987, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Ring_02_L
       objectReference: {fileID: 0}
     - target: {fileID: -4464337431592839542, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -4089904869822035422, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Pinky_02_L
+      objectReference: {fileID: 0}
+    - target: {fileID: -3202034016378943748, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Index_02_R
+      objectReference: {fileID: 0}
+    - target: {fileID: -2915318633648588080, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: -2915318633648588080, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
       value: Bone_LowerArm_L
       objectReference: {fileID: 0}
+    - target: {fileID: -2046665284732734658, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+    - target: {fileID: -2046665284732734658, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_Hand_L
+      objectReference: {fileID: 0}
+    - target: {fileID: -1513803495158632007, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: -1513803495158632007, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
       value: Bone_UpperArm_L
       objectReference: {fileID: 0}
+    - target: {fileID: -473399146760512154, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Middle_01_R
+      objectReference: {fileID: 0}
+    - target: {fileID: -95981085675572342, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Thumb_01_R
+      objectReference: {fileID: 0}
+    - target: {fileID: -28177959880342852, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Pinky_02_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 357775898490109839, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_Hand_R
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
       value: JuliaAvatar
+      objectReference: {fileID: 0}
+    - target: {fileID: 2200407656198030722, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Pinky_01_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347967034694048490, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_Neck
+      objectReference: {fileID: 0}
+    - target: {fileID: 2639529911319827150, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Pinky_01_L
+      objectReference: {fileID: 0}
+    - target: {fileID: 2899573030303226212, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_LowerArm_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986619665766859290, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Middle_02_R
       objectReference: {fileID: 0}
     - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[20]'
@@ -6393,12 +6473,41 @@ PrefabInstance:
       propertyPath: 'm_BlendShapeWeights.Array.data[55]'
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5356545189917463795, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Index_02_L
+      objectReference: {fileID: 0}
+    - target: {fileID: 6256112275330571454, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Ring_01_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 6284399948404380511, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Index_01_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 6379315843885439161, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Ring_02_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 6712558125494557543, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Thumb_02_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 6750107695338055179, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Thumb_02_L
+      objectReference: {fileID: 0}
     - target: {fileID: 7691487924329598137, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
       value: Bone_UpperArm_R
       objectReference: {fileID: 0}
+    - target: {fileID: 8040749296003021946, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: m_Name
+      value: Bone_F_Index_01_L
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4986619665766859290, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5322906624401428936, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       insertIndex: 0
