@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 8063292118821195002}
   - component: {fileID: 4084216389148521739}
   - component: {fileID: 3817409010698756902}
+  - component: {fileID: 8746592645675512547}
   m_Layer: 5
-  m_Name: FocusableUI
+  m_Name: HandFocusUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +86,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4084216389148521739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +117,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   cameraRef: {fileID: 0}
+--- !u!114 &8746592645675512547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5202631800287916530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167ea09695716634db994f95d8043241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandFocus
+  mainCamera: {fileID: 0}
+  focusCamera: {fileID: 0}
+  cameraControls: {fileID: 0}
+  handsUI: {fileID: 0}
+  uiManager: {fileID: 0}
+  _fingerGroup: {fileID: 0}
+  activeFinger: {fileID: 0}
 --- !u!1 &7940118715813108295
 GameObject:
   m_ObjectHideFlags: 0

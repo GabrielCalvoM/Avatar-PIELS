@@ -20,6 +20,8 @@ MonoBehaviour:
   enableY: 1
   enableZ: 1
   uiSize: 1
+  toggleGroup: 0
+  layer: 5
   constraints: {fileID: 11400000, guid: ccbc8617ee6813c48bff2859c4d19809, type: 2}
   focusScript: {fileID: 11500000, guid: 43ba463aed50d5a449f7ddfbc156bb80, type: 3}
   focusableUI: {fileID: 5202631800287916530, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}

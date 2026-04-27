@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e762783512fc943a408a5a363813dd, type: 3}
+  m_Name: Focus_Hand
+  m_EditorClassIdentifier: Assembly-CSharp::FocusableDef
+  boneName: ^Bone_F_Middle_01_(L|R)$
+  boneSide: 1
+  isHand: 0
+  focusableUI: {fileID: 5202631800287916530, guid: 9d05ccf04570d7a4b830963756dfbde0, type: 3}
+  uiSize: 1
+  toggleGroup: 0

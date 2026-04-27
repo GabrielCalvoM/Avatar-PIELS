@@ -20,70 +20,117 @@ public class BoneSetUp : MonoBehaviour
         Bone_F_Middle_01_<L/R> + Bone_F_Middle_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
         Bone_F_Ring_01_<L/R> + Bone_F_Ring_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
         Bone_F_Pinky_01_<L/R> + Bone_F_Pinky_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
-        Bone_F_Thumb_01_<L/R> + Bone_F_Thumb_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02        
+        Bone_F_Thumb_01_<L/R> + Bone_F_Thumb_02_<L/R> + FingerMov Script + FingerConstraint01 + FingerConstraint02
+
     */
 
     [Header("Bone Skeleton Search")]
     [SerializeField] private GameObject bone_root;
     [SerializeField] private List<BoneDef> bone_definitions;
+    [SerializeField] private List<FocusableDef> focusable_definitions; // hands and face
 
     [Header("UI References")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject uiManager;
+    [SerializeField] private ToggleGroup articulationToggleGroup;
+    [SerializeField] private ToggleGroup fingersToggleGroup;
 
     // Collected buttons to assign to UIManager at the end of initialization
     private List<GameObject> collectedBodyButtons = new();
     private List<GameObject> collectedHandsButtons = new();
 
     //////////////////////////////////////////////////////////// METHODS
-    
-    void recursive_collect(Transform root, List<Transform> res) {
-        foreach (Transform child in root) {
+
+    void recursive_collect(Transform root, List<Transform> res)
+    {
+        foreach (Transform child in root)
+        {
             res.Add(child);
             recursive_collect(child, res);
         }
     }
 
-    void SetField(Type t, object instance, string fieldName, object value, System.Reflection.BindingFlags flags) {
+    void SetField(Type t, object instance, string fieldName, object value, System.Reflection.BindingFlags flags)
+    {
         var field = t.GetField(fieldName, flags);
-        if (field != null) {
+        if (field != null)
+        {
             field.SetValue(instance, value);
-        } else {
+        }
+        else
+        {
             Debug.LogWarning($"Field {fieldName} not found in {t.Name}");
         }
     }
 
-    void init_bone(Transform bone, BoneDef def) { 
+    void init_bone(Transform bone, BoneDef def)
+    {
         Type tMov = def.movScript != null ? def.movScript.GetClass() : null;
         ArticulationMov aMov = null;
 
         // Attach Mov Script
-        if (tMov != null) {
-            if (!bone.TryGetComponent(tMov, out Component existing)) {
+        if (tMov != null)
+        {
+            if (!bone.TryGetComponent(tMov, out Component existing))
+            {
                 aMov = bone.gameObject.AddComponent(tMov) as ArticulationMov;
-            } else {
+            }
+            else
+            {
                 aMov = existing as ArticulationMov;
             }
         }
 
         // Assign Constraints
-        if (aMov != null && def.constraints != null) {
+        if (aMov != null && def.constraints != null)
+        {
             aMov.SetConstraints(def.constraints);
         }
 
         // Instantiate Prefab
-        if (def.articulationUI != null) {
+        if (def.articulationUI != null)
+        {
             GameObject instance = Instantiate(def.articulationUI, bone);
             instance.transform.localPosition = Vector3.zero;
             instance.transform.position = bone.position;
-            instance.transform.localScale = Vector3.one;
-            
+            instance.transform.localScale = def.uiSize * Vector3.one;
+
+            switch (def.toggleGroup)
+            {
+                case BoneDef.ToggleGroupOption.ArticulationToggleGroup:
+                    break;
+                case BoneDef.ToggleGroupOption.FingersToggleGroup:
+                    break;
+            }
+
+            ToggleGroup targetToggleGroup = def.toggleGroup switch
+            {
+                BoneDef.ToggleGroupOption.ArticulationToggleGroup => articulationToggleGroup,
+                BoneDef.ToggleGroupOption.FingersToggleGroup => fingersToggleGroup,
+                _ => null
+            };
+
+            if (targetToggleGroup == null)
+            {
+                Debug.LogWarning($"ToggleGroup reference not set for {def.toggleGroup} (bone: {bone.name})");
+            }
+            else
+            {
+                Toggle toggle = instance.GetComponentInChildren<Toggle>(true);
+                if (toggle != null)
+                {
+                    toggle.group = targetToggleGroup;
+                }
+            }
+
             ArticulationUI aUI = instance.GetComponent<ArticulationUI>();
-            if (aUI != null) {
+            if (aUI != null)
+            {
                 var t = typeof(ArticulationUI);
                 var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
 
                 SetField(t, aUI, "articulation", aMov, flags);
+                SetField(t, aUI, "uiManager", uiManager.GetComponent<UIManager>(), flags);
                 SetField(t, aUI, "cameraRef", mainCamera.GetComponent<Camera>(), flags);
                 SetField(t, aUI, "X", def.enableX, flags);
                 SetField(t, aUI, "Y", def.enableY, flags);
@@ -93,45 +140,77 @@ public class BoneSetUp : MonoBehaviour
 
             // Collect any buttons/toggles from the instantiated articulation UI
             var found = CollectButtonsFromInstance(instance);
-            foreach (var go in found) {
-                if (IsHandBone(bone.name)) collectedHandsButtons.Add(go);
+            foreach (var go in found)
+            {
+                if (def.isHand)
+                {
+                    collectedHandsButtons.Add(go);
+                }
                 else collectedBodyButtons.Add(go);
             }
         }
-
-        // Attach Focusable
-        Type tFocus = def.focusScript != null ? def.focusScript.GetClass() : null;
-        if (tFocus != null && def.focusCamera != null) {
-            if (!bone.TryGetComponent(tFocus, out Component existing)) 
-            {    
-                MonoBehaviour fInstance = bone.gameObject.AddComponent(tFocus) as MonoBehaviour;
-                var t = fInstance.GetType();
-                var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
-
-                SetField(t, fInstance, "focusCamera", def.focusCamera.GetComponent<Camera>(), flags);
-                SetField(t, fInstance, "uiManager", uiManager, flags);
-            }
-        }
-
-        // Instantiate focusable UI prefab (if provided) and collect buttons
-        if (def.focusableUI != null) {
-            GameObject fInst = Instantiate(def.focusableUI, bone);
-            fInst.transform.localPosition = Vector3.zero;
-            fInst.transform.localScale = Vector3.one;
-
-            var foundF = CollectButtonsFromInstance(fInst);
-            foreach (var go in foundF) {
-                if (IsHandBone(bone.name)) collectedHandsButtons.Add(go);
-                else collectedBodyButtons.Add(go);
-            }
-        }
-
 
         Debug.Log($"Initialized bone {bone.name} with Mov: {(aMov != null ? aMov.GetType().Name : "None")} and UI: {(def.articulationUI != null ? def.articulationUI.name : "None")}");
     }
 
-    void init_bones() {
-        if (bone_root == null) {
+    void init_focusable(Transform bone, FocusableDef def)
+    {
+        if (def.focusableUI == null) return;
+
+        GameObject instance = Instantiate(def.focusableUI, bone);
+        instance.transform.localPosition = Vector3.zero;
+        instance.transform.position = bone.position;
+        instance.transform.localScale = def.uiSize * Vector3.one;
+
+        // If this focusable uses HandFocus, wire required refs
+        var handFocuses = instance.GetComponentsInChildren<HandFocus>(true);
+        if (handFocuses != null && handFocuses.Length > 0)
+        {
+            var t = typeof(HandFocus);
+            var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+            UIManager uiComp = uiManager != null ? uiManager.GetComponent<UIManager>() : null;
+
+            foreach (var hf in handFocuses)
+            {
+                if (hf == null) continue;
+                if (mainCamera != null) SetField(t, hf, "mainCamera", mainCamera, flags);
+                if (uiComp != null) SetField(t, hf, "uiManager", uiComp, flags);
+                if (fingersToggleGroup != null) SetField(t, hf, "_fingerGroup", fingersToggleGroup, flags);
+            }
+        }
+
+        ToggleGroup targetToggleGroup = def.toggleGroup switch
+        {
+            FocusableDef.ToggleGroupOption.ArticulationToggleGroup => articulationToggleGroup,
+            FocusableDef.ToggleGroupOption.FingersToggleGroup => fingersToggleGroup,
+            _ => null
+        };
+
+        if (targetToggleGroup != null)
+        {
+            Toggle toggle = instance.GetComponentInChildren<Toggle>(true);
+            if (toggle != null)
+            {
+                toggle.group = targetToggleGroup;
+            }
+        }
+
+        // Collect any buttons/toggles from the instantiated focusable UI
+        var found = CollectButtonsFromInstance(instance);
+        foreach (var go in found)
+        {
+            if (def.isHand)
+            {
+                collectedHandsButtons.Add(go);
+            }
+            else collectedBodyButtons.Add(go);
+        }
+    }
+
+    void init_bones()
+    {
+        if (bone_root == null)
+        {
             Debug.LogError("Bone Root not assigned in BoneSetUp script.");
             return;
         }
@@ -139,7 +218,8 @@ public class BoneSetUp : MonoBehaviour
         List<Transform> bones = new();
         recursive_collect(bone_root.transform, bones);
 
-        foreach (BoneDef def in bone_definitions) {
+        foreach (BoneDef def in bone_definitions)
+        {
             if (!def) continue; // Skip null entries
 
             Regex regex = new Regex(def.boneName);
@@ -147,10 +227,21 @@ public class BoneSetUp : MonoBehaviour
                 if (regex.IsMatch(b.name)) { init_bone(b, def); }
         }
 
+        foreach (FocusableDef def in focusable_definitions)
+        {
+            if (!def) continue; // Skip null entries
+
+            Regex regex = new Regex(def.boneName);
+            foreach (Transform b in bones)
+                if (regex.IsMatch(b.name)) { init_focusable(b, def); }
+        }
+
         // After initializing bones, assign collected buttons to UIManager
-        if (uiManager != null) {
+        if (uiManager != null)
+        {
             var uiComp = uiManager.GetComponent<UIManager>();
-            if (uiComp != null) {
+            if (uiComp != null)
+            {
                 var t = typeof(UIManager);
                 var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
 
@@ -159,16 +250,22 @@ public class BoneSetUp : MonoBehaviour
 
                 // Refresh UI state and enable buttons
                 uiComp.RefreshUI();
-                uiComp.EnableButtons();
-            } else {
+                uiComp.EnableBodyButtons();
+                uiComp.DisableHandsButtons();
+            }
+            else
+            {
                 Debug.LogWarning("uiManager GameObject does not have a UIManager component.");
             }
-        } else {
+        }
+        else
+        {
             Debug.LogWarning("uiManager reference not set in BoneSetUp.");
         }
     }
 
-    List<GameObject> CollectButtonsFromInstance(GameObject root) {
+    List<GameObject> CollectButtonsFromInstance(GameObject root)
+    {
         List<GameObject> res = new List<GameObject>();
         var buttons = root.GetComponentsInChildren<UnityEngine.UI.Button>(true);
         foreach (var b in buttons) if (!res.Contains(b.gameObject)) res.Add(b.gameObject);
@@ -176,12 +273,6 @@ public class BoneSetUp : MonoBehaviour
         foreach (var t in toggles) if (!res.Contains(t.gameObject)) res.Add(t.gameObject);
         return res;
     }
-
-    bool IsHandBone(string boneName) {
-        string n = boneName.ToLower();
-        return n.Contains("hand") || n.Contains("finger") || n.Contains("thumb") || n.Contains("index") || n.Contains("middle") || n.Contains("ring") || n.Contains("pinky");
-    }
-    
 
     //////////////////////////////////////////////////////////// GAMELOOP 
     void Start()

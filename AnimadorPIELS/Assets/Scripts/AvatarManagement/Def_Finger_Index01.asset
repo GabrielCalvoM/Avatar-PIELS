@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoneDef
   boneName: ^Bone_F_Index_01_(L|R)$
   boneSide: 1
-  boneSeg: 1
+  isHand: 1
   movScript: {fileID: 11500000, guid: d84dff0dace627c48a654f0461193e98, type: 3}
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
   enableY: 1
   enableZ: 1
-  uiSize: 1
+  uiSize: 0.2
+  toggleGroup: 1
   constraints: {fileID: 11400000, guid: 5f429be2fc2b4d448851213a564e38ca, type: 2}
   focusScript: {fileID: 0}
+  focusableUI: {fileID: 0}
   focusCamera: {fileID: 0}
