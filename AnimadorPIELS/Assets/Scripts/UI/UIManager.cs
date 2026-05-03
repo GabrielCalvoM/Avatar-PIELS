@@ -54,30 +54,15 @@ public class UIManager : MonoBehaviour
         {
             DisableBodyButtons();
             EnableHandsButtons();
-            foreach (GameObject bodyPart in bodyParts)
-            {
-                bodyPart.SetActive(false);
-            }
         }
         else
         {
             DisableHandsButtons();
             EnableBodyButtons();
-            foreach (GameObject bodyPart in bodyParts)
-            {
-                bodyPart.SetActive(true);
-            }
         }
     }
 
     //////////////////////////////////////////////////////////// METHODS
-
-    public void RefreshUI()
-    {
-        envUI.SetActive(mainCamera.activeSelf);
-        faceUI.SetActive(faceCamera.activeSelf);
-        genUI.SetActive(mainCamera.activeSelf || faceCamera.activeSelf);
-    }
 
     public void EnableButtons()
     {

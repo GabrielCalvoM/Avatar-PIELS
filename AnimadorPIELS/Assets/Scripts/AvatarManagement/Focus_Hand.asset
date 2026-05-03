@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e762783512fc943a408a5a363813dd, type: 3}
   m_Name: Focus_Hand
   m_EditorClassIdentifier: Assembly-CSharp::FocusableDef
-  boneName: ^Bone_F_Middle_01_(L|R)$
+  boneName: ^Bone_Hand_(L|R)$
   boneSide: 1
   isHand: 0
   focusableUI: {fileID: 5202631800287916530, guid: 9d05ccf04570d7a4b830963756dfbde0, type: 3}
+  cameraPrefab: {fileID: 3832819905848285856, guid: 8bcffa60733531a45ae5cbaacb6211ee, type: 3}
   uiSize: 1
   toggleGroup: 0

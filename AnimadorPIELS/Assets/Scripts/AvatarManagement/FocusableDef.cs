@@ -15,6 +15,7 @@ public class FocusableDef : ScriptableObject
 
     [Header("Focusable UI")]
     public GameObject focusableUI;
+    public GameObject cameraPrefab;
     public float uiSize = 1f;
     public ToggleGroupOption toggleGroup = ToggleGroupOption.ArticulationToggleGroup;
 

@@ -32,6 +32,9 @@ public class BoneSetUp : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject uiManager;
+    [SerializeField] private GameObject envUI;
+    [SerializeField] private GameObject handsUI;
+    [SerializeField] private GameObject faceUI;
     [SerializeField] private ToggleGroup articulationToggleGroup;
     [SerializeField] private ToggleGroup fingersToggleGroup;
 
@@ -135,7 +138,7 @@ public class BoneSetUp : MonoBehaviour
                 SetField(t, aUI, "X", def.enableX, flags);
                 SetField(t, aUI, "Y", def.enableY, flags);
                 SetField(t, aUI, "Z", def.enableZ, flags);
-                SetField(t, aUI, "scale", def.uiSize, flags);
+                SetField(t, aUI, "scale", 1, flags);
             }
 
             // Collect any buttons/toggles from the instantiated articulation UI
@@ -153,12 +156,17 @@ public class BoneSetUp : MonoBehaviour
         Debug.Log($"Initialized bone {bone.name} with Mov: {(aMov != null ? aMov.GetType().Name : "None")} and UI: {(def.articulationUI != null ? def.articulationUI.name : "None")}");
     }
 
-    void init_focusable(Transform bone, FocusableDef def)
+    void init_hand_focusable(Transform bone, FocusableDef def)
     {
         if (def.focusableUI == null) return;
+        GameObject focusCamera = Instantiate(def.cameraPrefab, bone);
+
+        Camera cam = focusCamera.GetComponentInChildren<Camera>(true);
+        foreach (var c in bone.GetComponentsInChildren<Canvas>(true))
+            c.worldCamera = cam;
 
         GameObject instance = Instantiate(def.focusableUI, bone);
-        instance.transform.localPosition = Vector3.zero;
+        //instance.transform.localPosition = Vector3.zero;
         instance.transform.position = bone.position;
         instance.transform.localScale = def.uiSize * Vector3.one;
 
@@ -174,10 +182,97 @@ public class BoneSetUp : MonoBehaviour
             {
                 if (hf == null) continue;
                 if (mainCamera != null) SetField(t, hf, "mainCamera", mainCamera, flags);
+                if (focusCamera != null) SetField(t, hf, "focusCamera", focusCamera, flags);
+                if (envUI != null) SetField(t, hf, "cameraControls", envUI, flags);
+                if (handsUI != null) SetField(t, hf, "handsUI", handsUI, flags);
                 if (uiComp != null) SetField(t, hf, "uiManager", uiComp, flags);
                 if (fingersToggleGroup != null) SetField(t, hf, "_fingerGroup", fingersToggleGroup, flags);
             }
         }
+
+        ToggleGroup targetToggleGroup = def.toggleGroup switch
+        {
+            FocusableDef.ToggleGroupOption.ArticulationToggleGroup => articulationToggleGroup,
+            FocusableDef.ToggleGroupOption.FingersToggleGroup => fingersToggleGroup,
+            _ => null
+        };
+
+        if (targetToggleGroup != null)
+        {
+            Toggle toggle = instance.GetComponentInChildren<Toggle>(true);
+            if (toggle != null)
+            {
+                toggle.group = targetToggleGroup;
+            }
+        }
+
+        // Collect any buttons/toggles from the instantiated focusable UI
+        var found = CollectButtonsFromInstance(instance);
+        foreach (var go in found)
+        {
+            if (def.isHand)
+            {
+                collectedHandsButtons.Add(go);
+            }
+            else collectedBodyButtons.Add(go);
+        }
+    }
+
+    void init_face_focusable(Transform bone, FocusableDef def)
+    {
+        if (def.focusableUI == null) return;
+        GameObject focusCamera = Instantiate(def.cameraPrefab, bone);
+
+        GameObject instance = Instantiate(def.focusableUI, bone);
+        instance.transform.localPosition = Vector3.zero;
+        instance.transform.position = bone.position;
+        instance.transform.localScale = def.uiSize * Vector3.one;
+
+        // If this focusable uses FaceFocus, wire required refs
+        FaceFocus faceFocus = instance.gameObject.GetComponent<FaceFocus>();
+        if (faceFocus == null) return;
+
+        var t = typeof(FaceFocus);
+        var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+        UIManager uiComp = uiManager != null ? uiManager.GetComponent<UIManager>() : null;
+
+        SetField(t, faceFocus, "uiManager", uiComp, flags);
+        SetField(t, faceFocus, "mainCamera", mainCamera, flags);
+        SetField(t, faceFocus, "focusCamera", focusCamera, flags);
+        SetField(t, faceFocus, "faceUI", faceUI, flags);
+
+        Transform FindInChildren(Transform root, string childName)
+        {
+            foreach (Transform tr in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (tr.name == childName) return tr;
+            }
+            return null;
+        }
+
+        // Face UI -> FacePanel -> (Eyelids/Eyebrows/Mouth) -> Sliders
+        Transform facePanel = FindInChildren(faceUI.transform, "FacePanel");
+        Transform eyelids = FindInChildren(facePanel, "Eyelids");
+        Transform eyebrows = FindInChildren(facePanel, "Eyebrows");
+        Transform mouth = FindInChildren(facePanel, "Mouth");
+
+        Button returnButton = facePanel.GetComponentInChildren<Button>(true);
+        returnButton.onClick.RemoveAllListeners();
+        returnButton.onClick.AddListener(faceFocus.OnReturnPressed);
+
+        Slider[] eyelidSliders = eyelids.GetComponentsInChildren<Slider>(true);
+        Slider[] eyebrowSliders = eyebrows.GetComponentsInChildren<Slider>(true);
+        Slider[] mouthSliders = mouth.GetComponentsInChildren<Slider>(true);
+
+        SetField(t, faceFocus, "leftEyelidSlider", eyelidSliders[0], flags);
+        SetField(t, faceFocus, "rightEyelidSlider", eyelidSliders[1], flags);
+
+        SetField(t, faceFocus, "raiseEyebrowSlider", eyebrowSliders[0], flags);
+        SetField(t, faceFocus, "angleEyebrowSlider", eyebrowSliders[1], flags);
+
+        SetField(t, faceFocus, "mouthHSlider", mouthSliders[0], flags);
+        SetField(t, faceFocus, "mouthVSlider", mouthSliders[1], flags);
+
 
         ToggleGroup targetToggleGroup = def.toggleGroup switch
         {
@@ -233,7 +328,17 @@ public class BoneSetUp : MonoBehaviour
 
             Regex regex = new Regex(def.boneName);
             foreach (Transform b in bones)
-                if (regex.IsMatch(b.name)) { init_focusable(b, def); }
+                if (regex.IsMatch(b.name))
+                {
+                    if (b.name.StartsWith("Bone_Hand"))
+                    {
+                        init_hand_focusable(b, def);
+                    }
+                    else if (b.name.StartsWith("Bone_Base_Face"))
+                    {
+                        init_face_focusable(b, def);
+                    }
+                }
         }
 
         // After initializing bones, assign collected buttons to UIManager
@@ -248,8 +353,6 @@ public class BoneSetUp : MonoBehaviour
                 SetField(t, uiComp, "bodyButtons", collectedBodyButtons.ToArray(), flags);
                 SetField(t, uiComp, "handsButtons", collectedHandsButtons.ToArray(), flags);
 
-                // Refresh UI state and enable buttons
-                uiComp.RefreshUI();
                 uiComp.EnableBodyButtons();
                 uiComp.DisableHandsButtons();
             }

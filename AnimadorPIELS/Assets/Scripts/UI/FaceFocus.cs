@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.ProBuilder;
 
 public class FaceFocus : MonoBehaviour
 {
@@ -37,8 +38,14 @@ public class FaceFocus : MonoBehaviour
     [Header("History")]
     [SerializeField] private SaveLoadPose saveLoadPose;
 
+    [Header("UI")]
+    [SerializeField] private GameObject faceUI;
+
     private bool isFacialEditInProgress;
     private bool suppressHistoryForProgrammaticSliderUpdate;
+
+    private static FaceFocus _instance;
+    public static FaceFocus Instance { get { return _instance; } }
 
     //////////////////////////////////////////////////////////// SIGNALS - CAMERA
 
@@ -48,21 +55,27 @@ public class FaceFocus : MonoBehaviour
         mainCamera.SetActive(!isFocused);
         focusCamera.SetActive(isFocused);
         focusButton.SetActive(!isFocused);
-        uiManager.RefreshUI();
     }
 
     public void OnFaceButtonPressed()
     {
         //Focus face
+        _instance = this;
         SetFaceFocusState(true);
+        //cameraControls.SetActive(false);
+        faceUI.SetActive(true);
+        Button button = faceUI.GetComponentInChildren<Button>();
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(OnReturnPressed);
+        uiManager.SetFocusedOnHands(true);
     }
 
     public void OnReturnPressed()
     {
-        if (isFocused)
-        {
-            SetFaceFocusState(false);
-        }
+        SetFaceFocusState(false);
+        faceUI.SetActive(false);
+        uiManager.SetFocusedOnHands(false);
+        _instance = null;
     }
 
     //////////////////////////////////////////////////////////// PUBLIC API - GET/SET FACIAL EXPRESSIONS
