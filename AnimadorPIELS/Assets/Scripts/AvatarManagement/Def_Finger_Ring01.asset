@@ -18,7 +18,7 @@ MonoBehaviour:
   movScript: {fileID: 11500000, guid: d84dff0dace627c48a654f0461193e98, type: 3}
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
-  enableY: 1
+  enableY: 0
   enableZ: 1
   uiSize: 0.2
   toggleGroup: 1

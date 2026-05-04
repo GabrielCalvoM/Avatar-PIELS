@@ -29,6 +29,9 @@ public class BoneSetUp : MonoBehaviour
     [SerializeField] private List<BoneDef> bone_definitions;
     [SerializeField] private List<FocusableDef> focusable_definitions; // hands and face
 
+    [Header("3D model references")]
+    [SerializeField] private SkinnedMeshRenderer avatarFace;
+
     [Header("UI References")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject uiManager;
@@ -242,6 +245,7 @@ public class BoneSetUp : MonoBehaviour
         SetField(t, faceFocus, "mainCamera", mainCamera, flags);
         SetField(t, faceFocus, "focusCamera", focusCamera, flags);
         SetField(t, faceFocus, "faceUI", faceUI, flags);
+        SetField(t, faceFocus, "avatarFace", avatarFace, flags);
 
         Transform FindInChildren(Transform root, string childName)
         {

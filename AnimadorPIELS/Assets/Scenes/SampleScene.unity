@@ -662,22 +662,23 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 86b1aa54f89a76840a2aa16c9c26b017, type: 2}
   - {fileID: 11400000, guid: fc8d5bb2d7de5fa47b583071357bf4d3, type: 2}
   - {fileID: 11400000, guid: 8af22615159f73d47a5aff06a28b5270, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e1a1df8fdc9234e42a0960190467436a, type: 2}
   - {fileID: 11400000, guid: ccdf4a44a1052d34c9ae4d4c97a66706, type: 2}
   - {fileID: 11400000, guid: 9c7da37458945264baaa77d6d686f18b, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 46f8cf1d5c11bea439321978579875e5, type: 2}
   - {fileID: 11400000, guid: 31b394f8629ac3742a01a4ed7ee86f43, type: 2}
   - {fileID: 11400000, guid: 6ea786626c78916428c352cbc2dd5a18, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 1b888a0d0534cf747816103bf05ef0df, type: 2}
   - {fileID: 11400000, guid: e56c477c80a260a44afc0d70d892a423, type: 2}
   - {fileID: 11400000, guid: 94b91b0f5b6fdff4595b21e7d8e7d4f8, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 7e97323130401c94d8937d22fe39c77d, type: 2}
   - {fileID: 11400000, guid: bfa92b3aee5980b408aef17b23b79d5a, type: 2}
   - {fileID: 11400000, guid: 0d53194563150ca42aa1455340b4a81f, type: 2}
   - {fileID: 0}
   focusable_definitions:
   - {fileID: 11400000, guid: a8220ea2ffdf1fa4cbfd647678198306, type: 2}
   - {fileID: 11400000, guid: e0293cf71ac0f6049bb0d7e438163c7d, type: 2}
+  avatarFace: {fileID: 1013007701}
   mainCamera: {fileID: 330585543}
   uiManager: {fileID: 320891612}
   envUI: {fileID: 1909474833}
@@ -5422,6 +5423,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1003566066}
   m_CullTransparentMesh: 1
+--- !u!137 &1013007701 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+  m_PrefabInstance: {fileID: 1986810761}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1028212071
 GameObject:
   m_ObjectHideFlags: 0
@@ -9417,6 +9423,82 @@ PrefabInstance:
     - target: {fileID: 4986619665766859290, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
       value: Bone_F_Middle_02_R
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[0]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[2]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[5]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[7]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[8]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[10]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[12]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[13]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[14]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[15]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[16]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[17]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[80]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[108]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[109]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[127]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[138]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+      propertyPath: 'm_BlendShapeWeights.Array.data[142]'
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5356545189917463795, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name

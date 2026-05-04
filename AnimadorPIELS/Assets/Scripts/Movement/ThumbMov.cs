@@ -4,10 +4,12 @@ using UnityEngine.InputSystem;
 public class ThumbMov : ArticulationMov
 {
     Quaternion initialRotation;
+    bool isRight;
 
     void Awake()
     {
         initialRotation = transform.localRotation;
+        isRight = name.Contains("_R") || name.EndsWith("R");
     }
 
     override protected void OnMove()
@@ -30,7 +32,9 @@ public class ThumbMov : ArticulationMov
             adjustedConstrains = Constraints.x;
 
             float nextRot = rotX + angle;
-            float clampedRot = Mathf.Clamp(nextRot, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
+            float min = adjustedConstrains.MinValue, max = adjustedConstrains.MaxValue;
+            if (isRight) { float t = min; min = -max; max = -t; }
+            float clampedRot = Mathf.Clamp(nextRot, min, max);
             rotX = clampedRot;
         }
         else // InZ
@@ -38,7 +42,9 @@ public class ThumbMov : ArticulationMov
             adjustedConstrains = Constraints.z;
 
             float nextRot = rotZ + angle;
-            float clampedRot = Mathf.Clamp(nextRot, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
+            float min = adjustedConstrains.MinValue, max = adjustedConstrains.MaxValue;
+            if (isRight) { float t = min; min = -max; max = -t; }
+            float clampedRot = Mathf.Clamp(nextRot, min, max);
             rotZ = clampedRot;
         }
 
@@ -51,12 +57,16 @@ public class ThumbMov : ArticulationMov
         if (RotationManager.Instance.InX)
         {
             adjustedConstrains = Constraints.x;
-            rotX = Mathf.Clamp(rotX, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
+            float min = adjustedConstrains.MinValue, max = adjustedConstrains.MaxValue;
+            if (isRight) { float t = min; min = -max; max = -t; }
+            rotX = Mathf.Clamp(rotX, min, max);
         }
         else if (RotationManager.Instance.InZ)
         {
             adjustedConstrains = Constraints.z;
-            rotZ = Mathf.Clamp(rotZ, adjustedConstrains.MinValue, adjustedConstrains.MaxValue);
+            float min = adjustedConstrains.MinValue, max = adjustedConstrains.MaxValue;
+            if (isRight) { float t = min; min = -max; max = -t; }
+            rotZ = Mathf.Clamp(rotZ, min, max);
         }
 
         ApplyRotation();

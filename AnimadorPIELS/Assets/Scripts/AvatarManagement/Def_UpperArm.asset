@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoneDef
   boneName: ^Bone_UpperArm_(L|R)$
   boneSide: 1
+  isHand: 0
   movScript: {fileID: 11500000, guid: 7eb6a31f272f1da4b937d11ce554746c, type: 3}
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
@@ -21,8 +22,7 @@ MonoBehaviour:
   enableZ: 1
   uiSize: 1
   toggleGroup: 0
-  layer: 5
-  constraints: {fileID: 11400000, guid: 27b0de7af13bf3c489708b49b761c79b, type: 2}
+  constraints: {fileID: 0}
   focusScript: {fileID: 0}
   focusableUI: {fileID: 0}
   focusCamera: {fileID: 0}

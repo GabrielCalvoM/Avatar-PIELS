@@ -318,15 +318,15 @@ public class FaceFocus : MonoBehaviour
         focusButton.GetComponent<Button>().colors = colors;
 
         // Get Idx
-        leftEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "blink_left.001");
-        rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "blink_right.001");
+        leftEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_L");
+        rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_R");
 
-        raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "raise_eyebrows3");
-        low_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_furrow", "angry");
-        high_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Sad", "sad");
+        raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "Brow_Drop_L");
+        low_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_furrow", "Brow_Drop_R");
+        high_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Sad", "Brow_Raise_Inner_L");
 
-        mouthHIndex = GetBlendShapeIndexOrFallback("A", "open_mouth");
-        mouthVIndex = GetBlendShapeIndexOrFallback("O", "o_mouth");
+        mouthHIndex = GetBlendShapeIndexOrFallback("A", "V_Lip_Open");
+        mouthVIndex = GetBlendShapeIndexOrFallback("O", "V_Wide");
 
         if (leftEyelidIndex < 0) Debug.LogWarning("Could not find left eyelid blendshape");
         if (rightEyelidIndex < 0) Debug.LogWarning("Could not find right eyelid blendshape");
