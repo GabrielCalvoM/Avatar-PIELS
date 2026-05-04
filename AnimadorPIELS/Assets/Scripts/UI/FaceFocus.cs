@@ -5,7 +5,7 @@ using UnityEngine.ProBuilder;
 
 public class FaceFocus : MonoBehaviour
 {
-    //////////////////////////////////////////////////////////// ATTRIBUTES
+    //////////////////////////////////////////////////////////// GAME COMPOSITION
 
     [Header("UI Components")]
     [SerializeField] private UIManager uiManager;
@@ -19,27 +19,34 @@ public class FaceFocus : MonoBehaviour
     [Header("Avatar Face")]
     [SerializeField] private SkinnedMeshRenderer avatarFace;
 
-    [SerializeField] private Slider leftEyelidSlider;
-    [SerializeField] private Slider rightEyelidSlider;
-    private int leftEyelidIndex;
-    private int rightEyelidIndex;
-
-    [SerializeField] private Slider raiseEyebrowSlider;
-    [SerializeField] private Slider angleEyebrowSlider;
-    private int raiseEyebrowIndex;
-    private int low_angleEyebrowIndex;
-    private int high_angleEyebrowIndex;
-
-    [SerializeField] private Slider mouthHSlider;
-    [SerializeField] private Slider mouthVSlider;
-    private int mouthHIndex;
-    private int mouthVIndex;
-
     [Header("History")]
     [SerializeField] private SaveLoadPose saveLoadPose;
 
     [Header("UI")]
     [SerializeField] private GameObject faceUI;
+
+    //////////////////////////////////////////////////////////// EYELIDS
+
+    [SerializeField] private Slider leftEyelidSlider;
+    [SerializeField] private Slider rightEyelidSlider;
+    private int leftEyelidIndex;
+    private int rightEyelidIndex;
+
+    //////////////////////////////////////////////////////////// EYEBROWS
+    
+    // Eyebrows (single raise control)
+    [SerializeField] private Slider raiseEyebrowSlider;
+    private int raiseEyebrowIndex;
+
+
+    //////////////////////////////////////////////////////////// MOUTH
+    
+    [SerializeField] private Slider mouthHSlider;
+    [SerializeField] private Slider mouthVSlider;
+    private int mouthHIndex;
+    private int mouthVIndex;
+
+    //////////////////////////////////////////////////////////// INNER LOGIC
 
     private bool isFacialEditInProgress;
     private bool suppressHistoryForProgrammaticSliderUpdate;
@@ -88,7 +95,7 @@ public class FaceFocus : MonoBehaviour
             leftEyelid = leftEyelidSlider.value,
             rightEyelid = rightEyelidSlider.value,
             raiseEyebrow = raiseEyebrowSlider.value,
-            angleEyebrow = angleEyebrowSlider.value,
+            angleEyebrow = 0.0f,
             mouthH = mouthHSlider.value,
             mouthV = mouthVSlider.value
         };
@@ -111,7 +118,6 @@ public class FaceFocus : MonoBehaviour
             leftEyelidSlider.value = data.leftEyelid;
             rightEyelidSlider.value = data.rightEyelid;
             raiseEyebrowSlider.value = data.raiseEyebrow;
-            angleEyebrowSlider.value = data.angleEyebrow;
             mouthHSlider.value = data.mouthH;
             mouthVSlider.value = data.mouthV;
         }
@@ -259,32 +265,6 @@ public class FaceFocus : MonoBehaviour
         SetBlendShapeWeightSafe(raiseEyebrowIndex, value);
     }
 
-    private void OnAngleEyebrowChanged(float value)
-    {
-        NotifyFacialEditChanged();
-        if (Mathf.Approximately(value, 50.0f))
-        {
-            SetBlendShapeWeightSafe(low_angleEyebrowIndex, 0.0f);
-            SetBlendShapeWeightSafe(high_angleEyebrowIndex, 0.0f);
-        }
-
-        else if (value < 50.0f)
-        {
-            float w = Mathf.InverseLerp(50.0f, 0.0f, value) * 100.0f;
-
-            SetBlendShapeWeightSafe(low_angleEyebrowIndex, w);
-            SetBlendShapeWeightSafe(high_angleEyebrowIndex, 0.0f);
-        }
-
-        else if (value > 50.0f)
-        {
-            float w = Mathf.InverseLerp(50.0f, 100.0f, value) * 100.0f;
-
-            SetBlendShapeWeightSafe(low_angleEyebrowIndex, 0.0f);
-            SetBlendShapeWeightSafe(high_angleEyebrowIndex, w);
-        }
-    }
-
     private void OnMouthHChanged(float value)
     {
         NotifyFacialEditChanged();
@@ -322,8 +302,6 @@ public class FaceFocus : MonoBehaviour
         rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_R");
 
         raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "Brow_Drop_L");
-        low_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_furrow", "Brow_Drop_R");
-        high_angleEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Sad", "Brow_Raise_Inner_L");
 
         mouthHIndex = GetBlendShapeIndexOrFallback("A", "V_Lip_Open");
         mouthVIndex = GetBlendShapeIndexOrFallback("O", "V_Wide");
@@ -331,8 +309,6 @@ public class FaceFocus : MonoBehaviour
         if (leftEyelidIndex < 0) Debug.LogWarning("Could not find left eyelid blendshape");
         if (rightEyelidIndex < 0) Debug.LogWarning("Could not find right eyelid blendshape");
         if (raiseEyebrowIndex < 0) Debug.LogWarning("Could not find raise eyebrow blendshape");
-        if (low_angleEyebrowIndex < 0) Debug.LogWarning("Could not find low-angle eyebrow blendshape");
-        if (high_angleEyebrowIndex < 0) Debug.LogWarning("Could not find high-angle eyebrow blendshape");
         if (mouthHIndex < 0) Debug.LogWarning("Could not find mouthH blendshape");
         if (mouthVIndex < 0) Debug.LogWarning("Could not find mouthV blendshape");
 
@@ -344,9 +320,6 @@ public class FaceFocus : MonoBehaviour
 
         raiseEyebrowSlider.minValue = 0.0f;
         raiseEyebrowSlider.maxValue = 100.0f;
-        angleEyebrowSlider.minValue = 0.0f;
-        angleEyebrowSlider.maxValue = 100.0f;
-        angleEyebrowSlider.value = 50.0f;
 
         mouthHSlider.minValue = 0.0f;
         mouthHSlider.maxValue = 100.0f;
@@ -358,7 +331,6 @@ public class FaceFocus : MonoBehaviour
         rightEyelidSlider.onValueChanged.AddListener(OnRightEyelidChanged);
 
         raiseEyebrowSlider.onValueChanged.AddListener(OnRaiseEyebrowChanged);
-        angleEyebrowSlider.onValueChanged.AddListener(OnAngleEyebrowChanged);
 
         mouthHSlider.onValueChanged.AddListener(OnMouthHChanged);
         mouthVSlider.onValueChanged.AddListener(OnMouthVChanged);
@@ -366,7 +338,6 @@ public class FaceFocus : MonoBehaviour
         RegisterSliderHistoryHandlers(leftEyelidSlider);
         RegisterSliderHistoryHandlers(rightEyelidSlider);
         RegisterSliderHistoryHandlers(raiseEyebrowSlider);
-        RegisterSliderHistoryHandlers(angleEyebrowSlider);
         RegisterSliderHistoryHandlers(mouthHSlider);
         RegisterSliderHistoryHandlers(mouthVSlider);
     }
