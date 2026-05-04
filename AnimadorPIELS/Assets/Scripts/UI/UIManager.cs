@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [Header("Cameras")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject faceCamera;
+    [SerializeField] private GameObject activeCamera;
 
     [Header("UI Panels")]
     [SerializeField] private GameObject genUI;
@@ -33,6 +34,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         toggleUIOnOff = GetComponent<ToggleUIOnOff>();
+        activeCamera = mainCamera;
     }
 
     void Update()
@@ -63,6 +65,22 @@ public class UIManager : MonoBehaviour
     }
 
     //////////////////////////////////////////////////////////// METHODS
+
+    public void UseFocusCamera(GameObject focusCamera)
+    {
+        activeCamera = focusCamera != null ? focusCamera : mainCamera;
+    }
+
+    public void UseMainCamera()
+    {
+        activeCamera = mainCamera;
+    }
+
+    public void CenterFrontView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterFrontView), SendMessageOptions.DontRequireReceiver);
+    public void CenterTopView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterTopView), SendMessageOptions.DontRequireReceiver);
+    public void CenterBottomView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterBottomView), SendMessageOptions.DontRequireReceiver);
+    public void CenterLeftView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterLeftView), SendMessageOptions.DontRequireReceiver);
+    public void CenterRightView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterRightView), SendMessageOptions.DontRequireReceiver);
 
     public void EnableButtons()
     {
@@ -132,5 +150,15 @@ public class UIManager : MonoBehaviour
     public bool getFocusedOnHands()
     {
         return focusedOnHands;
+    }
+
+    public void showCameraControls()
+    {
+        envUI.SetActive(true);
+    }
+
+    public void hideCameraControls()
+    {
+        envUI.SetActive(false);
     }
 }

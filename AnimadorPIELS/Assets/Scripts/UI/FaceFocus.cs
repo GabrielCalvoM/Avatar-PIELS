@@ -62,7 +62,7 @@ public class FaceFocus : MonoBehaviour
         //Focus face
         _instance = this;
         SetFaceFocusState(true);
-        //cameraControls.SetActive(false);
+        uiManager.hideCameraControls();
         faceUI.SetActive(true);
         Button button = faceUI.GetComponentInChildren<Button>();
         button.onClick.RemoveAllListeners();
@@ -76,6 +76,7 @@ public class FaceFocus : MonoBehaviour
         faceUI.SetActive(false);
         uiManager.SetFocusedOnHands(false);
         _instance = null;
+        uiManager.showCameraControls();
     }
 
     //////////////////////////////////////////////////////////// PUBLIC API - GET/SET FACIAL EXPRESSIONS

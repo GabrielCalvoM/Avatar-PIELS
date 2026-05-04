@@ -335,8 +335,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 330585548}
-        m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
+      - m_Target: {fileID: 320891617}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: CenterTopView
         m_Mode: 1
         m_Arguments:
@@ -1354,6 +1354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   mainCamera: {fileID: 330585543}
   faceCamera: {fileID: 0}
+  activeCamera: {fileID: 0}
   genUI: {fileID: 859804686}
   envUI: {fileID: 1909474833}
   faceUI: {fileID: 2006689242}
@@ -3212,8 +3213,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 330585548}
-        m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
+      - m_Target: {fileID: 320891617}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: CenterRightView
         m_Mode: 1
         m_Arguments:
@@ -4789,8 +4790,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 330585548}
-        m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
+      - m_Target: {fileID: 320891617}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: CenterLeftView
         m_Mode: 1
         m_Arguments:
@@ -5894,7 +5895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -225, y: -447}
+  m_AnchoredPosition: {x: -168, y: -386}
   m_SizeDelta: {x: 210, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1164672533
@@ -8653,8 +8654,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 330585548}
-        m_TargetAssemblyTypeName: WorldCamera, Assembly-CSharp
+      - m_Target: {fileID: 320891617}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: CenterFrontView
         m_Mode: 1
         m_Arguments:

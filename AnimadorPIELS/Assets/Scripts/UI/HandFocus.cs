@@ -24,6 +24,7 @@ public class HandFocus : MonoBehaviour
         _instance = this;
         mainCamera.SetActive(false);
         focusCamera.SetActive(true);
+        if (uiManager != null) uiManager.UseFocusCamera(focusCamera);
         //cameraControls.SetActive(false);
         handsUI.SetActive(true);
         Button button = handsUI.GetComponentInChildren<Button>();
@@ -43,6 +44,7 @@ public class HandFocus : MonoBehaviour
         _instance = null;
         mainCamera.SetActive(true);
         focusCamera.SetActive(false);
+        if (uiManager != null) uiManager.UseMainCamera();
         //cameraControls.SetActive(true);
         handsUI.SetActive(false);
         uiManager.SetFocusedOnHands(false);

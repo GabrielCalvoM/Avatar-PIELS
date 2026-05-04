@@ -131,12 +131,12 @@ public class HandsCamera : MonoBehaviour
 
     public void CenterLeftView()
     {
-        SnapToView(-90.0f, 0.0f);
+        SnapToView(90.0f, 0.0f);
     }
 
     public void CenterRightView()
     {
-        SnapToView(90.0f, 0.0f);
+        SnapToView(-90.0f, 0.0f);
     }
 
     public void StopCameraControls()

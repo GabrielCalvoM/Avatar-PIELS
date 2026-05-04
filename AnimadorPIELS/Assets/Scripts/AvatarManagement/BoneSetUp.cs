@@ -161,12 +161,14 @@ public class BoneSetUp : MonoBehaviour
         if (def.focusableUI == null) return;
         GameObject focusCamera = Instantiate(def.cameraPrefab, bone);
 
+        float yRot = bone.name.Contains("_L") ? 90f : bone.name.Contains("_R") ? -90f : 0f;
+        if (yRot != 0f) focusCamera.transform.RotateAround(bone.position, bone.up, yRot);
+
         Camera cam = focusCamera.GetComponentInChildren<Camera>(true);
         foreach (var c in bone.GetComponentsInChildren<Canvas>(true))
             c.worldCamera = cam;
 
         GameObject instance = Instantiate(def.focusableUI, bone);
-        //instance.transform.localPosition = Vector3.zero;
         instance.transform.position = bone.position;
         instance.transform.localScale = def.uiSize * Vector3.one;
 
