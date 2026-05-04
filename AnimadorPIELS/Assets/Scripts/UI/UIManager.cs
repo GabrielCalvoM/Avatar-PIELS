@@ -41,7 +41,7 @@ public class UIManager : MonoBehaviour
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
                 toggleUIOnOff.SetUIOn();
             }
