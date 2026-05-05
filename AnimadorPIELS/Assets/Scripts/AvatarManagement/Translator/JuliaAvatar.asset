@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: JuliaAvatar
   m_EditorClassIdentifier: Assembly-CSharp::AvatarTranslator
   _blendShapes: {fileID: 11400000, guid: ac89bc15af54fc840b3dd04075d67e38, type: 2}
+  _face: Bone_Base_Face
   _neck: Bone_Neck
   _armL: Bone_UpperArm_L
   _armR: Bone_UpperArm_R

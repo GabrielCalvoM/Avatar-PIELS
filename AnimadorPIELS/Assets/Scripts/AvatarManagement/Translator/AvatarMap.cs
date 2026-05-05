@@ -7,6 +7,8 @@ public class AvatarMap : ScriptableObject
     [SerializeField, Expandable, BoxGroup("Head")]
     BlendShapesMap _blendShapes;
     [SerializeField, BoxGroup("Head")]
+    string _face;
+    [SerializeField, BoxGroup("Head")]
     string _neck;
 
     [SerializeField, BoxGroup("Arms")]
@@ -30,6 +32,7 @@ public class AvatarMap : ScriptableObject
     FingersMap _fingersR;
 
     public BlendShapesMap BlendShapes => _blendShapes;
+    public string Face => _face;
     public string Neck => _neck;
     public string ArmL => _armL;
     public string ArmR => _armR;

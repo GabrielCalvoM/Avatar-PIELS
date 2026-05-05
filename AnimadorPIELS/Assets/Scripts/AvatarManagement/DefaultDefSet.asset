@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809527d6d39790646834d92c924e6d2c, type: 3}
+  m_Name: DefaultDefSet
+  m_EditorClassIdentifier: Assembly-CSharp::DefSet
+  _faceFocusDef: {fileID: 11400000, guid: e0293cf71ac0f6049bb0d7e438163c7d, type: 2}
+  _handFocusDef: {fileID: 11400000, guid: a8220ea2ffdf1fa4cbfd647678198306, type: 2}
+  _neckDef: {fileID: 11400000, guid: 6a950f9e6b1ac124f9b7cc3213dd8602, type: 2}
+  _armDef: {fileID: 11400000, guid: fdd62b312fe54ff4f9ffd9e372c0fbf9, type: 2}
+  _elbowDef: {fileID: 11400000, guid: c89f47e6b27cbb040b26d7c08caa1014, type: 2}
+  _handDef: {fileID: 11400000, guid: 86b1aa54f89a76840a2aa16c9c26b017, type: 2}
+  _thumb1Def: {fileID: 11400000, guid: bfa92b3aee5980b408aef17b23b79d5a, type: 2}
+  _thumb2Def: {fileID: 11400000, guid: 0d53194563150ca42aa1455340b4a81f, type: 2}
+  _thumb3Def: {fileID: 11400000, guid: a4fd7da821a76194f8fe715fc90a4abc, type: 2}
+  _index1Def: {fileID: 11400000, guid: fc8d5bb2d7de5fa47b583071357bf4d3, type: 2}
+  _index2Def: {fileID: 11400000, guid: 8af22615159f73d47a5aff06a28b5270, type: 2}
+  _index3Def: {fileID: 11400000, guid: e1a1df8fdc9234e42a0960190467436a, type: 2}
+  _middle1Def: {fileID: 11400000, guid: ccdf4a44a1052d34c9ae4d4c97a66706, type: 2}
+  _middle2Def: {fileID: 11400000, guid: 9c7da37458945264baaa77d6d686f18b, type: 2}
+  _middle3Def: {fileID: 11400000, guid: 46f8cf1d5c11bea439321978579875e5, type: 2}
+  _ring1Def: {fileID: 11400000, guid: e56c477c80a260a44afc0d70d892a423, type: 2}
+  _ring2Def: {fileID: 11400000, guid: 94b91b0f5b6fdff4595b21e7d8e7d4f8, type: 2}
+  _ring3Def: {fileID: 11400000, guid: 7e97323130401c94d8937d22fe39c77d, type: 2}
+  _pinky1Def: {fileID: 11400000, guid: 31b394f8629ac3742a01a4ed7ee86f43, type: 2}
+  _pinky2Def: {fileID: 11400000, guid: 6ea786626c78916428c352cbc2dd5a18, type: 2}
+  _pinky3Def: {fileID: 11400000, guid: 1b888a0d0534cf747816103bf05ef0df, type: 2}

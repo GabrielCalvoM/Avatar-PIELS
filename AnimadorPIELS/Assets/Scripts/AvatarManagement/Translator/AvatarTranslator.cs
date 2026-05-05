@@ -5,10 +5,14 @@ using UnityEngine;
 [Serializable]
 public struct AvatarTranslator
 {
-    [SerializeField, Expandable]
-    private AvatarMap _avatarMap;
-    [SerializeField]
+    [SerializeField, AllowNesting, Label("Avatar Map"), Expandable]
+    private AvatarMap _map;
+    [SerializeField, AllowNesting, Label("Root Bone")]
     private GameObject _root;
-    [SerializeField]
-    private SkinnedMeshRenderer _avatarFace;
+    [SerializeField, AllowNesting, Label("Blendshapes Source")]
+    private SkinnedMeshRenderer _face;
+
+    public AvatarMap Map => _map;
+    public GameObject Root => _root;
+    public SkinnedMeshRenderer Face => _face;
 }

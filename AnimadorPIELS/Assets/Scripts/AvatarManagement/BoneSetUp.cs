@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using NaughtyAttributes;
 
 
 
@@ -24,13 +25,16 @@ public class BoneSetUp : MonoBehaviour
 
     */
 
-    [Header("Bone Skeleton Search")]
-    [SerializeField] private GameObject bone_root;
-    [SerializeField] private List<BoneDef> bone_definitions;
-    [SerializeField] private List<FocusableDef> focusable_definitions; // hands and face
+    //[Header("Bone Skeleton Search")]
+    //[SerializeField] private GameObject bone_root;
+    //[SerializeField] private List<BoneDef> bone_definitions;
 
-    [Header("3D model references")]
-    [SerializeField] private SkinnedMeshRenderer avatarFace;
+    [SerializeField, Expandable] private DefSet boneDefinitions;
+
+    //[SerializeField] private List<FocusableDef> focusable_definitions; // hands and face
+
+    //[Header("3D model references")]
+    //[SerializeField] private SkinnedMeshRenderer avatarFace;
 
     [Header("UI References")]
     [SerializeField] private GameObject mainCamera;
@@ -225,6 +229,8 @@ public class BoneSetUp : MonoBehaviour
 
     void init_face_focusable(Transform bone, FocusableDef def)
     {
+        var avatarFace = TranslatorManager.Instance.Avatar.Face;
+
         if (def.focusableUI == null) return;
         GameObject focusCamera = Instantiate(def.cameraPrefab, bone);
 
@@ -308,44 +314,60 @@ public class BoneSetUp : MonoBehaviour
         }
     }
 
+    void InitBoneDef(string boneName, BoneDef boneDef, List<Transform> bones)
+    {
+        if (!boneDef) return; // Skip null entries
+
+        //Regex regex = new Regex(boneDef.boneName);
+        foreach (Transform b in bones)
+            if (b.name.Equals(boneName)) { init_bone(b, boneDef); }
+    }
+
     void init_bones()
     {
-        if (bone_root == null)
+        GameObject rootBone = TranslatorManager.Instance.Avatar.Root;
+
+        if (rootBone == null)
         {
             Debug.LogError("Bone Root not assigned in BoneSetUp script.");
             return;
         }
 
         List<Transform> bones = new();
-        recursive_collect(bone_root.transform, bones);
+        recursive_collect(rootBone.transform, bones);
 
-        foreach (BoneDef def in bone_definitions)
-        {
-            if (!def) continue; // Skip null entries
+        AvatarMap map = TranslatorManager.Instance.Avatar.Map;
 
-            Regex regex = new Regex(def.boneName);
-            foreach (Transform b in bones)
-                if (regex.IsMatch(b.name)) { init_bone(b, def); }
-        }
+        InitAllBonesDef(map, bones);
+        InitFocusablesDef(map, bones);
 
-        foreach (FocusableDef def in focusable_definitions)
-        {
-            if (!def) continue; // Skip null entries
+        //foreach (BoneDef def in bone_definitions)
+        //{
+        //    if (!def) continue; // Skip null entries
 
-            Regex regex = new Regex(def.boneName);
-            foreach (Transform b in bones)
-                if (regex.IsMatch(b.name))
-                {
-                    if (b.name.StartsWith("Bone_Hand"))
-                    {
-                        init_hand_focusable(b, def);
-                    }
-                    else if (b.name.StartsWith("Bone_Base_Face"))
-                    {
-                        init_face_focusable(b, def);
-                    }
-                }
-        }
+        //    Regex regex = new Regex(def.boneName);
+        //    foreach (Transform b in bones)
+        //        if (regex.IsMatch(b.name)) { init_bone(b, def); }
+        //}
+
+        //foreach (FocusableDef def in focusable_definitions)
+        //{
+        //    if (!def) continue; // Skip null entries
+
+        //    Regex regex = new Regex(def.boneName);
+        //    foreach (Transform b in bones)
+        //        if (regex.IsMatch(b.name))
+        //        {
+        //            if (b.name.StartsWith("Bone_Hand"))
+        //            {
+        //                init_hand_focusable(b, def);
+        //            }
+        //            else if (b.name.StartsWith("Bone_Base_Face"))
+        //            {
+        //                init_face_focusable(b, def);
+        //            }
+        //        }
+        //}
 
         // After initializing bones, assign collected buttons to UIManager
         if (uiManager != null)
@@ -389,5 +411,71 @@ public class BoneSetUp : MonoBehaviour
         init_bones();
     }
 
+    void InitAllBonesDef(AvatarMap map, List<Transform> bones)
+    {
+        string neck = map.Neck;
+        BoneDef def = boneDefinitions.NeckDef;
+
+        InitBoneDef(neck, def, bones);
+        InitBoneDef(map.ArmL, boneDefinitions.ArmDef, bones);
+        InitBoneDef(map.ArmR, boneDefinitions.ArmDef, bones);
+
+        InitBoneDef(map.ElbowL, boneDefinitions.ElbowDef, bones);
+        InitBoneDef(map.ElbowR, boneDefinitions.ElbowDef, bones);
+
+        InitBoneDef(map.HandL, boneDefinitions.HandDef, bones);
+        InitBoneDef(map.HandR, boneDefinitions.HandDef, bones);
+
+        InitBoneDef(map.FingersL.Thumb1, boneDefinitions.Thumb1Def, bones);
+        InitBoneDef(map.FingersR.Thumb1, boneDefinitions.Thumb1Def, bones);
+        InitBoneDef(map.FingersL.Thumb2, boneDefinitions.Thumb2Def, bones);
+        InitBoneDef(map.FingersR.Thumb2, boneDefinitions.Thumb2Def, bones);
+        InitBoneDef(map.FingersL.Thumb3, boneDefinitions.Thumb3Def, bones);
+        InitBoneDef(map.FingersR.Thumb3, boneDefinitions.Thumb3Def, bones);
+
+        InitBoneDef(map.FingersL.Index1, boneDefinitions.Index1Def, bones);
+        InitBoneDef(map.FingersR.Index1, boneDefinitions.Index1Def, bones);
+        InitBoneDef(map.FingersL.Index2, boneDefinitions.Index2Def, bones);
+        InitBoneDef(map.FingersR.Index2, boneDefinitions.Index2Def, bones);
+        InitBoneDef(map.FingersL.Index3, boneDefinitions.Index3Def, bones);
+        InitBoneDef(map.FingersR.Index3, boneDefinitions.Index3Def, bones);
+
+        InitBoneDef(map.FingersL.Middle1, boneDefinitions.Middle1Def, bones);
+        InitBoneDef(map.FingersR.Middle1, boneDefinitions.Middle1Def, bones);
+        InitBoneDef(map.FingersL.Middle2, boneDefinitions.Middle2Def, bones);
+        InitBoneDef(map.FingersR.Middle2, boneDefinitions.Middle2Def, bones);
+        InitBoneDef(map.FingersL.Middle3, boneDefinitions.Middle3Def, bones);
+        InitBoneDef(map.FingersR.Middle3, boneDefinitions.Middle3Def, bones);
+
+        InitBoneDef(map.FingersL.Ring1, boneDefinitions.Ring1Def, bones);
+        InitBoneDef(map.FingersR.Ring1, boneDefinitions.Ring1Def, bones);
+        InitBoneDef(map.FingersL.Ring2, boneDefinitions.Ring2Def, bones);
+        InitBoneDef(map.FingersR.Ring2, boneDefinitions.Ring2Def, bones);
+        InitBoneDef(map.FingersL.Ring3, boneDefinitions.Ring3Def, bones);
+        InitBoneDef(map.FingersR.Ring3, boneDefinitions.Ring3Def, bones);
+
+        InitBoneDef(map.FingersL.Pinky1, boneDefinitions.Pinky1Def, bones);
+        InitBoneDef(map.FingersR.Pinky1, boneDefinitions.Pinky1Def, bones);
+        InitBoneDef(map.FingersL.Pinky2, boneDefinitions.Pinky2Def, bones);
+        InitBoneDef(map.FingersR.Pinky2, boneDefinitions.Pinky2Def, bones);
+        InitBoneDef(map.FingersL.Pinky3, boneDefinitions.Pinky3Def, bones);
+        InitBoneDef(map.FingersR.Pinky3, boneDefinitions.Pinky3Def, bones);
+    }
+
+    void InitFocusablesDef(AvatarMap map, List<Transform> bones)
+    {
+        //Regex regex = new Regex(focusableDef.boneName);
+        foreach (Transform b in bones)
+        {
+            if ((b.name.Equals(map.HandL) || b.name.Equals(map.HandR)) && boneDefinitions.HandFocusDef)
+            {
+                init_hand_focusable(b, boneDefinitions.HandFocusDef);
+            }
+            else if (b.name.Equals(map.Face) && boneDefinitions.FaceFocusDef)
+            {
+                init_face_focusable(b, boneDefinitions.FaceFocusDef);
+            }
+        }
+    }
 
 }
