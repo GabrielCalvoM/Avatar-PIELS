@@ -3501,6 +3501,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 978332930}
   m_CullTransparentMesh: 1
+--- !u!137 &1013007701 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5197118176682910397, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+  m_PrefabInstance: {fileID: 1986810761}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1075394491
 GameObject:
   m_ObjectHideFlags: 0
@@ -4939,6 +4944,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1739862854}
+  - component: {fileID: 1739862855}
   m_Layer: 0
   m_Name: AvatarManagement
   m_TagString: Untagged
@@ -4962,6 +4968,22 @@ Transform:
   - {fileID: 156710181}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1739862855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739862853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 591ba00f7b44cab4ebb0aab54c640d66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TranslatorManager
+  _avatarTranslators:
+  - _map: {fileID: 11400000, guid: 08bffd689ab40634487e0d1efdcf9907, type: 2}
+    _root: {fileID: 1986810762}
+    _face: {fileID: 1013007701}
 --- !u!1 &1769750638
 GameObject:
   m_ObjectHideFlags: 0
@@ -6045,6 +6067,11 @@ PrefabInstance:
       addedObject: {fileID: 527669959}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+--- !u!1 &1986810762 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8231973590738092634, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+  m_PrefabInstance: {fileID: 1986810761}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1988212810
 GameObject:
   m_ObjectHideFlags: 0

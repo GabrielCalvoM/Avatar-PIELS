@@ -101,7 +101,7 @@ public class ArticulationUI : MonoBehaviour
 
             if (HandFocus.Instance && toggle.group == HandFocus.Instance.FingerGroup)
             {
-                HandFocus.Instance.activeUI = this;
+                HandFocus.Instance.activeFinger = this;
             }
         }
 
