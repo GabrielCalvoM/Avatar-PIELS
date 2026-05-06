@@ -587,7 +587,7 @@ GameObject:
   - component: {fileID: 2694259857454480859}
   - component: {fileID: 4632487366289298416}
   m_Layer: 5
-  m_Name: Volver
+  m_Name: ReturnButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
