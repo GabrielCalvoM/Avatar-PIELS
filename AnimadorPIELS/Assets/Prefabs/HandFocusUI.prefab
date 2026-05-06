@@ -135,7 +135,11 @@ MonoBehaviour:
   handsUI: {fileID: 0}
   uiManager: {fileID: 0}
   _fingerGroup: {fileID: 0}
-  activeFinger: {fileID: 0}
+  activeUI: {fileID: 0}
+  fingers:
+  - fingerButton: {fileID: 0}
+    fingerTag: 
+    articulationButtons: []
 --- !u!1 &7940118715813108295
 GameObject:
   m_ObjectHideFlags: 0

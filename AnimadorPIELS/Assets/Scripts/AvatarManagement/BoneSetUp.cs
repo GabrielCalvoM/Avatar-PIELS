@@ -351,8 +351,8 @@ public class BoneSetUp : MonoBehaviour
         //}
 
         //foreach (FocusableDef def in focusable_definitions)
-        //{
-        //    if (!def) continue; // Skip null entries
+        //{ 
+        //    if (!def) continue; // Skip null entries 
 
         //    Regex regex = new Regex(def.boneName);
         //    foreach (Transform b in bones)
