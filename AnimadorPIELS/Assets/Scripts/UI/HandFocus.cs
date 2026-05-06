@@ -110,10 +110,64 @@ public class HandFocus : MonoBehaviour
 
             foreach (ArticulationUI a in allUI)
             {
-                if (a.transform.parent == null) continue;
+                Transform parent = a.transform.parent;
 
-                if (a.transform.parent.name.Contains(f.fingerTag))
-                    f.articulationButtons.Add(a.gameObject);
+                if (parent == null) continue;
+
+                AvatarMap map = TranslatorManager.Instance.Avatar.Map;
+
+                switch (f.fingerTag)
+                {
+                    case "Thumb":
+                        if (parent.name.Equals(map.FingersL.Thumb1) ||
+                            parent.name.Equals(map.FingersL.Thumb2) ||
+                            parent.name.Equals(map.FingersL.Thumb3) ||
+                            parent.name.Equals(map.FingersR.Thumb1) ||
+                            parent.name.Equals(map.FingersR.Thumb2) ||
+                            parent.name.Equals(map.FingersR.Thumb3))
+                            f.articulationButtons.Add(a.gameObject);
+                        break;
+
+                    case "Index":
+                        if (parent.name.Equals(map.FingersL.Index1) ||
+                            parent.name.Equals(map.FingersL.Index2) ||
+                            parent.name.Equals(map.FingersL.Index3) ||
+                            parent.name.Equals(map.FingersR.Index1) ||
+                            parent.name.Equals(map.FingersR.Index2) ||
+                            parent.name.Equals(map.FingersR.Index3))
+                            f.articulationButtons.Add(a.gameObject);
+                        break;
+
+                    case "Middle":
+                        if (parent.name.Equals(map.FingersL.Middle1) ||
+                            parent.name.Equals(map.FingersL.Middle2) ||
+                            parent.name.Equals(map.FingersL.Middle3) ||
+                            parent.name.Equals(map.FingersR.Middle1) ||
+                            parent.name.Equals(map.FingersR.Middle2) ||
+                            parent.name.Equals(map.FingersR.Middle3))
+                            f.articulationButtons.Add(a.gameObject);
+                        break;
+
+                    case "Ring":
+                        if (parent.name.Equals(map.FingersL.Ring1) ||
+                            parent.name.Equals(map.FingersL.Ring2) ||
+                            parent.name.Equals(map.FingersL.Ring3) ||
+                            parent.name.Equals(map.FingersR.Ring1) ||
+                            parent.name.Equals(map.FingersR.Ring2) ||
+                            parent.name.Equals(map.FingersR.Ring3))
+                            f.articulationButtons.Add(a.gameObject);
+                        break;
+
+                    case "Pinky":
+                        if (parent.name.Equals(map.FingersL.Pinky1) ||
+                            parent.name.Equals(map.FingersL.Pinky2) ||
+                            parent.name.Equals(map.FingersL.Pinky3) ||
+                            parent.name.Equals(map.FingersR.Pinky1) ||
+                            parent.name.Equals(map.FingersR.Pinky2) ||
+                            parent.name.Equals(map.FingersR.Pinky3))
+                            f.articulationButtons.Add(a.gameObject);
+                        break;
+                }
             }
 
             Debug.Log($"HandFocus: '{f.fingerTag}' collected {f.articulationButtons.Count} buttons.");

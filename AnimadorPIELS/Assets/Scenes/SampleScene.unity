@@ -5781,7 +5781,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5695733314380774600, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
-      value: Bone_F_Index_03_R
+      value: Bone_F_Ring_03_R
       objectReference: {fileID: 0}
     - target: {fileID: -5535154188257809109, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
@@ -6013,7 +6013,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6379315843885439161, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: m_Name
-      value: Bone_F_Index_02_R
+      value: Bone_F_Ring_02_R
       objectReference: {fileID: 0}
     - target: {fileID: 6486846370412285451, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[16]'
