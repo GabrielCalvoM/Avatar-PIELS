@@ -45,11 +45,30 @@ public class HandsCamera : MonoBehaviour
 
     private void HandleZoom()
     {
-        float dir = Mouse.current.scroll.ReadValue().y;
-        if (Mathf.Approximately(dir, 0f)) return;
+        float dir = 0f;
 
-        // Normalize the scroll value — new Input System returns larger raw values
-        dir *= 0.01f;
+        if (Mouse.current != null)
+        {
+            float scroll = Mouse.current.scroll.ReadValue().y;
+            if (!Mathf.Approximately(scroll, 0f))
+            {
+                // Normalize the scroll value — new Input System returns larger raw values
+                dir += scroll * 0.01f;
+            }
+        }
+
+        if (Keyboard.current != null)
+        {
+            const float keyZoomStep = 0.01f;
+
+            if (Keyboard.current.equalsKey.wasPressedThisFrame || Keyboard.current.numpadPlusKey.wasPressedThisFrame)
+                dir += keyZoomStep;
+
+            if (Keyboard.current.minusKey.wasPressedThisFrame || Keyboard.current.numpadMinusKey.wasPressedThisFrame)
+                dir -= keyZoomStep;
+        }
+
+        if (Mathf.Approximately(dir, 0f)) return;
 
         curr_zoom -= dir * zoom_speed * curr_zoom;
         curr_zoom = Mathf.Clamp(curr_zoom, min_zoom, max_zoom);
@@ -57,7 +76,15 @@ public class HandsCamera : MonoBehaviour
 
     private void HandleOrbit()
     {
-        if (!Mouse.current.middleButton.isPressed) return;
+        if (Mouse.current == null) return;
+
+        bool altPressed = Keyboard.current != null &&
+                          (Keyboard.current.leftAltKey.isPressed || Keyboard.current.rightAltKey.isPressed);
+
+        bool orbitPressed = Mouse.current.middleButton.isPressed ||
+                            (altPressed && Mouse.current.leftButton.isPressed);
+
+        if (!orbitPressed) return;
 
         Vector2 delta = Mouse.current.delta.ReadValue();
 
