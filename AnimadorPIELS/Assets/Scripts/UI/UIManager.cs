@@ -24,6 +24,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject[] handsButtons;
     [SerializeField] ToggleGroup handsToggleGroup;
 
+    [Header("Joint Buttons")]
+    [SerializeField] GameObject keyboard;
+
     [Header("Body Mesh")]
     [SerializeField] GameObject[] bodyParts;
 
@@ -161,4 +164,6 @@ public class UIManager : MonoBehaviour
     {
         envUI.SetActive(false);
     }
+
+    public void ToggleKeyboard() => keyboard.SetActive(!keyboard.activeSelf);
 }
