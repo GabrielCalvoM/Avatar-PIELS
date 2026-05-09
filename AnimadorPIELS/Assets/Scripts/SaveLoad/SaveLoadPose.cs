@@ -71,7 +71,7 @@ public class SaveLoadPose : MonoBehaviour
 
     //////////////////////////////////////////////////////////// PUBLIC API - POSE CAPTURE/APPLY
 
-    public PoseData CapturePose(Transform root)
+    public PoseData CapturePose(Transform root, bool includeFacialExpression = true)
     {
         PoseData pose = new PoseData();
 
@@ -88,7 +88,7 @@ public class SaveLoadPose : MonoBehaviour
             pose.bones.Add(bone);
         }
 
-        if (faceFocus != null)
+        if (includeFacialExpression && faceFocus != null)
         {
             pose.facialExpression = faceFocus.GetFacialExpression();
         }
@@ -98,6 +98,24 @@ public class SaveLoadPose : MonoBehaviour
         }
 
         return pose;
+    }
+
+    public PoseData CaptureHandPose(Transform handRoot)
+    {
+        return CapturePose(handRoot, false);
+    }
+
+    public void ApplyHandPose(Transform handRoot, PoseData pose)
+    {
+        char activeHandSide = GetHandSide(handRoot);
+        char poseSide = DetectPoseSide(pose);
+
+        if (activeHandSide != poseSide && poseSide != '\0')
+        {
+            pose = MirrorPose(pose);
+        }
+
+        ApplyPose(handRoot, pose, false);
     }
 
     public void ApplyPose(Transform root, PoseData pose, bool applyFacialExpression = true)
@@ -123,6 +141,103 @@ public class SaveLoadPose : MonoBehaviour
         {
             faceFocus.SetFacialExpression(pose.facialExpression);
         }
+    }
+
+    //////////////////////////////////////////////////////////// HAND DETECTION
+
+    private Transform GetActiveHandRoot()
+    {
+        if (HandFocus.Instance != null)
+        {
+            Transform current = HandFocus.Instance.transform;
+            while (current != null)
+            {
+                if (current.name.StartsWith("Bone_Hand_"))
+                {
+                    return current;
+                }
+                current = current.parent;
+            }
+        }
+        return null;
+    }
+
+    private bool IsInHandMode()
+    {
+        return HandFocus.Instance != null && GetActiveHandRoot() != null;
+    }
+
+    //////////////////////////////////////////////////////////// HAND MIRRORING
+
+    /// <summary>
+    /// Detects if the hand root is left (L) or right (R) based on its name.
+    /// </summary>
+    private char GetHandSide(Transform handRoot)
+    {
+        if (handRoot.name.EndsWith("_L"))
+            return 'L';
+        if (handRoot.name.EndsWith("_R"))
+            return 'R';
+        return '\0';
+    }
+
+    /// <summary>
+    /// Detects if a pose is from the left (L) or right (R) hand by checking bone name suffixes.
+    /// </summary>
+    private char DetectPoseSide(PoseData pose)
+    {
+        if (pose == null || pose.bones == null || pose.bones.Count == 0)
+            return '\0';
+
+        foreach (BoneData bone in pose.bones)
+        {
+            if (bone.name.EndsWith("_L"))
+                return 'L';
+            if (bone.name.EndsWith("_R"))
+                return 'R';
+        }
+        return '\0';
+    }
+
+    /// <summary>
+    /// Creates a mirrored copy of a pose
+    /// </summary>
+    private PoseData MirrorPose(PoseData pose)
+    {
+        PoseData mirrored = new PoseData();
+        mirrored.facialExpression = pose.facialExpression;
+        mirrored.bones = new List<BoneData>();
+
+        foreach (BoneData bone in pose.bones)
+        {
+            BoneData mirroredBone = new BoneData();
+
+            if (bone.name.EndsWith("_L"))
+                mirroredBone.name = bone.name.Substring(0, bone.name.Length - 1) + "R";
+            else if (bone.name.EndsWith("_R"))
+                mirroredBone.name = bone.name.Substring(0, bone.name.Length - 1) + "L";
+            else
+                mirroredBone.name = bone.name;
+
+            mirroredBone.localPosition = new Vector3(
+                -bone.localPosition.x,
+                bone.localPosition.y,
+                bone.localPosition.z
+            );
+
+            mirroredBone.localRotation = new Quaternion(
+                bone.localRotation.x,
+                -bone.localRotation.y,
+                -bone.localRotation.z,
+                bone.localRotation.w
+            );
+
+            mirroredBone.localScale = bone.localScale;
+
+            mirrored.bones.Add(mirroredBone);
+        }
+
+        return mirrored;
     }
 
     //////////////////////////////////////////////////////////// PUBLIC API - UNDO/REDO DELEGATION
@@ -184,7 +299,6 @@ public class SaveLoadPose : MonoBehaviour
             return;
         }
 
-        PoseData pose = CapturePose(avatarSpine);
         string poseName = SanitizeFilename(loadUI.saveFileInput.text);
         if (poseName == "")
         {
@@ -198,19 +312,52 @@ public class SaveLoadPose : MonoBehaviour
             return;
         }
 
-        // Save via backend API
-        bool success = await mongoService.SavePose(poseName, pose, false);
+        bool success = false;
 
-        if (success)
+        if (IsInHandMode())
         {
-            Debug.Log($"Pose '{poseName}' saved to backend");
+            Transform activeHand = GetActiveHandRoot();
+            success = await SaveHandPose(poseName, activeHand, false);
         }
         else
         {
-            Debug.LogError($"Failed to save pose '{poseName}' to backend.");
+            PoseData pose = CapturePose(avatarSpine);
+            success = await mongoService.SavePose(poseName, pose, false);
+
+            if (success)
+            {
+                Debug.Log($"Pose '{poseName}' saved to backend");
+            }
+            else
+            {
+                Debug.LogError($"Failed to save pose '{poseName}' to backend.");
+            }
         }
 
         loadUI.CancelSaveButton();
+    }
+
+    public async Task<bool> SaveHandPose(string poseName, Transform handRoot, bool isSystemPose = false)
+    {
+        if (mongoService == null || !mongoService.IsConnected)
+        {
+            Debug.LogError("Pose backend not connected. Can't save hand pose.");
+            return false;
+        }
+
+        PoseData handPose = CaptureHandPose(handRoot);
+        bool success = await mongoService.SaveHandPose(poseName, handPose, isSystemPose);
+
+        if (success)
+        {
+            Debug.Log($"Hand pose '{poseName}' saved to backend");
+        }
+        else
+        {
+            Debug.LogError($"Failed to save hand pose '{poseName}' to backend.");
+        }
+
+        return success;
     }
 
     public async void ApplyPoseButton()
@@ -233,21 +380,43 @@ public class SaveLoadPose : MonoBehaviour
             return;
         }
 
-        // Load via backend API
-        PoseData pose = await mongoService.LoadPose(loadUI.selected_pose, false);
-
-        if (pose != null)
+        if (IsInHandMode())
         {
-            if (poseHistory != null)
+            Transform activeHand = GetActiveHandRoot();
+            PoseData handPose = await LoadHandPoseFromMongoDB(loadUI.selected_pose, false);
+
+            if (handPose != null)
             {
-                poseHistory.RecordStateBeforePoseApply();
+                if (poseHistory != null)
+                {
+                    poseHistory.RecordStateBeforePoseApply();
+                }
+                ApplyHandPose(activeHand, handPose);
+                Debug.Log($"Hand pose '{loadUI.selected_pose}' loaded from backend");
             }
-            ApplyPose(avatarSpine, pose);
-            Debug.Log($"Pose '{loadUI.selected_pose}' loaded from backend");
+            else
+            {
+                Debug.LogError($"Failed to load hand pose: {loadUI.selected_pose}");
+            }
         }
         else
         {
-            Debug.LogError($"Failed to load pose: {loadUI.selected_pose}");
+            // Load full avatar pose
+            PoseData pose = await mongoService.LoadPose(loadUI.selected_pose, false);
+
+            if (pose != null)
+            {
+                if (poseHistory != null)
+                {
+                    poseHistory.RecordStateBeforePoseApply();
+                }
+                ApplyPose(avatarSpine, pose);
+                Debug.Log($"Pose '{loadUI.selected_pose}' loaded from backend");
+            }
+            else
+            {
+                Debug.LogError($"Failed to load pose: {loadUI.selected_pose}");
+            }
         }
 
         loadUI.CancelLoadButton();
@@ -297,6 +466,24 @@ public class SaveLoadPose : MonoBehaviour
             return await mongoService.GetAllPoseNames(isSystemPose);
         }
         return new List<string>();
+    }
+
+    public async Task<List<string>> GetAllHandPoseNamesFromMongoDB(bool isSystemPose = false)
+    {
+        if (mongoService != null && mongoService.IsConnected)
+        {
+            return await mongoService.GetAllHandPoseNames(isSystemPose);
+        }
+        return new List<string>();
+    }
+
+    public async Task<PoseData> LoadHandPoseFromMongoDB(string poseName, bool isSystemPose = false)
+    {
+        if (mongoService != null && mongoService.IsConnected)
+        {
+            return await mongoService.LoadHandPose(poseName, isSystemPose);
+        }
+        return null;
     }
 
     /// <summary>

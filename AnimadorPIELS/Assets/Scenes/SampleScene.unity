@@ -2371,7 +2371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf6b58d66f7eb104fbd4a1d561e78831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveLoadPose
-  avatarSpine: {fileID: 0}
+  avatarSpine: {fileID: 1986810763}
   mongoConfig: {fileID: 11400000, guid: 9bebfd709b76a8040acf4341897da2b2, type: 2}
   faceFocus: {fileID: 0}
 --- !u!4 &443752545
@@ -2406,6 +2406,8 @@ MonoBehaviour:
   listContent: {fileID: 1351401665}
   listButtonPrefab: {fileID: 5492261316338452059, guid: cc3e9bc49d92e7b4ea40ff75dd695461, type: 3}
   apply_pose_button: {fileID: 187720018}
+  save_pose_button: {fileID: 1498276993}
+  reset_pose_button: {fileID: 301035381}
   worldCamera: {fileID: 330585548}
   saveFileInput: {fileID: 1547896995}
   selected_pose: 
@@ -2433,7 +2435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5377284847c96454487d07fadfa06b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoseHistory
-  avatarSpine: {fileID: 0}
+  avatarSpine: {fileID: 1986810763}
   maxHistoryStates: 50
   undoButton: {fileID: 0}
   redoButton: {fileID: 0}
@@ -9575,6 +9577,11 @@ PrefabInstance:
 --- !u!1 &1986810762 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8231973590738092634, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
+  m_PrefabInstance: {fileID: 1986810761}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1986810763 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6350939731723414528, guid: bff540ccfd1e95143b046ee1cc97a432, type: 3}
   m_PrefabInstance: {fileID: 1986810761}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1988212810

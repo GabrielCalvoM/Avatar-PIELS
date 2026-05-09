@@ -46,6 +46,7 @@ public class MongoDBService
 {
     private bool isConnected = false;
     private MongoDBConfig config;
+    private const string HandPosePath = "hand-poses";
 
     public bool IsConnected => isConnected;
 
@@ -93,6 +94,19 @@ public class MongoDBService
     /// </summary>
     public async Task<bool> SavePose(string poseName, PoseData poseData, bool isSystemPose = false)
     {
+        return await SavePoseInternal("poses", poseName, poseData, isSystemPose);
+    }
+
+    /// <summary>
+    /// Save a hand pose through backend API
+    /// </summary>
+    public async Task<bool> SaveHandPose(string poseName, PoseData poseData, bool isSystemPose = false)
+    {
+        return await SavePoseInternal(HandPosePath, poseName, poseData, isSystemPose);
+    }
+
+    private async Task<bool> SavePoseInternal(string resourcePath, string poseName, PoseData poseData, bool isSystemPose)
+    {
         if (!isConnected)
         {
             Debug.LogError("Pose API: Not connected. Can't save pose.");
@@ -109,7 +123,7 @@ public class MongoDBService
             };
 
             string json = JsonUtility.ToJson(payload);
-            var url = BuildUrl($"poses/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
+            var url = BuildUrl($"{resourcePath}/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
             using UnityWebRequest request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPUT);
             request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));
             request.downloadHandler = new DownloadHandlerBuffer();
@@ -137,6 +151,19 @@ public class MongoDBService
     /// </summary>
     public async Task<PoseData> LoadPose(string poseName, bool isSystemPose = false)
     {
+        return await LoadPoseInternal("poses", poseName, isSystemPose);
+    }
+
+    /// <summary>
+    /// Load a hand pose by name through backend API
+    /// </summary>
+    public async Task<PoseData> LoadHandPose(string poseName, bool isSystemPose = false)
+    {
+        return await LoadPoseInternal(HandPosePath, poseName, isSystemPose);
+    }
+
+    private async Task<PoseData> LoadPoseInternal(string resourcePath, string poseName, bool isSystemPose)
+    {
         if (!isConnected)
         {
             Debug.LogError("Pose API: Not connected. Can't load pose.");
@@ -145,7 +172,7 @@ public class MongoDBService
 
         try
         {
-            var url = BuildUrl($"poses/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
+            var url = BuildUrl($"{resourcePath}/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
             using UnityWebRequest request = UnityWebRequest.Get(url);
             ApplyCommonRequestOptions(request);
             await SendRequest(request);
@@ -184,6 +211,19 @@ public class MongoDBService
     /// </summary>
     public async Task<List<string>> GetAllPoseNames(bool isSystemPose = false)
     {
+        return await GetAllPoseNamesInternal("poses", isSystemPose);
+    }
+
+    /// <summary>
+    /// Get all hand pose names through backend API
+    /// </summary>
+    public async Task<List<string>> GetAllHandPoseNames(bool isSystemPose = false)
+    {
+        return await GetAllPoseNamesInternal(HandPosePath, isSystemPose);
+    }
+
+    private async Task<List<string>> GetAllPoseNamesInternal(string resourcePath, bool isSystemPose)
+    {
         if (!isConnected)
         {
             Debug.LogError("Pose API: Not connected. Can't retrieve pose names.");
@@ -192,7 +232,7 @@ public class MongoDBService
 
         try
         {
-            var url = BuildUrl($"poses?system={isSystemPose.ToString().ToLowerInvariant()}");
+            var url = BuildUrl($"{resourcePath}?system={isSystemPose.ToString().ToLowerInvariant()}");
             using UnityWebRequest request = UnityWebRequest.Get(url);
             ApplyCommonRequestOptions(request);
             await SendRequest(request);
@@ -223,6 +263,19 @@ public class MongoDBService
     /// </summary>
     public async Task<bool> DeletePose(string poseName, bool isSystemPose = false)
     {
+        return await DeletePoseInternal("poses", poseName, isSystemPose);
+    }
+
+    /// <summary>
+    /// Delete a hand pose through backend API
+    /// </summary>
+    public async Task<bool> DeleteHandPose(string poseName, bool isSystemPose = false)
+    {
+        return await DeletePoseInternal(HandPosePath, poseName, isSystemPose);
+    }
+
+    private async Task<bool> DeletePoseInternal(string resourcePath, string poseName, bool isSystemPose)
+    {
         if (!isConnected)
         {
             Debug.LogError("Pose API: Not connected. Can't delete pose.");
@@ -231,7 +284,7 @@ public class MongoDBService
 
         try
         {
-            var url = BuildUrl($"poses/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
+            var url = BuildUrl($"{resourcePath}/{UnityWebRequest.EscapeURL(poseName)}?system={isSystemPose.ToString().ToLowerInvariant()}");
             using UnityWebRequest request = UnityWebRequest.Delete(url);
             ApplyCommonRequestOptions(request);
             await SendRequest(request);
