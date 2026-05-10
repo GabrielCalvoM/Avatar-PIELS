@@ -15,7 +15,7 @@ MonoBehaviour:
   boneName: ^Bone_F_Thumb_03_(L|R)$
   boneSide: 1
   isHand: 1
-  movScript: {fileID: 11500000, guid: d84dff0dace627c48a654f0461193e98, type: 3}
+  movScript: {fileID: 11500000, guid: 93e65de33ab121445adc468de72cdaa8, type: 3}
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
   enableY: 0
