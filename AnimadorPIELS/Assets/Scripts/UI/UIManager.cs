@@ -47,6 +47,7 @@ public class UIManager : MonoBehaviour
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 toggleUIOnOff.SetUIOn();
+                keyboard.SetActive(false);
             }
         }
     }
