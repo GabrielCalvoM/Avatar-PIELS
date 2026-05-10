@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using UnityEngine.ProBuilder;
 
 public class FaceFocus : MonoBehaviour
 {
@@ -25,32 +23,6 @@ public class FaceFocus : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject faceUI;
 
-    //////////////////////////////////////////////////////////// EYELIDS
-
-    [SerializeField] private Slider leftEyelidSlider;
-    [SerializeField] private Slider rightEyelidSlider;
-    private int leftEyelidIndex;
-    private int rightEyelidIndex;
-
-    //////////////////////////////////////////////////////////// EYEBROWS
-    
-    // Eyebrows (single raise control)
-    [SerializeField] private Slider raiseEyebrowSlider;
-    private int raiseEyebrowIndex;
-
-
-    //////////////////////////////////////////////////////////// MOUTH
-    
-    [SerializeField] private Slider mouthHSlider;
-    [SerializeField] private Slider mouthVSlider;
-    private int mouthHIndex;
-    private int mouthVIndex;
-
-    //////////////////////////////////////////////////////////// INNER LOGIC
-
-    private bool isFacialEditInProgress;
-    private bool suppressHistoryForProgrammaticSliderUpdate;
-
     private static FaceFocus _instance;
     public static FaceFocus Instance { get { return _instance; } }
 
@@ -59,9 +31,9 @@ public class FaceFocus : MonoBehaviour
     private void SetFaceFocusState(bool focused)
     {
         isFocused = focused;
-        mainCamera.SetActive(!isFocused);
-        focusCamera.SetActive(isFocused);
-        focusButton.SetActive(!isFocused);
+        if (mainCamera != null) mainCamera.SetActive(!isFocused);
+        if (focusCamera != null) focusCamera.SetActive(isFocused);
+        if (focusButton != null) focusButton.SetActive(!isFocused);
     }
 
     public void OnFaceButtonPressed()
@@ -69,36 +41,56 @@ public class FaceFocus : MonoBehaviour
         //Focus face
         _instance = this;
         SetFaceFocusState(true);
-        uiManager.hideCameraControls();
-        faceUI.SetActive(true);
-        Button button = faceUI.GetComponentInChildren<Button>();
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(OnReturnPressed);
-        uiManager.SetFocusedOnHands(true);
+        if (uiManager != null)
+        {
+            uiManager.hideCameraControls();
+            uiManager.SetFocusedOnHands(true);
+        }
+
+        if (faceUI != null)
+        {
+            faceUI.SetActive(true);
+            Button button = faceUI.GetComponentInChildren<Button>();
+            if (button != null)
+            {
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(OnReturnPressed);
+            }
+        }
     }
 
     public void OnReturnPressed()
     {
         SetFaceFocusState(false);
-        faceUI.SetActive(false);
-        uiManager.SetFocusedOnHands(false);
+        if (faceUI != null) faceUI.SetActive(false);
+        if (uiManager != null)
+        {
+            uiManager.SetFocusedOnHands(false);
+            uiManager.showCameraControls();
+        }
         _instance = null;
-        uiManager.showCameraControls();
     }
 
     //////////////////////////////////////////////////////////// PUBLIC API - GET/SET FACIAL EXPRESSIONS
 
     public FacialExpressionData GetFacialExpression()
     {
-        return new FacialExpressionData
+        FacialExpressionData data = new FacialExpressionData();
+
+        if (avatarFace == null || avatarFace.sharedMesh == null)
         {
-            leftEyelid = leftEyelidSlider.value,
-            rightEyelid = rightEyelidSlider.value,
-            raiseEyebrow = raiseEyebrowSlider.value,
-            angleEyebrow = 0.0f,
-            mouthH = mouthHSlider.value,
-            mouthV = mouthVSlider.value
-        };
+            return data;
+        }
+
+        int blendShapeCount = avatarFace.sharedMesh.blendShapeCount;
+        for (int i = 0; i < blendShapeCount; i++)
+        {
+            string blendshapeName = avatarFace.sharedMesh.GetBlendShapeName(i);
+            float weight = avatarFace.GetBlendShapeWeight(i);
+            data.blendshapes.Add(new BlendshapeWeightData { name = blendshapeName, weight = weight });
+        }
+
+        return data;
     }
 
     public void SetFacialExpression(FacialExpressionData data)
@@ -109,103 +101,52 @@ public class FaceFocus : MonoBehaviour
             return;
         }
 
-        CompleteFacialEdit();
-
-        suppressHistoryForProgrammaticSliderUpdate = true;
-        try
+        if (avatarFace == null || avatarFace.sharedMesh == null)
         {
-            // Set slider values
-            leftEyelidSlider.value = data.leftEyelid;
-            rightEyelidSlider.value = data.rightEyelid;
-            raiseEyebrowSlider.value = data.raiseEyebrow;
-            mouthHSlider.value = data.mouthH;
-            mouthVSlider.value = data.mouthV;
-        }
-        finally
-        {
-            suppressHistoryForProgrammaticSliderUpdate = false;
-        }
-    }
-
-    //////////////////////////////////////////////////////////// SIGNALS - SLIDERS
-
-    private void NotifyFacialEditChanged()
-    {
-        if (suppressHistoryForProgrammaticSliderUpdate)
-        {
+            Debug.LogWarning("FaceFocus: avatarFace not set or missing sharedMesh; cannot apply facial expression.");
             return;
         }
 
-        if (saveLoadPose != null && !isFacialEditInProgress)
+        // Preferred: apply explicit blendshape weights by name.
+        if (data.blendshapes != null && data.blendshapes.Count > 0)
         {
-            saveLoadPose.BeginPoseEdit();
-            isFacialEditInProgress = true;
-        }
-    }
+            foreach (BlendshapeWeightData blendshape in data.blendshapes)
+            {
+                if (blendshape == null || string.IsNullOrWhiteSpace(blendshape.name))
+                {
+                    continue;
+                }
 
-    private void CompleteFacialEdit()
-    {
-        if (!isFacialEditInProgress)
-        {
+                int index = avatarFace.sharedMesh.GetBlendShapeIndex(blendshape.name);
+                if (index >= 0)
+                {
+                    avatarFace.SetBlendShapeWeight(index, blendshape.weight);
+                }
+            }
+
             return;
         }
 
-        isFacialEditInProgress = false;
-        saveLoadPose?.EndPoseEdit();
-    }
+        // Backwards compatibility: older saved poses had only the legacy float fields.
+        int leftEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_L");
+        int rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_R");
+        int raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "Brow_Drop_L");
+        int mouthHIndex = GetBlendShapeIndexOrFallback("A", "V_Lip_Open");
+        int mouthVIndex = GetBlendShapeIndexOrFallback("O", "V_Wide");
 
-    private void RegisterSliderHistoryHandlers(Slider slider)
-    {
-        if (slider == null)
+        if (leftEyelidIndex == rightEyelidIndex)
         {
-            return;
+            SetBlendShapeWeightSafe(leftEyelidIndex, Mathf.Max(data.leftEyelid, data.rightEyelid));
+        }
+        else
+        {
+            SetBlendShapeWeightSafe(leftEyelidIndex, data.leftEyelid);
+            SetBlendShapeWeightSafe(rightEyelidIndex, data.rightEyelid);
         }
 
-        EventTrigger trigger = slider.GetComponent<EventTrigger>();
-        if (trigger == null)
-        {
-            trigger = slider.gameObject.AddComponent<EventTrigger>();
-        }
-
-        AddEventTrigger(trigger, EventTriggerType.PointerDown, _ =>
-        {
-            if (suppressHistoryForProgrammaticSliderUpdate)
-            {
-                return;
-            }
-
-            NotifyFacialEditChanged();
-        });
-
-        AddEventTrigger(trigger, EventTriggerType.PointerUp, _ =>
-        {
-            if (suppressHistoryForProgrammaticSliderUpdate)
-            {
-                return;
-            }
-
-            CompleteFacialEdit();
-        });
-
-        AddEventTrigger(trigger, EventTriggerType.EndDrag, _ =>
-        {
-            if (suppressHistoryForProgrammaticSliderUpdate)
-            {
-                return;
-            }
-
-            CompleteFacialEdit();
-        });
-    }
-
-    private void AddEventTrigger(EventTrigger trigger, EventTriggerType eventType, UnityEngine.Events.UnityAction<BaseEventData> action)
-    {
-        EventTrigger.Entry entry = new EventTrigger.Entry
-        {
-            eventID = eventType
-        };
-        entry.callback.AddListener(action);
-        trigger.triggers.Add(entry);
+        SetBlendShapeWeightSafe(raiseEyebrowIndex, data.raiseEyebrow);
+        SetBlendShapeWeightSafe(mouthHIndex, data.mouthH);
+        SetBlendShapeWeightSafe(mouthVIndex, data.mouthV);
     }
 
     private void SetBlendShapeWeightSafe(int blendShapeIndex, float value)
@@ -234,49 +175,6 @@ public class FaceFocus : MonoBehaviour
         return avatarFace.sharedMesh.GetBlendShapeIndex(fallbackName);
     }
 
-    private void ApplyBlinkWeight()
-    {
-        if (leftEyelidIndex == rightEyelidIndex)
-        {
-            float mergedBlink = Mathf.Max(leftEyelidSlider.value, rightEyelidSlider.value);
-            SetBlendShapeWeightSafe(leftEyelidIndex, mergedBlink);
-            return;
-        }
-
-        SetBlendShapeWeightSafe(leftEyelidIndex, leftEyelidSlider.value);
-        SetBlendShapeWeightSafe(rightEyelidIndex, rightEyelidSlider.value);
-    }
-
-    private void OnLeftEyelidChanged(float value)
-    {
-        NotifyFacialEditChanged();
-        ApplyBlinkWeight();
-    }
-
-    private void OnRightEyelidChanged(float value)
-    {
-        NotifyFacialEditChanged();
-        ApplyBlinkWeight();
-    }
-
-    private void OnRaiseEyebrowChanged(float value)
-    {
-        NotifyFacialEditChanged();
-        SetBlendShapeWeightSafe(raiseEyebrowIndex, value);
-    }
-
-    private void OnMouthHChanged(float value)
-    {
-        NotifyFacialEditChanged();
-        SetBlendShapeWeightSafe(mouthHIndex, value);
-    }
-
-    private void OnMouthVChanged(float value)
-    {
-        NotifyFacialEditChanged();
-        SetBlendShapeWeightSafe(mouthVIndex, value);
-    }
-
     //////////////////////////////////////////////////////////// GAME LOOP
 
     void Start()
@@ -286,65 +184,17 @@ public class FaceFocus : MonoBehaviour
             saveLoadPose = FindFirstObjectByType<SaveLoadPose>();
         }
 
-        if (avatarFace == null || avatarFace.sharedMesh == null)
+        // Optional: hide focus button visuals in-game.
+        if (focusButton != null)
         {
-            Debug.LogError("FaceFocus requires a valid avatarFace with a sharedMesh.");
-            return;
+            Button button = focusButton.GetComponent<Button>();
+            if (button != null)
+            {
+                ColorBlock colors = button.colors;
+                colors.normalColor = new Color(0, 0, 0, 0);
+                button.colors = colors;
+            }
         }
-
-        // Hide in Game
-        ColorBlock colors = focusButton.GetComponent<Button>().colors;
-        colors.normalColor = new Color(0, 0, 0, 0);
-        focusButton.GetComponent<Button>().colors = colors;
-
-        // Get Idx
-        leftEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_L");
-        rightEyelidIndex = GetBlendShapeIndexOrFallback("Blink", "Eye_Blink_R");
-
-        raiseEyebrowIndex = GetBlendShapeIndexOrFallback("Emout_Eyebrow_rise", "Brow_Drop_L");
-
-        mouthHIndex = GetBlendShapeIndexOrFallback("A", "V_Lip_Open");
-        mouthVIndex = GetBlendShapeIndexOrFallback("O", "V_Wide");
-
-        if (leftEyelidIndex < 0) Debug.LogWarning("Could not find left eyelid blendshape");
-        if (rightEyelidIndex < 0) Debug.LogWarning("Could not find right eyelid blendshape");
-        if (raiseEyebrowIndex < 0) Debug.LogWarning("Could not find raise eyebrow blendshape");
-        if (mouthHIndex < 0) Debug.LogWarning("Could not find mouthH blendshape");
-        if (mouthVIndex < 0) Debug.LogWarning("Could not find mouthV blendshape");
-
-        // Set Range
-        leftEyelidSlider.minValue = 0.0f;
-        leftEyelidSlider.maxValue = 100.0f;
-        rightEyelidSlider.minValue = 0.0f;
-        rightEyelidSlider.maxValue = 100.0f;
-
-        raiseEyebrowSlider.minValue = 0.0f;
-        raiseEyebrowSlider.maxValue = 100.0f;
-
-        mouthHSlider.minValue = 0.0f;
-        mouthHSlider.maxValue = 100.0f;
-        mouthVSlider.minValue = 0.0f;
-        mouthVSlider.maxValue = 100.0f;
-
-        // Connect Signals
-        leftEyelidSlider.onValueChanged.AddListener(OnLeftEyelidChanged);
-        rightEyelidSlider.onValueChanged.AddListener(OnRightEyelidChanged);
-
-        raiseEyebrowSlider.onValueChanged.AddListener(OnRaiseEyebrowChanged);
-
-        mouthHSlider.onValueChanged.AddListener(OnMouthHChanged);
-        mouthVSlider.onValueChanged.AddListener(OnMouthVChanged);
-
-        RegisterSliderHistoryHandlers(leftEyelidSlider);
-        RegisterSliderHistoryHandlers(rightEyelidSlider);
-        RegisterSliderHistoryHandlers(raiseEyebrowSlider);
-        RegisterSliderHistoryHandlers(mouthHSlider);
-        RegisterSliderHistoryHandlers(mouthVSlider);
-    }
-
-    void OnDisable()
-    {
-        CompleteFacialEdit();
     }
 
 }

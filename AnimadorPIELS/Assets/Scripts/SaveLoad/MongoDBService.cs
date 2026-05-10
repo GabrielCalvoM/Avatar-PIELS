@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 /// <summary>
 /// Payload document used by backend API.
 /// </summary>
-[System.Serializable]
+[Serializable]
 public class PoseDocument
 {
     public string id;
@@ -18,20 +18,20 @@ public class PoseDocument
     public FacialExpressionData facialExpression = new FacialExpressionData();
 }
 
-[System.Serializable]
+[Serializable]
 public class PoseNamesResponse
 {
     public List<string> poseNames = new List<string>();
 }
 
-[System.Serializable]
+[Serializable]
 public class PoseResponse
 {
     public string poseName;
     public PoseData pose;
 }
 
-[System.Serializable]
+[Serializable]
 public class SavePoseRequest
 {
     public string poseName;
@@ -47,6 +47,7 @@ public class MongoDBService
     private bool isConnected = false;
     private MongoDBConfig config;
     private const string HandPosePath = "hand-poses";
+    private const string FacePosePath = "face-poses";
 
     public bool IsConnected => isConnected;
 
@@ -105,6 +106,14 @@ public class MongoDBService
         return await SavePoseInternal(HandPosePath, poseName, poseData, isSystemPose);
     }
 
+    /// <summary>
+    /// Save a face pose through backend API (system-only)
+    /// </summary>
+    public async Task<bool> SaveFacePose(string poseName, PoseData poseData)
+    {
+        return await SavePoseInternal(FacePosePath, poseName, poseData, true);
+    }
+
     private async Task<bool> SavePoseInternal(string resourcePath, string poseName, PoseData poseData, bool isSystemPose)
     {
         if (!isConnected)
@@ -160,6 +169,14 @@ public class MongoDBService
     public async Task<PoseData> LoadHandPose(string poseName, bool isSystemPose = false)
     {
         return await LoadPoseInternal(HandPosePath, poseName, isSystemPose);
+    }
+
+    /// <summary>
+    /// Load a face pose by name through backend API (system-only)
+    /// </summary>
+    public async Task<PoseData> LoadFacePose(string poseName)
+    {
+        return await LoadPoseInternal(FacePosePath, poseName, true);
     }
 
     private async Task<PoseData> LoadPoseInternal(string resourcePath, string poseName, bool isSystemPose)
@@ -222,6 +239,14 @@ public class MongoDBService
         return await GetAllPoseNamesInternal(HandPosePath, isSystemPose);
     }
 
+    /// <summary>
+    /// Get all face pose names through backend API
+    /// </summary>
+    public async Task<List<string>> GetAllFacePoseNames()
+    {
+        return await GetAllPoseNamesInternal(FacePosePath, true);
+    }
+
     private async Task<List<string>> GetAllPoseNamesInternal(string resourcePath, bool isSystemPose)
     {
         if (!isConnected)
@@ -272,6 +297,14 @@ public class MongoDBService
     public async Task<bool> DeleteHandPose(string poseName, bool isSystemPose = false)
     {
         return await DeletePoseInternal(HandPosePath, poseName, isSystemPose);
+    }
+
+    /// <summary>
+    /// Delete a face pose through backend API
+    /// </summary>
+    public async Task<bool> DeleteFacePose(string poseName)
+    {
+        return await DeletePoseInternal(FacePosePath, poseName, true);
     }
 
     private async Task<bool> DeletePoseInternal(string resourcePath, string poseName, bool isSystemPose)

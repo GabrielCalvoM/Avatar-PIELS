@@ -252,38 +252,6 @@ public class BoneSetUp : MonoBehaviour
         SetField(t, faceFocus, "faceUI", faceUI, flags);
         SetField(t, faceFocus, "avatarFace", avatarFace, flags);
 
-        Transform FindInChildren(Transform root, string childName)
-        {
-            foreach (Transform tr in root.GetComponentsInChildren<Transform>(true))
-            {
-                if (tr.name == childName) return tr;
-            }
-            return null;
-        }
-
-        // Face UI -> FacePanel -> (Eyelids/Eyebrows/Mouth) -> Sliders
-        Transform facePanel = FindInChildren(faceUI.transform, "FacePanel");
-        Transform eyelids = FindInChildren(facePanel, "Eyelids");
-        Transform eyebrows = FindInChildren(facePanel, "Eyebrows");
-        Transform mouth = FindInChildren(facePanel, "Mouth");
-
-        Button returnButton = facePanel.GetComponentInChildren<Button>(true);
-        returnButton.onClick.RemoveAllListeners();
-        returnButton.onClick.AddListener(faceFocus.OnReturnPressed);
-
-        Slider[] eyelidSliders = eyelids.GetComponentsInChildren<Slider>(true);
-        Slider[] eyebrowSliders = eyebrows.GetComponentsInChildren<Slider>(true);
-        Slider[] mouthSliders = mouth.GetComponentsInChildren<Slider>(true);
-
-        SetField(t, faceFocus, "leftEyelidSlider", eyelidSliders[0], flags);
-        SetField(t, faceFocus, "rightEyelidSlider", eyelidSliders[1], flags);
-
-        SetField(t, faceFocus, "raiseEyebrowSlider", eyebrowSliders[0], flags);
-        SetField(t, faceFocus, "angleEyebrowSlider", eyebrowSliders[1], flags);
-
-        SetField(t, faceFocus, "mouthHSlider", mouthSliders[0], flags);
-        SetField(t, faceFocus, "mouthVSlider", mouthSliders[1], flags);
-
 
         ToggleGroup targetToggleGroup = def.toggleGroup switch
         {

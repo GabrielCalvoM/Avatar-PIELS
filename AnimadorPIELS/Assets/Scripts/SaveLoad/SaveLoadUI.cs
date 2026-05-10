@@ -134,13 +134,62 @@ public class SaveLoadUI : MonoBehaviour
         }
     }
 
+    async Task PopulateFaceFiles(string folderPath)
+    {
+        ClearFileList();
+
+        if (saveLoadPose == null)
+        {
+            Debug.LogError("SaveLoadPose component not found!");
+            return;
+        }
+
+        List<string> poseNames = await saveLoadPose.GetAllFacePoseNamesFromMongoDB();
+
+        if (poseNames.Count == 0)
+        {
+            Debug.LogWarning("No face poses found in MongoDB.");
+            return;
+        }
+
+        foreach (string poseName in poseNames)
+        {
+            GameObject item = Instantiate(listButtonPrefab, listContent);
+
+            Button button = item.GetComponent<Button>();
+            if (button != null)
+            {
+                string capturedPoseName = poseName;
+                button.onClick.AddListener(() =>
+                {
+                    selected_pose = capturedPoseName;
+                    if (apply_pose_button != null)
+                    {
+                        apply_pose_button.interactable = true;
+                    }
+                });
+            }
+
+            TextMeshProUGUI text = item.GetComponentInChildren<TextMeshProUGUI>();
+
+            string displayName = poseName.Replace("\u200B", "").Replace("\u200C", "").Replace("\u200D", "").Replace("\uFEFF", "");
+
+            text.text = displayName;
+        }
+    }
+
     public async void LoadPoseButton()
     {
         worldCamera.StopCameraControls();
         loadUI.SetActive(true);
         string path = Application.persistentDataPath + "/UserPoses";
-        
-        if (saveLoadPose != null && HandFocus.Instance != null)
+
+        if (saveLoadPose != null && FaceFocus.Instance != null)
+        {
+            await PopulateFaceFiles(path);
+            UpdateLoadButtonText();
+        }
+        else if (saveLoadPose != null && HandFocus.Instance != null)
         {
             // Load hand poses instead of full poses
             await PopulateHandFiles(path);
@@ -155,7 +204,18 @@ public class SaveLoadUI : MonoBehaviour
 
     private void UpdateLoadButtonText()
     {
-        if (saveLoadPose != null && HandFocus.Instance != null)
+        if (saveLoadPose != null && FaceFocus.Instance != null)
+        {
+            if (apply_pose_button != null)
+            {
+                TextMeshProUGUI buttonText = apply_pose_button.GetComponentInChildren<TextMeshProUGUI>();
+                if (buttonText != null)
+                {
+                    buttonText.text = "Cargar cara";
+                }
+            }
+        }
+        else if (saveLoadPose != null && HandFocus.Instance != null)
         {
             // Find and update the apply button text
             if (apply_pose_button != null)
@@ -209,7 +269,15 @@ public class SaveLoadUI : MonoBehaviour
 
     private void UpdateSaveButtonText()
     {
-        if (saveLoadPose != null && HandFocus.Instance != null && save_pose_button != null)
+        if (saveLoadPose != null && FaceFocus.Instance != null && save_pose_button != null)
+        {
+            TextMeshProUGUI buttonText = save_pose_button.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+            {
+                buttonText.text = "Guardar cara";
+            }
+        }
+        else if (saveLoadPose != null && HandFocus.Instance != null && save_pose_button != null)
         {
             TextMeshProUGUI buttonText = save_pose_button.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)

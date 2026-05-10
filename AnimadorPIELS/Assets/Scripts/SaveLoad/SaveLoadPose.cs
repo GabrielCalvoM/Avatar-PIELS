@@ -18,12 +18,21 @@ public class BoneData
 [System.Serializable]
 public class FacialExpressionData
 {
+    public List<BlendshapeWeightData> blendshapes = new List<BlendshapeWeightData>();
+
     public float leftEyelid;
     public float rightEyelid;
     public float raiseEyebrow;
     public float angleEyebrow;
     public float mouthH;
     public float mouthV;
+}
+
+[System.Serializable]
+public class BlendshapeWeightData
+{
+    public string name;
+    public float weight;
 }
 
 [System.Serializable]
@@ -88,9 +97,11 @@ public class SaveLoadPose : MonoBehaviour
             pose.bones.Add(bone);
         }
 
-        if (includeFacialExpression && faceFocus != null)
+        FaceFocus activeFaceFocus = faceFocus != null ? faceFocus : FaceFocus.Instance;
+
+        if (includeFacialExpression && activeFaceFocus != null)
         {
-            pose.facialExpression = faceFocus.GetFacialExpression();
+            pose.facialExpression = activeFaceFocus.GetFacialExpression();
         }
         else
         {
@@ -137,9 +148,11 @@ public class SaveLoadPose : MonoBehaviour
             }
         }
 
-        if (applyFacialExpression && faceFocus != null && pose.facialExpression != null)
+        FaceFocus activeFaceFocus = faceFocus != null ? faceFocus : FaceFocus.Instance;
+
+        if (applyFacialExpression && activeFaceFocus != null && pose.facialExpression != null)
         {
-            faceFocus.SetFacialExpression(pose.facialExpression);
+            activeFaceFocus.SetFacialExpression(pose.facialExpression);
         }
     }
 
@@ -165,6 +178,107 @@ public class SaveLoadPose : MonoBehaviour
     private bool IsInHandMode()
     {
         return HandFocus.Instance != null && GetActiveHandRoot() != null;
+    }
+
+    private Transform GetActiveFaceRoot()
+    {
+        if (FaceFocus.Instance == null)
+        {
+            return null;
+        }
+
+        // FaceFocus is instantiated as a child of the face/neck bone.
+        Transform candidate = FaceFocus.Instance.transform.parent;
+        if (candidate != null && candidate.name.StartsWith("Bone_"))
+        {
+            return candidate;
+        }
+
+        // Fallback: walk up until we hit a bone-like transform.
+        Transform current = FaceFocus.Instance.transform;
+        while (current != null)
+        {
+            if (current.name.StartsWith("Bone_"))
+            {
+                return current;
+            }
+            current = current.parent;
+        }
+
+        return null;
+    }
+
+    private Transform GetActiveFacePoseRoot()
+    {
+        if (FaceFocus.Instance == null)
+        {
+            return null;
+        }
+
+        const string faceBaseBoneName = "Bone_Base_Face";
+
+        // Prefer walking up from the instantiated FaceFocus (it lives under the avatar bones).
+        Transform current = FaceFocus.Instance.transform;
+        while (current != null)
+        {
+            if (current.name == faceBaseBoneName)
+            {
+                return current;
+            }
+            current = current.parent;
+        }
+
+        // Fallback: search the avatar hierarchy by name.
+        Transform avatarRoot = null;
+        if (avatarSpine != null)
+        {
+            avatarRoot = avatarSpine.root;
+        }
+        else
+        {
+            avatarRoot = FaceFocus.Instance.transform.root;
+        }
+
+        if (avatarRoot != null)
+        {
+            foreach (Transform t in avatarRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == faceBaseBoneName)
+                {
+                    return t;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private bool IsInFaceMode()
+    {
+        return FaceFocus.Instance != null;
+    }
+
+    //////////////////////////////////////////////////////////// FACE POSE (BONES + EXPRESSION)
+
+    public PoseData CaptureFacePose(Transform faceRoot)
+    {
+        return CapturePose(faceRoot, true);
+    }
+
+    public void ApplyFacePose(Transform faceRoot, PoseData pose)
+    {
+        if (pose == null)
+        {
+            Debug.LogWarning("ApplyFacePose called with null pose.");
+            return;
+        }
+
+        if (pose.bones == null || pose.bones.Count == 0)
+        {
+            Debug.LogWarning("Face pose has 0 bones; only facialExpression will be applied.");
+        }
+
+        ApplyPose(faceRoot, pose, true);
     }
 
     //////////////////////////////////////////////////////////// HAND MIRRORING
@@ -314,7 +428,21 @@ public class SaveLoadPose : MonoBehaviour
 
         bool success = false;
 
-        if (IsInHandMode())
+        if (IsInFaceMode())
+        {
+            Transform faceRoot = GetActiveFacePoseRoot();
+            if (faceRoot == null)
+            {
+                Debug.LogError("Could not find Bone_Base_Face in avatar. Can't save face pose.");
+                success = false;
+            }
+            else
+            {
+                success = await SaveFacePose(poseName, faceRoot);
+                Debug.Log("Saving face pose...");
+            }
+        }
+        else if (IsInHandMode())
         {
             Transform activeHand = GetActiveHandRoot();
             success = await SaveHandPose(poseName, activeHand, false);
@@ -360,6 +488,35 @@ public class SaveLoadPose : MonoBehaviour
         return success;
     }
 
+    public async Task<bool> SaveFacePose(string poseName, Transform faceRoot)
+    {
+        if (mongoService == null || !mongoService.IsConnected)
+        {
+            Debug.LogError("Pose backend not connected. Can't save face pose.");
+            return false;
+        }
+
+        if (faceRoot == null)
+        {
+            Debug.LogError("Face root not found. Can't save face pose.");
+            return false;
+        }
+
+        PoseData facePose = CaptureFacePose(faceRoot);
+        bool success = await mongoService.SaveFacePose(poseName, facePose);
+
+        if (success)
+        {
+            Debug.Log($"Face pose '{poseName}' saved to backend");
+        }
+        else
+        {
+            Debug.LogError($"Failed to save face pose '{poseName}' to backend.");
+        }
+
+        return success;
+    }
+
     public async void ApplyPoseButton()
     {
         if (loadUI == null)
@@ -380,7 +537,30 @@ public class SaveLoadPose : MonoBehaviour
             return;
         }
 
-        if (IsInHandMode())
+        if (IsInFaceMode())
+        {
+            Transform faceRoot = GetActiveFacePoseRoot();
+            PoseData facePose = await LoadFacePoseFromMongoDB(loadUI.selected_pose);
+
+            if (faceRoot == null)
+            {
+                Debug.LogError("Could not find Bone_Base_Face in avatar. Can't apply face pose.");
+            }
+            else if (facePose != null)
+            {
+                if (poseHistory != null)
+                {
+                    poseHistory.RecordStateBeforePoseApply();
+                }
+                ApplyFacePose(faceRoot, facePose);
+                Debug.Log($"Face pose '{loadUI.selected_pose}' loaded from backend");
+            }
+            else
+            {
+                Debug.LogError($"Failed to load face pose: {loadUI.selected_pose}");
+            }
+        }
+        else if (IsInHandMode())
         {
             Transform activeHand = GetActiveHandRoot();
             PoseData handPose = await LoadHandPoseFromMongoDB(loadUI.selected_pose, false);
@@ -477,11 +657,29 @@ public class SaveLoadPose : MonoBehaviour
         return new List<string>();
     }
 
+    public async Task<List<string>> GetAllFacePoseNamesFromMongoDB()
+    {
+        if (mongoService != null && mongoService.IsConnected)
+        {
+            return await mongoService.GetAllFacePoseNames();
+        }
+        return new List<string>();
+    }
+
     public async Task<PoseData> LoadHandPoseFromMongoDB(string poseName, bool isSystemPose = false)
     {
         if (mongoService != null && mongoService.IsConnected)
         {
             return await mongoService.LoadHandPose(poseName, isSystemPose);
+        }
+        return null;
+    }
+
+    public async Task<PoseData> LoadFacePoseFromMongoDB(string poseName)
+    {
+        if (mongoService != null && mongoService.IsConnected)
+        {
+            return await mongoService.LoadFacePose(poseName);
         }
         return null;
     }
