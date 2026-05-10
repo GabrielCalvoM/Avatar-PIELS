@@ -13,10 +13,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject faceCamera;
     [SerializeField] private GameObject activeCamera;
 
-    [Header("UI Panels")]
+    [Header("UI")]
     [SerializeField] private GameObject genUI;
     [SerializeField] private GameObject envUI;
     [SerializeField] private GameObject faceUI;
+    [SerializeField] private GameObject SL_UI;
+    [SerializeField] private GameObject logo;
 
     [Header("Joint Buttons")]
     [SerializeField] GameObject[] bodyButtons;
@@ -69,11 +71,13 @@ public class UIManager : MonoBehaviour
         {
             DisableBodyButtons();
             EnableHandsButtons();
+            logo.SetActive(false);
         }
         else
         {
             DisableHandsButtons();
             EnableBodyButtons();
+            logo.SetActive(true);
         }
     }
 
@@ -173,6 +177,26 @@ public class UIManager : MonoBehaviour
     public void hideCameraControls()
     {
         envUI.SetActive(false);
+    }
+
+    public void hideGeneralUI()
+    {
+        genUI.SetActive(false);
+    }
+
+    public void showGeneralUI()
+    {
+        genUI.SetActive(true);
+    }
+
+    public void hideSLUI()
+    {
+        SL_UI.SetActive(false);
+    }
+
+    public void showSLUI()
+    {
+        SL_UI.SetActive(true);
     }
 
     public void ToggleKeyboard() => keyboard.SetActive(!keyboard.activeSelf);

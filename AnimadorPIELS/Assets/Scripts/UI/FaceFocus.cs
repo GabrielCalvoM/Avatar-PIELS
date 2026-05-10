@@ -44,6 +44,8 @@ public class FaceFocus : MonoBehaviour
         if (uiManager != null)
         {
             uiManager.hideCameraControls();
+            uiManager.hideGeneralUI();
+            uiManager.hideSLUI();
             uiManager.SetFocusedOnHands(true);
         }
 
@@ -67,6 +69,8 @@ public class FaceFocus : MonoBehaviour
         {
             uiManager.SetFocusedOnHands(false);
             uiManager.showCameraControls();
+            uiManager.showGeneralUI();
+            uiManager.showSLUI();
         }
         _instance = null;
     }

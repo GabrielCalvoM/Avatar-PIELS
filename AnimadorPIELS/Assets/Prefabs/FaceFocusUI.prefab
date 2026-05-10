@@ -134,12 +134,6 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   focusCamera: {fileID: 0}
   avatarFace: {fileID: 0}
-  leftEyelidSlider: {fileID: 0}
-  rightEyelidSlider: {fileID: 0}
-  raiseEyebrowSlider: {fileID: 0}
-  angleEyebrowSlider: {fileID: 0}
-  mouthHSlider: {fileID: 0}
-  mouthVSlider: {fileID: 0}
   saveLoadPose: {fileID: 0}
   faceUI: {fileID: 0}
 --- !u!1 &7940118715813108295

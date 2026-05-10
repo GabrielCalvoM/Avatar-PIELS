@@ -1483,7 +1483,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &312739757
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1667,6 +1667,8 @@ MonoBehaviour:
   genUI: {fileID: 859804686}
   envUI: {fileID: 1909474833}
   faceUI: {fileID: 146338831736355589}
+  SL_UI: {fileID: 433752658}
+  logo: {fileID: 312739756}
   bodyButtons: []
   bodyToggleGroup: {fileID: 1973496886}
   handsButtons: []
