@@ -30,6 +30,9 @@ public class UIManager : MonoBehaviour
     [Header("Body Mesh")]
     [SerializeField] GameObject[] bodyParts;
 
+    [Header("Hand Swap UI")]
+    [SerializeField] GameObject[] buttonsToSwap;
+
     private bool focusedOnHands = false;
 
     private ToggleUIOnOff toggleUIOnOff;
@@ -55,6 +58,12 @@ public class UIManager : MonoBehaviour
     public void SetFocusedOnHands(bool value)
     {
         focusedOnHands = value;
+
+        if (buttonsToSwap != null)
+            foreach (GameObject button in buttonsToSwap)
+                if (button != null)
+                    for (int i = 0; i < button.transform.childCount; i++)
+                        button.transform.GetChild(i).gameObject.SetActive(!button.transform.GetChild(i).gameObject.activeSelf);
 
         if (focusedOnHands)
         {
