@@ -166,8 +166,7 @@ public class BoneSetUp : MonoBehaviour
     void init_hand_focusable(Transform bone, FocusableDef def)
     {
         if (def.focusableUI == null) return;
-        GameObject focusCamera = Instantiate(def.cameraPrefab, bone);
-
+        GameObject focusCamera = Instantiate(def.cameraPrefab, bone.parent); // Hand focusable is instatiated in middle finger. Parent is then hand bone.
         float yRot = bone.name.Contains("_L") ? 90f : bone.name.Contains("_R") ? -90f : 0f;
         if (yRot != 0f) focusCamera.transform.RotateAround(bone.position, bone.up, yRot);
 
@@ -467,7 +466,7 @@ public class BoneSetUp : MonoBehaviour
         //Regex regex = new Regex(focusableDef.boneName);
         foreach (Transform b in bones)
         {
-            if ((b.name.Equals(map.HandL) || b.name.Equals(map.HandR)) && boneDefinitions.HandFocusDef)
+            if ((b.name.Equals(map.FingersL.Middle1) || b.name.Equals(map.FingersR.Middle1)) && boneDefinitions.HandFocusDef)
             {
                 init_hand_focusable(b, boneDefinitions.HandFocusDef);
             }
