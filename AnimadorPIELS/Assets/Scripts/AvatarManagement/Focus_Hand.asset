@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e762783512fc943a408a5a363813dd, type: 3}
   m_Name: Focus_Hand
   m_EditorClassIdentifier: Assembly-CSharp::FocusableDef
-  boneName: ^Bone_Hand_(L|R)$
+  boneName: aaaaa
   boneSide: 1
   isHand: 0
   focusableUI: {fileID: 5202631800287916530, guid: 9d05ccf04570d7a4b830963756dfbde0, type: 3}

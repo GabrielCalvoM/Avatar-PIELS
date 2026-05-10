@@ -24,8 +24,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject[] handsButtons;
     [SerializeField] ToggleGroup handsToggleGroup;
 
+    [Header("Joint Buttons")]
+    [SerializeField] GameObject keyboard;
+
     [Header("Body Mesh")]
     [SerializeField] GameObject[] bodyParts;
+
+    [Header("Hand Swap UI")]
+    [SerializeField] GameObject[] buttonsToSwap;
 
     private bool focusedOnHands = false;
 
@@ -41,9 +47,10 @@ public class UIManager : MonoBehaviour
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
                 toggleUIOnOff.SetUIOn();
+                keyboard.SetActive(false);
             }
         }
     }
@@ -51,6 +58,12 @@ public class UIManager : MonoBehaviour
     public void SetFocusedOnHands(bool value)
     {
         focusedOnHands = value;
+
+        if (buttonsToSwap != null)
+            foreach (GameObject button in buttonsToSwap)
+                if (button != null)
+                    for (int i = 0; i < button.transform.childCount; i++)
+                        button.transform.GetChild(i).gameObject.SetActive(!button.transform.GetChild(i).gameObject.activeSelf);
 
         if (focusedOnHands)
         {
@@ -161,4 +174,6 @@ public class UIManager : MonoBehaviour
     {
         envUI.SetActive(false);
     }
+
+    public void ToggleKeyboard() => keyboard.SetActive(!keyboard.activeSelf);
 }
