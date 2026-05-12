@@ -1,6 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine.UI;
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////// STRUCT GLORIFICADO
 [CreateAssetMenu(fileName = "BoneDef", menuName = "Scriptable Objects/BoneDef")]
@@ -14,7 +15,12 @@ public class BoneDef : ScriptableObject
     public bool isHand;
 
     [Header("Mov Script")]
+#if UNITY_EDITOR
     public MonoScript movScript;
+#endif
+    [SerializeField]
+    private string movScriptTypeName;
+    public string MovScript => movScriptTypeName;
 
     [Header("Articulation UI")]
     public GameObject articulationUI;
@@ -28,7 +34,12 @@ public class BoneDef : ScriptableObject
     public RotationConstraints constraints;
 
     [Header("Focusable UI")] // Optional
+#if UNITY_EDITOR
     public MonoScript focusScript;
+#endif
+    [SerializeField]
+    private string focusScriptTypeName;
+    public string FocusScript => focusScriptTypeName;
     public GameObject focusableUI;
     public GameObject focusCamera;
 
@@ -37,4 +48,20 @@ public class BoneDef : ScriptableObject
         ArticulationToggleGroup,
         FingersToggleGroup,
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (movScript != null)
+            movScriptTypeName = movScript.GetClass()?.AssemblyQualifiedName;
+        else
+            movScriptTypeName = "";
+        if (focusScript != null)
+            focusScriptTypeName = focusScript.GetClass()?.AssemblyQualifiedName;
+        else
+            focusScriptTypeName = "";
+
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+#endif
 }

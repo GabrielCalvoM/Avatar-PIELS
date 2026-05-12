@@ -16,6 +16,8 @@ MonoBehaviour:
   boneSide: 1
   isHand: 0
   movScript: {fileID: 11500000, guid: d407b59459c4ae94982de4bb6d9a27e6, type: 3}
+  movScriptTypeName: LowerArmMov, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
   enableY: 0
@@ -24,5 +26,6 @@ MonoBehaviour:
   toggleGroup: 0
   constraints: {fileID: 11400000, guid: 27b0de7af13bf3c489708b49b761c79b, type: 2}
   focusScript: {fileID: 0}
+  focusScriptTypeName: 
   focusableUI: {fileID: 0}
   focusCamera: {fileID: 0}

@@ -44,6 +44,9 @@ public class PoseData
 
 public class SaveLoadPose : MonoBehaviour
 {
+    static SaveLoadPose _instance;
+    public static SaveLoadPose Instance => _instance;
+
     SaveLoadUI loadUI;
 
     [SerializeField] Transform avatarSpine;
@@ -52,6 +55,11 @@ public class SaveLoadPose : MonoBehaviour
 
     private MongoDBService mongoService;
     private PoseHistory poseHistory;
+
+    private void Awake()
+    {
+        _instance = this;
+    }
 
     async void Start()
     {
@@ -158,7 +166,7 @@ public class SaveLoadPose : MonoBehaviour
 
     //////////////////////////////////////////////////////////// HAND DETECTION
 
-    private Transform GetActiveHandRoot()
+    public Transform GetActiveHandRoot()
     {
         if (HandFocus.Instance != null)
         {

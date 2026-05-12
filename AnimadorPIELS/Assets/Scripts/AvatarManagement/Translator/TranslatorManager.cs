@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class TranslatorManager : MonoBehaviour
@@ -18,6 +17,4 @@ public class TranslatorManager : MonoBehaviour
     {
         _instance = this;
     }
-
-    
 }

@@ -1,11 +1,11 @@
 using NaughtyAttributes;
-using UnityEngine;
 
 public static class LetterPoses
 {
     public static readonly string A = "A";
     public static readonly string B = "B";
     public static readonly string C = "C";
+    public static readonly string CH = "CH";
     public static readonly string D = "D";
     public static readonly string E = "E";
     public static readonly string F = "F";
@@ -17,7 +17,6 @@ public static class LetterPoses
     public static readonly string L = "L";
     public static readonly string M = "M";
     public static readonly string N = "N";
-    public static readonly string NN = "Ñ";
     public static readonly string O = "O";
     public static readonly string P = "P";
     public static readonly string Q = "Q";
@@ -38,6 +37,7 @@ public static class LetterPoses
             { "A", A },
             { "B", B },
             { "C", C },
+            { "CH", CH },
             { "D", D },
             { "E", E },
             { "F", F },
@@ -49,7 +49,6 @@ public static class LetterPoses
             { "L", L },
             { "M", M },
             { "N", N },
-            { "Ñ", NN },
             { "O", O },
             { "P", P },
             { "Q", Q },
