@@ -16,6 +16,8 @@ MonoBehaviour:
   boneSide: 1
   isHand: 1
   movScript: {fileID: 11500000, guid: d84dff0dace627c48a654f0461193e98, type: 3}
+  movScriptTypeName: Finger01Mov, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 0
   enableY: 0
@@ -24,5 +26,6 @@ MonoBehaviour:
   toggleGroup: 1
   constraints: {fileID: 11400000, guid: cb50051d8ffe80a44b7accbc554170f4, type: 2}
   focusScript: {fileID: 0}
+  focusScriptTypeName: 
   focusableUI: {fileID: 0}
   focusCamera: {fileID: 0}

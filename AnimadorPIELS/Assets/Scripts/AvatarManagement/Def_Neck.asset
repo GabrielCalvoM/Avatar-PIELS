@@ -16,6 +16,8 @@ MonoBehaviour:
   boneSide: 1
   isHand: 0
   movScript: {fileID: 11500000, guid: 968f9edbe51b0f14daa3d784394b483f, type: 3}
+  movScriptTypeName: NeckMov, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   articulationUI: {fileID: 5202631800287916530, guid: 06f799ded5464ec41bcf5fbe2b448bf9, type: 3}
   enableX: 1
   enableY: 1
@@ -24,5 +26,7 @@ MonoBehaviour:
   toggleGroup: 0
   constraints: {fileID: 0}
   focusScript: {fileID: 11500000, guid: 43ba463aed50d5a449f7ddfbc156bb80, type: 3}
+  focusScriptTypeName: FaceFocus, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
   focusableUI: {fileID: 5202631800287916530, guid: ea697004f32cb6d47bea1655367cebd8, type: 3}
   focusCamera: {fileID: 0}

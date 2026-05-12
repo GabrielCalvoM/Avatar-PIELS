@@ -75,7 +75,8 @@ public class BoneSetUp : MonoBehaviour
 
     void init_bone(Transform bone, BoneDef def)
     {
-        Type tMov = def.movScript != null ? def.movScript.GetClass() : null;
+        Type tMov = !string.IsNullOrEmpty(def.MovScript) ? Type.GetType(def.MovScript) : null;
+        Debug.Log($"Script: {def.MovScript}\nType: {tMov}");
         ArticulationMov aMov = null;
 
         // Attach Mov Script
