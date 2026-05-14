@@ -617,14 +617,43 @@ public class SaveLoadPose : MonoBehaviour
             Debug.LogError("SaveLoadPose: SaveLoadUI component not found.");
             return;
         }
-
         if (mongoService == null || !mongoService.IsConnected)
         {
             Debug.LogError("Pose backend not connected. Can't load T-pose.");
             return;
         }
 
-        // Load T-pose via backend API
+        if (IsInHandMode())
+        {
+            Transform activeHand = GetActiveHandRoot();
+            PoseData handPose = await mongoService.LoadHandPose("tpose", true); // true = system pose
+
+            if (handPose != null)
+            {
+                if (poseHistory != null)
+                {
+                    poseHistory.RecordStateBeforePoseApply();
+                }
+
+                char activeHandSide = GetHandSide(activeHand);
+                char poseSide = DetectPoseSide(handPose);
+
+                if (activeHandSide != poseSide && poseSide != '\0')
+                {
+                    handPose = MirrorPose(handPose);
+                }
+
+                ApplyHandPose(activeHand, handPose);
+                Debug.Log("T-pose (hand) loaded from backend");
+                loadUI.CancelLoadButton();
+                return;
+            }
+            else
+            {
+                Debug.LogWarning("Hand T-pose not found in hand poses backend. Falling back to full T-pose.");
+            }
+        }
+
         PoseData pose = await mongoService.LoadPose("tpose", true); // true = system pose
 
         if (pose != null)
@@ -640,6 +669,39 @@ public class SaveLoadPose : MonoBehaviour
         else
         {
             Debug.LogError("T-pose not found in backend. Please save it first using 'Save Current Pose as T-Pose to MongoDB' from the GameManager object -> SaveLoadPose component menu.");
+        }
+    }
+
+    /// <summary>
+    /// Save current active hand pose as the system T-pose for hands.
+    /// Use this from the inspector context menu on the SaveLoadPose component when in Edit mode.
+    /// </summary>
+    [ContextMenu("Save Current Hand Pose as Hand T-Pose to MongoDB")]
+    public async void SaveCurrentHandPoseAsTPose()
+    {
+        if (mongoService == null || !mongoService.IsConnected)
+        {
+            Debug.LogError("Pose backend not connected. Can't save hand T-pose.");
+            return;
+        }
+
+        Transform activeHand = GetActiveHandRoot();
+        if (activeHand == null)
+        {
+            Debug.LogError("No active hand found. Enter hand focus mode or select a hand in the hierarchy.");
+            return;
+        }
+
+        PoseData handPose = CaptureHandPose(activeHand);
+        bool success = await mongoService.SaveHandPose("tpose", handPose, true); // save as system hand pose
+
+        if (success)
+        {
+            Debug.Log("Hand T-pose saved to backend successfully");
+        }
+        else
+        {
+            Debug.LogError("Failed to save hand T-pose to backend.");
         }
     }
 
