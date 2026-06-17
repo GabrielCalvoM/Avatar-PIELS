@@ -1,0 +1,209 @@
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
+
+public class UIManager : MonoBehaviour
+{
+    //////////////////////////////////////////////////////////// ATTRIBUTES
+
+    [Header("Cameras")]
+    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private GameObject faceCamera;
+    [SerializeField] private GameObject activeCamera;
+
+    [Header("UI")]
+    [SerializeField] private GameObject genUI;
+    [SerializeField] private GameObject envUI;
+    [SerializeField] private GameObject faceUI;
+    [SerializeField] private GameObject SL_UI;
+    [SerializeField] private GameObject logo;
+    [SerializeField] private GameObject animatorUI;
+
+    [Header("Joint Buttons")]
+    [SerializeField] GameObject[] bodyButtons;
+    [SerializeField] ToggleGroup bodyToggleGroup;
+    [SerializeField] GameObject[] handsButtons;
+    [SerializeField] ToggleGroup handsToggleGroup;
+
+    [Header("Joint Buttons")]
+    [SerializeField] GameObject keyboard;
+
+    [Header("Body Mesh")]
+    [SerializeField] GameObject[] bodyParts;
+
+    [Header("Hand Swap UI")]
+    [SerializeField] GameObject[] buttonsToSwap;
+
+    private bool focusedOnHands = false;
+
+    private ToggleUIOnOff toggleUIOnOff;
+
+    void Start()
+    {
+        toggleUIOnOff = GetComponent<ToggleUIOnOff>();
+        activeCamera = mainCamera;
+    }
+
+    void Update()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                toggleUIOnOff.SetUIOn();
+                keyboard.SetActive(false);
+            }
+        }
+    }
+
+    public void SetFocusedOnHands(bool value)
+    {
+        focusedOnHands = value;
+
+        if (buttonsToSwap != null)
+            foreach (GameObject button in buttonsToSwap)
+                if (button != null)
+                    for (int i = 0; i < button.transform.childCount; i++)
+                        button.transform.GetChild(i).gameObject.SetActive(!button.transform.GetChild(i).gameObject.activeSelf);
+
+        if (focusedOnHands)
+        {
+            DisableBodyButtons();
+            EnableHandsButtons();
+            logo.SetActive(false);
+        }
+        else
+        {
+            DisableHandsButtons();
+            EnableBodyButtons();
+            logo.SetActive(true);
+        }
+    }
+
+    //////////////////////////////////////////////////////////// METHODS
+
+    public void UseFocusCamera(GameObject focusCamera)
+    {
+        activeCamera = focusCamera != null ? focusCamera : mainCamera;
+    }
+
+    public void UseMainCamera()
+    {
+        activeCamera = mainCamera;
+    }
+
+    public void CenterFrontView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterFrontView), SendMessageOptions.DontRequireReceiver);
+    public void CenterTopView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterTopView), SendMessageOptions.DontRequireReceiver);
+    public void CenterBottomView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterBottomView), SendMessageOptions.DontRequireReceiver);
+    public void CenterLeftView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterLeftView), SendMessageOptions.DontRequireReceiver);
+    public void CenterRightView() => activeCamera?.BroadcastMessage(nameof(WorldCamera.CenterRightView), SendMessageOptions.DontRequireReceiver);
+
+    public void EnableButtons()
+    {
+        foreach (GameObject button in bodyButtons)
+        {
+            button.SetActive(true);
+        }
+
+        foreach (GameObject button in handsButtons)
+        {
+            button.SetActive(true);
+        }
+
+        bodyToggleGroup.SetAllTogglesOff();
+        handsToggleGroup.SetAllTogglesOff();
+    }
+
+    public void DisableButtons()
+    {
+        foreach (GameObject button in bodyButtons)
+        {
+            button.SetActive(false);
+        }
+
+        foreach (GameObject button in handsButtons)
+        {
+            button.SetActive(false);
+        }
+    }
+
+    public void EnableBodyButtons()
+    {
+        foreach (GameObject button in bodyButtons)
+        {
+            button.SetActive(true);
+        }
+
+        bodyToggleGroup.SetAllTogglesOff();
+    }
+
+    public void DisableBodyButtons()
+    {
+        foreach (GameObject button in bodyButtons)
+        {
+            button.SetActive(false);
+        }
+    }
+
+    public void EnableHandsButtons()
+    {
+        foreach (GameObject button in handsButtons)
+        {
+            button.SetActive(true);
+        }
+
+        handsToggleGroup.SetAllTogglesOff();
+    }
+
+    public void DisableHandsButtons()
+    {
+        foreach (GameObject button in handsButtons)
+        {
+            button.SetActive(false);
+        }
+    }
+
+    public bool getFocusedOnHands()
+    {
+        return focusedOnHands;
+    }
+
+    public void showCameraControls()
+    {
+        envUI.SetActive(true);
+    }
+
+    public void hideCameraControls()
+    {
+        envUI.SetActive(false);
+    }
+
+    public void hideGeneralUI()
+    {
+        genUI.SetActive(false);
+    }
+
+    public void showGeneralUI()
+    {
+        genUI.SetActive(true);
+    }
+
+    public void hideSLUI()
+    {
+        SL_UI.SetActive(false);
+    }
+
+    public void showSLUI()
+    {
+        SL_UI.SetActive(true);
+    }
+
+    public void ToggleKeyboard() => keyboard.SetActive(!keyboard.activeSelf);
+
+    public void ShowAnimatorUI() => animatorUI?.SetActive(true);
+    public void HideAnimatorUI() => animatorUI?.SetActive(false);
+    public void ToggleAnimatorUI() => animatorUI?.SetActive(!animatorUI.activeSelf);
+    public bool IsAnimatorUIOpen() => animatorUI != null && animatorUI.activeSelf;
+}
